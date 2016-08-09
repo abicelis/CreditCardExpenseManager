@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 
 import java.util.List;
 
@@ -14,7 +15,6 @@ import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotInsertDataException;
 import ve.com.abicelis.creditcardexpensemanager.mocks.CreditMock;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
-import ve.com.abicelis.creditcardexpensemanager.model.CreditPeriod;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -24,6 +24,8 @@ public class HomeActivity extends AppCompatActivity {
 
     //UI
     RecyclerView recyclerViewExpenses;
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +34,9 @@ public class HomeActivity extends AppCompatActivity {
         creditCard = CreditMock.getCreditCardMock();
 
         setUpExpensesRecyclerView();
+
+        setUpToolbar();
+
 
 
 
@@ -56,10 +61,15 @@ public class HomeActivity extends AppCompatActivity {
         handler.postDelayed(r, 1000);
     }
 
+    private void setUpToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.home_toolbar);
+        toolbar.setTitle("CC Expense Mgr");
+    }
+
     private void setUpExpensesRecyclerView() {
 
 
-        recyclerViewExpenses = (RecyclerView) findViewById(R.id.recycler_expenses);
+        recyclerViewExpenses = (RecyclerView) findViewById(R.id.home_recycler_expenses);
 
         ExpensesAdapter adapter = new ExpensesAdapter(getApplicationContext(), creditCard.getCreditPeriods().get(0).getExpenses());
         recyclerViewExpenses.setAdapter(adapter);
