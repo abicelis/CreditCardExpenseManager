@@ -80,6 +80,7 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_IMAGE.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_IMAGE.getDataType() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_AMOUNT.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_AMOUNT.getDataType() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_CURRENCY.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_CURRENCY.getDataType() + COMMA_SEP +
+                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getDataType() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getDataType() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getDataType() +
                         " ); " +
@@ -89,12 +90,14 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
                         "CREATE TABLE " + ExpenseManagerContract.PaymentTable.TABLE_NAME + " (" +
                         ExpenseManagerContract.PaymentTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
-                        "FOREIGN KEY " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName() + " REFERENCES " +
+                        "FOREIGN KEY " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName() + " REFERENCES " +
                         ExpenseManagerContract.CreditPeriodTable.TABLE_NAME + " (" + ExpenseManagerContract.CreditPeriodTable._ID + ")" +
 
                         ExpenseManagerContract.PaymentTable.COLUMN_NAME_DESCRIPTION.getName() + " " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_DESCRIPTION.getDataType() + COMMA_SEP +
                         ExpenseManagerContract.PaymentTable.COLUMN_NAME_AMOUNT.getName() + " " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_AMOUNT.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.PaymentTable.COLUMN_NAME_CURRENCY.getName() + " " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_CURRENCY.getDataType() +
+                        ExpenseManagerContract.PaymentTable.COLUMN_NAME_CURRENCY.getName() + " " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_CURRENCY.getDataType() + COMMA_SEP +
+                        ExpenseManagerContract.PaymentTable.COLUMN_NAME_DATE.getName() + " " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_DATE.getDataType() +
+
                         " ); ";
 
         return createStatement;
