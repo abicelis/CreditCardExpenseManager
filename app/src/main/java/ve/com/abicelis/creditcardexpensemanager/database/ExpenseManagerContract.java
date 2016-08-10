@@ -28,7 +28,7 @@ public final class ExpenseManagerContract {
     public static abstract class CreditPeriodTable implements BaseColumns {
         public static final String TABLE_NAME = "creditperiod";
 
-        public static final TableColumn COLUMN_NAME_FOREIGN_KEY_CREDIT_CARD = new TableColumn(DataType.INTEGER, "creditcard");
+        public static final TableColumn COLUMN_NAME_FOREIGN_KEY_CREDIT_CARD = new TableColumn(DataType.INTEGER, "fk_creditcard");
 
         public static final TableColumn COLUMN_NAME_PERIOD_NAME_STYLE = new TableColumn(DataType.TEXT, "periodnamestyle");
         public static final TableColumn COLUMN_NAME_START_DATE = new TableColumn(DataType.INTEGER, "startdate");
@@ -39,7 +39,7 @@ public final class ExpenseManagerContract {
     public static abstract class ExpenseTable implements BaseColumns {
         public static final String TABLE_NAME = "expense";
 
-        public static final TableColumn COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD = new TableColumn(DataType.INTEGER, "creditperiod");
+        public static final TableColumn COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD = new TableColumn(DataType.INTEGER, "fk_creditperiod");
 
         public static final TableColumn COLUMN_NAME_DESCRIPTION = new TableColumn(DataType.TEXT, "description");
         public static final TableColumn COLUMN_NAME_IMAGE = new TableColumn(DataType.BLOB, "image");
@@ -54,7 +54,7 @@ public final class ExpenseManagerContract {
     public static abstract class PaymentTable implements BaseColumns {
         public static final String TABLE_NAME = "payment";
 
-        public static final TableColumn COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD = new TableColumn(DataType.INTEGER, "creditperiod");
+        public static final TableColumn COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD = new TableColumn(DataType.INTEGER, "fk_creditperiod");
 
         public static final TableColumn COLUMN_NAME_DESCRIPTION = new TableColumn(DataType.TEXT, "description");
         public static final TableColumn COLUMN_NAME_AMOUNT = new TableColumn(DataType.TEXT, "amount");
