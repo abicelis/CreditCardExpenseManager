@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
@@ -33,16 +34,17 @@ import ve.com.abicelis.creditcardexpensemanager.model.Payment;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener, DialogInterface.OnDismissListener {
 
     //Data
-    List<CreditCard> creditCards;
-    List<CreditPeriod> creditPeriods;
-    List<Expense> expenses;
-    List<Payment> payments;
+    List<CreditCard> creditCards = new ArrayList<>();
+    List<CreditPeriod> creditPeriods = new ArrayList<>();
+    List<Expense> expenses = new ArrayList<>();
+    List<Payment> payments = new ArrayList<>();
     ExpenseManagerDAO dao;
 
     //UI
     RecyclerView recyclerViewExpenses;
     ExpensesAdapter adapter;
     Toolbar toolbar;
+    FloatingActionMenu fabMenu;
     FloatingActionButton fabNewExpense;
     FloatingActionButton fabNewExpenseCamera;
 
@@ -74,10 +76,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         if(dao == null)
             dao = new ExpenseManagerDAO(getApplicationContext());
 
-        creditCards = dao.getCreditCardList();
-        creditPeriods = dao.getCreditPeriodListFromCard(creditCards.get(0).getId());
-        expenses = dao.getExpensesFromCreditPeriod(creditPeriods.get(0).getId());
-        payments = dao.getPaymentsFromCreditPeriod(creditPeriods.get(0).getId());
+        creditCards.clear();
+        creditCards.addAll(dao.getCreditCardList());
+
+        creditPeriods.clear();
+        creditPeriods.addAll(dao.getCreditPeriodListFromCard(creditCards.get(0).getId()));
+
+        expenses.clear();
+        expenses.addAll(dao.getExpensesFromCreditPeriod(creditPeriods.get(0).getId()));
+
+        payments.clear();
+        payments.addAll(dao.getPaymentsFromCreditPeriod(creditPeriods.get(0).getId()));
     }
 
 
@@ -86,6 +95,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         int id = view.getId();
         switch (id) {
             case R.id.home_fab_new_expense:
+                fabMenu.close(true);
                 showCreateExpenseDialog();
                 break;
             case R.id.home_fab_new_expense_camera:
@@ -143,6 +153,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setUpFab() {
+        fabMenu = (FloatingActionMenu) findViewById(R.id.home_fab_menu);
         fabNewExpense = (FloatingActionButton) findViewById(R.id.home_fab_new_expense);
         fabNewExpenseCamera = (FloatingActionButton) findViewById(R.id.home_fab_new_expense_camera);
 
@@ -153,6 +164,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onDismiss(DialogInterface dialogInterface) {
         refreshData();
+        adapter.notifyItemInserted(expenses.size()-1);
+
         adapter.notifyDataSetChanged();
     }
 }
