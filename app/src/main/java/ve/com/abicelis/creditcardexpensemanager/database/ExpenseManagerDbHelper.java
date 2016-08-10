@@ -25,91 +25,140 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(generateCreateStatement());
+        createDatabase(sqLiteDatabase);
+        insertMockData(sqLiteDatabase);
     }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         //TODO: FIGURE THIS PART OUT!
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
-        sqLiteDatabase.execSQL(generateDeleteStatement());
+        deleteDatabase(sqLiteDatabase);
         onCreate(sqLiteDatabase);
     }
 
 
+    private void insertMockData(SQLiteDatabase sqLiteDatabase) {
+        String statement;
 
+        statement = "INSERT INTO " + ExpenseManagerContract.CreditCardTable.TABLE_NAME + " (" +
+                        ExpenseManagerContract.CreditCardTable._ID + COMMA_SEP +
+                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_ALIAS.getName() + COMMA_SEP +
+                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_BANK_NAME.getName() + COMMA_SEP +
+                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_NUMBER.getName() + COMMA_SEP +
+                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CURRENCY.getName() + COMMA_SEP +
+                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_TYPE.getName() + COMMA_SEP +
+                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_EXPIRATION.getName() + COMMA_SEP +
+                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CLOSING_DAY.getName() + COMMA_SEP +
+                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_DUE_DAY.getName() +
+                        ") VALUES (0, 'MockCard', 'MockBank', '1234-5678-1234-5678', 'VEF', 'MASTERCARD', '0', 20, 8); ";
+        sqLiteDatabase.execSQL(statement);
 
-    private String generateCreateStatement() {
-        String createStatement =
-                "CREATE TABLE " + ExpenseManagerContract.CreditCardTable.TABLE_NAME + " (" +
-                        ExpenseManagerContract.CreditCardTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_ALIAS.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_ALIAS.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_BANK_NAME.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_BANK_NAME.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_NUMBER.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_NUMBER.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CURRENCY.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CURRENCY.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_TYPE.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_TYPE.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_EXPIRATION.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_EXPIRATION.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CLOSING_DAY.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CLOSING_DAY.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_DUE_DAY.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_DUE_DAY.getDataType() +
-                        " ); " +
+        statement = "INSERT INTO " + ExpenseManagerContract.CreditPeriodTable.TABLE_NAME + " (" +
+                        ExpenseManagerContract.CreditPeriodTable._ID + COMMA_SEP +
+                        ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_CARD.getName() + COMMA_SEP +
+                        ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_PERIOD_NAME_STYLE.getName() + COMMA_SEP +
+                        ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_START_DATE.getName() + COMMA_SEP +
+                        ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_END_DATE.getName() + COMMA_SEP +
+                        ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_CREDIT_LIMIT.getName() +
+                        ") VALUES (0, 0, 0, '1470856422283', '1470956422283', '100000'), (1, 0, 0, '1470856422283', '1470956422283', '150000'); ";
+        sqLiteDatabase.execSQL(statement);
 
+        statement  = "INSERT INTO " + ExpenseManagerContract.ExpenseTable.TABLE_NAME + " (" +
+                        ExpenseManagerContract.ExpenseTable._ID + COMMA_SEP +
+                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName() + COMMA_SEP +
+                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DESCRIPTION.getName() + COMMA_SEP +
+                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_IMAGE.getName() + COMMA_SEP +
+                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_AMOUNT.getName() + COMMA_SEP +
+                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_CURRENCY.getName() + COMMA_SEP +
+                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getName() + COMMA_SEP +
+                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getName() + COMMA_SEP +
+                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getName() +
+                        ") VALUES (0, 0, 'MockExpense 1', X'0102030405060708090a0b0c0d0e0f', '5000', 'VEF', '1470856422283', 'ENTERTAINMENT', 'EXTRAORDINARY'), " +
+                        "(1, 0, 'MockExpense 2', X'0102030405060708090a0b0c0d0e0f', '10000', 'VEF', '1470856422283', 'ENTERTAINMENT', 'ORDINARY'); ";
+        sqLiteDatabase.execSQL(statement);
 
-
-                        "CREATE TABLE " + ExpenseManagerContract.CreditPeriodTable.TABLE_NAME + " (" +
-                        ExpenseManagerContract.CreditPeriodTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-
-                        "FOREIGN KEY " + ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_CARD.getName() + " REFERENCES " +
-                        ExpenseManagerContract.CreditCardTable.TABLE_NAME + " (" + ExpenseManagerContract.CreditCardTable._ID + ")" +
-
-                        ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_PERIOD_NAME_STYLE.getName() + " " + ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_PERIOD_NAME_STYLE.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_START_DATE.getName() + " " + ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_START_DATE.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_END_DATE.getName() + " " + ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_END_DATE.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_CREDIT_LIMIT.getName() + " " + ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_CREDIT_LIMIT.getDataType() +
-                        " ); " +
-
-
-
-                        "CREATE TABLE " + ExpenseManagerContract.ExpenseTable.TABLE_NAME + " (" +
-                        ExpenseManagerContract.ExpenseTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-
-                        "FOREIGN KEY " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName() + " REFERENCES " +
-                        ExpenseManagerContract.CreditPeriodTable.TABLE_NAME + " (" + ExpenseManagerContract.CreditPeriodTable._ID + ")" +
-
-                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DESCRIPTION.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DESCRIPTION.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_IMAGE.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_IMAGE.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_AMOUNT.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_AMOUNT.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_CURRENCY.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_CURRENCY.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getDataType() +
-                        " ); " +
-
-
-
-                        "CREATE TABLE " + ExpenseManagerContract.PaymentTable.TABLE_NAME + " (" +
-                        ExpenseManagerContract.PaymentTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-
-                        "FOREIGN KEY " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName() + " REFERENCES " +
-                        ExpenseManagerContract.CreditPeriodTable.TABLE_NAME + " (" + ExpenseManagerContract.CreditPeriodTable._ID + ")" +
-
-                        ExpenseManagerContract.PaymentTable.COLUMN_NAME_DESCRIPTION.getName() + " " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_DESCRIPTION.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.PaymentTable.COLUMN_NAME_AMOUNT.getName() + " " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_AMOUNT.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.PaymentTable.COLUMN_NAME_CURRENCY.getName() + " " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_CURRENCY.getDataType() + COMMA_SEP +
-                        ExpenseManagerContract.PaymentTable.COLUMN_NAME_DATE.getName() + " " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_DATE.getDataType() +
-
-                        " ); ";
-
-        return createStatement;
     }
 
-    private String generateDeleteStatement() {
-        String deleteStatement =
-                "DROP TABLE IF EXISTS " + ExpenseManagerContract.CreditCardTable.TABLE_NAME + "; " +
-                        "DROP TABLE IF EXISTS " + ExpenseManagerContract.CreditPeriodTable.TABLE_NAME + "; " +
-                        "DROP TABLE IF EXISTS " + ExpenseManagerContract.ExpenseTable.TABLE_NAME + "; " +
-                        "DROP TABLE IF EXISTS " + ExpenseManagerContract.PaymentTable.TABLE_NAME + "; ";
+    private void createDatabase(SQLiteDatabase sqLiteDatabase) {
+        String statement;
 
-        return deleteStatement;
+        statement = "CREATE TABLE " + ExpenseManagerContract.CreditCardTable.TABLE_NAME + " (" +
+                ExpenseManagerContract.CreditCardTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_ALIAS.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_ALIAS.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.CreditCardTable.COLUMN_NAME_BANK_NAME.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_BANK_NAME.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_NUMBER.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_NUMBER.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CURRENCY.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CURRENCY.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_TYPE.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_TYPE.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_EXPIRATION.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_EXPIRATION.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CLOSING_DAY.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CLOSING_DAY.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.CreditCardTable.COLUMN_NAME_DUE_DAY.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_DUE_DAY.getDataType() +
+                " ); " ;
+        sqLiteDatabase.execSQL(statement);
+
+
+        statement = "CREATE TABLE " + ExpenseManagerContract.CreditPeriodTable.TABLE_NAME + " (" +
+                ExpenseManagerContract.CreditPeriodTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
+                ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_PERIOD_NAME_STYLE.getName() + " " + ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_PERIOD_NAME_STYLE.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_START_DATE.getName() + " " + ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_START_DATE.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_END_DATE.getName() + " " + ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_END_DATE.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_CREDIT_LIMIT.getName() + " " + ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_CREDIT_LIMIT.getDataType() + COMMA_SEP +
+
+                ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_CARD.getName() + " " + ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_CREDIT_LIMIT.getDataType() +
+                " REFERENCES " + ExpenseManagerContract.CreditCardTable.TABLE_NAME + "(" + ExpenseManagerContract.CreditCardTable._ID + ") " +
+
+                " ); ";
+        sqLiteDatabase.execSQL(statement);
+
+
+        statement = "CREATE TABLE " + ExpenseManagerContract.ExpenseTable.TABLE_NAME + " (" +
+                ExpenseManagerContract.ExpenseTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
+                ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DESCRIPTION.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DESCRIPTION.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.ExpenseTable.COLUMN_NAME_IMAGE.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_IMAGE.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.ExpenseTable.COLUMN_NAME_AMOUNT.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_AMOUNT.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.ExpenseTable.COLUMN_NAME_CURRENCY.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_CURRENCY.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getDataType() + COMMA_SEP +
+
+                ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getDataType() +
+                " REFERENCES " + ExpenseManagerContract.CreditPeriodTable.TABLE_NAME + "(" + ExpenseManagerContract.CreditPeriodTable._ID + ") " +
+
+                " ); ";
+        sqLiteDatabase.execSQL(statement);
+
+
+        statement = "CREATE TABLE " + ExpenseManagerContract.PaymentTable.TABLE_NAME + " (" +
+                ExpenseManagerContract.PaymentTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
+
+                ExpenseManagerContract.PaymentTable.COLUMN_NAME_DESCRIPTION.getName() + " " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_DESCRIPTION.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.PaymentTable.COLUMN_NAME_AMOUNT.getName() + " " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_AMOUNT.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.PaymentTable.COLUMN_NAME_CURRENCY.getName() + " " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_CURRENCY.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.PaymentTable.COLUMN_NAME_DATE.getName() + " " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_DATE.getDataType() + COMMA_SEP +
+
+
+                ExpenseManagerContract.PaymentTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName() + " " + ExpenseManagerContract.PaymentTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getDataType() +
+                " REFERENCES " + ExpenseManagerContract.CreditPeriodTable.TABLE_NAME + "(" + ExpenseManagerContract.CreditPeriodTable._ID + ") " +
+
+                " ); ";
+        sqLiteDatabase.execSQL(statement);
+    }
+
+    private void deleteDatabase(SQLiteDatabase sqLiteDatabase) {
+        String statement ;
+
+        statement = "DROP TABLE IF EXISTS " + ExpenseManagerContract.PaymentTable.TABLE_NAME + "; ";
+        sqLiteDatabase.execSQL(statement);
+
+        statement = "DROP TABLE IF EXISTS " + ExpenseManagerContract.ExpenseTable.TABLE_NAME + "; ";
+        sqLiteDatabase.execSQL(statement);
+
+        statement = "DROP TABLE IF EXISTS " + ExpenseManagerContract.CreditPeriodTable.TABLE_NAME + "; ";
+        sqLiteDatabase.execSQL(statement);
+
+        statement = "DROP TABLE IF EXISTS " + ExpenseManagerContract.CreditCardTable.TABLE_NAME + "; ";
+        sqLiteDatabase.execSQL(statement);
     }
 }
