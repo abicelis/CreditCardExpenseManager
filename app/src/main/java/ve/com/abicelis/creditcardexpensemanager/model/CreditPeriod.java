@@ -1,6 +1,7 @@
 package ve.com.abicelis.creditcardexpensemanager.model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -28,9 +29,11 @@ public class CreditPeriod {
     private List<Expense> expenses;
     private List<Payment> payments;
 
+    public CreditPeriod(int id, int periodNameStyle, Calendar startDate, Calendar endDate, BigDecimal creditLimit) {
+        this(id, periodNameStyle, startDate, endDate, creditLimit, new ArrayList<Expense>(), new ArrayList<Payment>());
+    }
 
-    public CreditPeriod (int id, int periodNameStyle, Calendar startDate, Calendar endDate, BigDecimal creditLimit, List<Expense> expenses, List<Payment> payments) {
-
+    public CreditPeriod(int id, int periodNameStyle, Calendar startDate, Calendar endDate, BigDecimal creditLimit, List<Expense> expenses, List<Payment> payments) {
         this.id = id;
         this.periodNameStyle = periodNameStyle;
         this.startDate = startDate;
