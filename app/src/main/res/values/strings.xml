@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">CC Manager</string>
+
+
+    <string name="dialog_create_expense_title">Create new Expense</string>
+    <string name="dialog_create_expense_amount">Amount</string>
+    <string name="dialog_create_expense_description">Description</string>
 </resources>

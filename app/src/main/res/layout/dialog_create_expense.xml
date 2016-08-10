@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edit_name"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:id="@+id/dialog_expense_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        >
+
+        <TextView
+            android:id="@+id/dialog_expense_txt_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:layout_marginBottom="20dp"
+            android:text="Create an Expense"/>
+
+        <TextView
+            android:id="@+id/dialog_expense_txt_label_amount"
+            android:text="@string/dialog_create_expense_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/dialog_expense_edit_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:imeOptions="actionDone" />
+
+        <TextView
+            android:id="@+id/dialog_expense_txt_label_description"
+            android:text="@string/dialog_create_expense_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/dialog_expense_edit_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:imeOptions="actionDone" />
+    </LinearLayout>
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:paddingLeft="24dp"
+    >
+
+    <Button
+        android:id="@+id/dialog_expense_button_create"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="CREATE"
+        android:layout_alignParentRight="true"
+        style="?attr/borderlessButtonStyle"/>
+
+    <Button
+        android:id="@+id/dialog_expense_button_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_toStartOf="@id/dialog_expense_button_create"
+        android:layout_toLeftOf="@id/dialog_expense_button_create"
+        android:text="CANCEL"
+        style="?attr/borderlessButtonStyle"/>
+
+</RelativeLayout>
+
+</LinearLayout>
