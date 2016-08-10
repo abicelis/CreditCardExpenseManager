@@ -64,4 +64,17 @@ public class Expense {
     public ExpenseType getExpenseType() {
         return expenseType;
     }
+
+
+
+    @Override
+    public String toString() {
+        return  "ID=" + id + "\r\n" +
+                " description=" + description + "\r\n" +
+                " amount=" + amount + "\r\n" +
+                " currency=" + currency + "\r\n" +
+                " date=" + date + "\r\n" +
+                " expenseCategory=" + expenseCategory + "\r\n" +
+                " expenseType=" + expenseType;
+    }
 }

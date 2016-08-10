@@ -46,4 +46,14 @@ public class Payment {
     public Calendar getDate() {
         return date;
     }
+
+
+    @Override
+    public String toString() {
+        return  "ID=" + id + "\r\n" +
+                " description=" + description + "\r\n" +
+                " amount=" + amount + "\r\n" +
+                " currency=" + currency + "\r\n" +
+                " date=" + date;
+    }
 }
