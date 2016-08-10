@@ -1,4 +1,4 @@
-package ve.com.abicelis.creditcardexpensemanager.holder;
+package ve.com.abicelis.creditcardexpensemanager.app.holder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -7,7 +7,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
-import ve.com.abicelis.creditcardexpensemanager.adapter.ExpensesAdapter;
+import ve.com.abicelis.creditcardexpensemanager.app.adapter.ExpensesAdapter;
 import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 
 /**
