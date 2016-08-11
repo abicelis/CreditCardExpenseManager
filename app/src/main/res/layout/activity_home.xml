@@ -54,20 +54,27 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/home_nested_scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        >
+    <!--<android.support.v4.widget.NestedScrollView-->
+        <!--android:id="@+id/home_nested_scroll_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+        <!--&gt;-->
 
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/home_swipe_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v7.widget.RecyclerView
         android:id="@+id/home_recycler_expenses"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+    <!--</android.support.v4.widget.NestedScrollView>-->
 
 
     <com.github.clans.fab.FloatingActionMenu
@@ -87,7 +94,7 @@
         fab:menu_labels_margin="8dp"
         fab:menu_labels_padding="8dp"
         fab:menu_backgroundColor="@android:color/transparent"
-        app:layout_anchor="@id/home_nested_scroll_view"
+        app:layout_anchor="@id/home_swipe_refresh"
         app:layout_anchorGravity="bottom|right|end"
         app:menu_fab_show_animation="@anim/fab_scale_up"
         >

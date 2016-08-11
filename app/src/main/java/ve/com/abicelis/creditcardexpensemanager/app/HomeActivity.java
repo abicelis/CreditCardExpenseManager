@@ -4,8 +4,8 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,8 +24,6 @@ import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.adapter.ExpensesAdapter;
 import ve.com.abicelis.creditcardexpensemanager.app.dialogs.CreateExpenseDialogFragment;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
-import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotInsertDataException;
-import ve.com.abicelis.creditcardexpensemanager.mocks.CreditMock;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditPeriod;
 import ve.com.abicelis.creditcardexpensemanager.model.Expense;
@@ -47,6 +45,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     FloatingActionMenu fabMenu;
     FloatingActionButton fabNewExpense;
     FloatingActionButton fabNewExpenseCamera;
+    SwipeRefreshLayout swipeRefreshLayout;
 
 
     @Override
@@ -59,7 +58,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         Handler handler = new Handler();
         final Runnable r = new Runnable() {
             public void run() {
-                refreshData();
+                refreshDataFromDB();
                 setUpExpensesRecyclerView();
             }
         };
@@ -68,11 +67,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
         //setUpExpensesRecyclerView();
+        setUpSwipeRefresh();
         setUpToolbar();
         setUpFab();
     }
 
-    private void refreshData() {
+
+
+    private void refreshDataFromDB() {
         if(dao == null)
             dao = new ExpenseManagerDAO(getApplicationContext());
 
@@ -105,13 +107,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void showCreateExpenseDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        CreateExpenseDialogFragment dialog = CreateExpenseDialogFragment.newInstance(getResources().getString(R.string.dialog_create_expense_title), dao);
-        dialog.show(fm, "fragment_dialog_create_expense");
-    }
-
-
 
 
 
@@ -124,6 +119,20 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         recyclerViewExpenses.setLayoutManager(layoutManager);
+    }
+
+    private void setUpSwipeRefresh() {
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.home_swipe_refresh);
+        swipeRefreshLayout.setColorSchemeResources(R.color.swipe_refresh_green, R.color.swipe_refresh_red, R.color.swipe_refresh_yellow);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                                                    @Override
+                                                    public void onRefresh() {
+                                                        refreshDataFromDB();
+                                                        adapter.notifyDataSetChanged();
+                                                        swipeRefreshLayout.setRefreshing(false);
+                                                    }
+                                                }
+        );
     }
 
     private void setUpToolbar() {
@@ -161,11 +170,20 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         fabNewExpenseCamera.setOnClickListener(this);
     }
 
+
+
+
+    private void showCreateExpenseDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        CreateExpenseDialogFragment dialog = CreateExpenseDialogFragment.newInstance(getResources().getString(R.string.dialog_create_expense_title), dao);
+        dialog.show(fm, "fragment_dialog_create_expense");
+    }
+
     @Override
     public void onDismiss(DialogInterface dialogInterface) {
-        refreshData();
+        refreshDataFromDB();
         adapter.notifyItemInserted(expenses.size()-1);
-
         adapter.notifyDataSetChanged();
     }
+
 }

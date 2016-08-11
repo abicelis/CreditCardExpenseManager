@@ -6,6 +6,10 @@
     <color name="navigationBarColor">#FFCC80</color>
     <color name="textColorPrimary">#FFFFFF</color>
 
+    <color name="swipe_refresh_green">#7cb342</color>
+    <color name="swipe_refresh_red">#e53935</color>
+    <color name="swipe_refresh_yellow">#fdd835</color>
+
     <color name="gray_50">#FAFAFA</color>
     <color name="gray_100">#F5F5F5</color>
     <color name="gray_200">#EEEEEE</color>
