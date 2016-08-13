@@ -21,5 +21,7 @@
     <color name="gray_800">#424242</color>
     <color name="gray_900">#212121</color>
 
+    <color name="receipt_text_title">#e4665c</color>
+
 
 </resources>

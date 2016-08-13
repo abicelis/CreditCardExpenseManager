@@ -1,6 +1,7 @@
 package ve.com.abicelis.creditcardexpensemanager.app;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -12,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -101,7 +101,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 showCreateExpenseDialog();
                 break;
             case R.id.home_fab_new_expense_camera:
-                Toast.makeText(HomeActivity.this, "Not yet implemented!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, OcrCreateExpenseActivity.class);
+                startActivity(intent);
                 break;
         }
     }
