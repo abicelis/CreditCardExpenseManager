@@ -10,32 +10,34 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.animation.AnimationSet;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.anim.FadeAnimator;
@@ -44,9 +46,6 @@ import ve.com.abicelis.creditcardexpensemanager.ocr.OcrGraphic;
 import ve.com.abicelis.creditcardexpensemanager.ocr.camera.CameraSource;
 import ve.com.abicelis.creditcardexpensemanager.ocr.camera.CameraSourcePreview;
 import ve.com.abicelis.creditcardexpensemanager.ocr.camera.GraphicOverlay;
-//import ve.com.abicelis.creditcardexpensemanager.ocr.camera.CameraSource;
-//import ve.com.abicelis.creditcardexpensemanager.ocr.camera.CameraSourcePreview;
-//import ve.com.abicelis.creditcardexpensemanager.ocr.camera.GraphicOverlay;
 
 /**
  * Activity for the Ocr Detecting app.  This app detects text and displays the value with the
@@ -70,17 +69,20 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
     private CameraSource mCameraSource;
     private CameraSourcePreview mPreview;
     private GraphicOverlay<OcrGraphic> mGraphicOverlay;
+    private OcrDetectorProcessor mDetectorProcessor;
 
     // Helper objects for detecting taps and pinches.
     private ScaleGestureDetector scaleGestureDetector;
     private GestureDetector gestureDetector;
 
-    // A TextToSpeech engine for speaking a String value.
-    private TextToSpeech tts;
 
     //UI
+    TextView txtDate;
     TextView txtDescription;
     TextView txtTotal;
+    View mOcrDetectionWindow;
+    FrameLayout mContainer;
+    LinearLayout mOcrWindowContainer;
 
     FloatingActionButton fabNext;
     FloatingActionButton fabPrev;
@@ -97,8 +99,13 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         super.onCreate(bundle);
         setContentView(R.layout.activity_ocr_create_expense);
 
+
+        mContainer = (FrameLayout) findViewById(R.id.create_expense_container);
+        mOcrWindowContainer = (LinearLayout) findViewById(R.id.create_expense_ocr_window_container);
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.graphicOverlay);
+        mOcrDetectionWindow = findViewById(R.id.create_expense_ocr_window);
+
 
         // Set good defaults for capturing text.
         boolean autoFocus = true;
@@ -113,15 +120,18 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
             requestCameraPermission();
         }
 
-        gestureDetector = new GestureDetector(this, new CaptureGestureListener());
-        scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
+        //gestureDetector = new GestureDetector(this, new CaptureGestureListener());
+        //scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
-        Snackbar.make(mGraphicOverlay, "Tap to Speak. Pinch/Stretch to zoom",
-                Snackbar.LENGTH_LONG)
-                .show();
+        Snackbar.make(mGraphicOverlay, "Capture the Receipt's data using your camera!", Snackbar.LENGTH_LONG).show();
 
 
         //Get fields to be filled with data, set fieldsToFill List
+        txtDate = (TextView) findViewById(R.id.create_expense_txt_receipt_date);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+        txtDate.setText("Date: " + df.format(new Date()));
+
+
         txtDescription = (TextView) findViewById(R.id.create_expense_txt_receipt_description);
         txtTotal = (TextView) findViewById(R.id.create_expense_txt_receipt_total);
         fieldsToFill.add(txtDescription);
@@ -129,27 +139,13 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
 
         activateNextField();
 
+
         //Setup Fabs
         fabNext = (FloatingActionButton) findViewById(R.id.create_expense_fab_next);
         fabPrev = (FloatingActionButton) findViewById(R.id.create_expense_fab_prev);
 
         fabNext.setOnClickListener(this);
         fabPrev.setOnClickListener(this);
-
-        // Set up the Text To Speech engine.
-//        TextToSpeech.OnInitListener listener =
-//                new TextToSpeech.OnInitListener() {
-//                    @Override
-//                    public void onInit(final int status) {
-//                        if (status == TextToSpeech.SUCCESS) {
-//                            Log.d("TTS", "Text to speech engine started successfully.");
-//                            tts.setLanguage(Locale.US);
-//                        } else {
-//                            Log.d("TTS", "Error starting the text to speech engine.");
-//                        }
-//                    }
-//                };
-//        tts = new TextToSpeech(this.getApplicationContext(), listener);
 
     }
 
@@ -180,6 +176,29 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         else {
             Toast.makeText(this, "No more fields!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        mDetectorProcessor.setDetectionBoundingBox(calculateViewBoundingBox(mOcrDetectionWindow));
+        mDetectorProcessor.setContainerDetectionBoundingBox(calculateViewBoundingBox(mOcrWindowContainer));
+    }
+
+    private Rect calculateViewBoundingBox(View view){
+
+        //Calculate statusbar height offset
+        DisplayMetrics dm = new DisplayMetrics();
+        this.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int topOffset = (dm.heightPixels - mContainer.getMeasuredHeight())/2;
+
+
+        //Calculate detection bounding box
+        int[] loc = new int[2];
+        view.getLocationInWindow(loc);
+        loc[1] += topOffset;        //Apply statusbar offset!
+        return new Rect(loc[0], loc[1], loc[0] + view.getWidth(), loc[1] + view.getHeight());
     }
 
 
@@ -217,11 +236,11 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        boolean b = scaleGestureDetector.onTouchEvent(e);
+        //boolean b = scaleGestureDetector.onTouchEvent(e);
 
         boolean c = gestureDetector.onTouchEvent(e);
 
-        return b || c || super.onTouchEvent(e);
+        return c || super.onTouchEvent(e);
     }
 
     /**
@@ -239,7 +258,8 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         // Create the TextRecognizer
         TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
         // Set the TextRecognizer's Processor.
-        textRecognizer.setProcessor(new OcrDetectorProcessor(mGraphicOverlay));
+        mDetectorProcessor = new OcrDetectorProcessor(mGraphicOverlay);
+        textRecognizer.setProcessor(mDetectorProcessor);
 
         // Check if the TextRecognizer is operational.
         if(!textRecognizer.isOperational()) {
@@ -261,7 +281,7 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         mCameraSource = new CameraSource.Builder(getApplicationContext(), textRecognizer)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setRequestedPreviewSize(1280, 1024)
-                .setRequestedFps(60.0f)
+                .setRequestedFps(15.0f)
                 .setFlashMode(useFlash ? Camera.Parameters.FLASH_MODE_TORCH : null)
                 .setFocusMode(autoFocus ? Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE : null)
                 .build();
@@ -328,7 +348,7 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "Camera permission granted - initialize the camera source");
             // We have permission, so create the camerasource
-            boolean autoFocus = getIntent().getBooleanExtra(AutoFocus,false);
+            boolean autoFocus = getIntent().getBooleanExtra(AutoFocus,true);
             boolean useFlash = getIntent().getBooleanExtra(UseFlash, false);
             createCameraSource(autoFocus, useFlash);
             return;
@@ -376,39 +396,38 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         }
     }
 
-    /**
-     * onTap is called to speak the tapped TextBlock, if any, out loud.
-     *
-     * @param rawX - the raw position of the tap
-     * @param rawY - the raw position of the tap.
-     * @return true if the tap was on a TextBlock
-     */
-    private boolean onTap(float rawX, float rawY) {
-        // Speak the text when the user taps on screen.
-        OcrGraphic graphic = mGraphicOverlay.getGraphicAtLocation(rawX, rawY);
-        TextBlock text = null;
-        if(graphic != null) {
-            text = graphic.getTextBlock();
-            if (text != null && text.getValue() != null) {
-                Log.d(TAG, "text data is being spoken! " + text.getValue());
-
-                Toast.makeText(this, text.getValue(), Toast.LENGTH_SHORT).show();
-                //// Speak the string.
-                //tts.speak(text.getValue(), TextToSpeech.QUEUE_ADD, null, "DEFAULT");
-
-                setCurrentFieldValue(text.getValue());
-                activateNextField();
-
-            }
-            else {
-                Log.d(TAG, "text data is null");
-            }
-        }
-        else {
-            Log.d(TAG,"no text detected");
-        }
-        return text != null;
-    }
+//    /**
+//     * onTap is called to speak the tapped TextBlock, if any, out loud.
+//     *
+//     * @param rawX - the raw position of the tap
+//     * @param rawY - the raw position of the tap.
+//     * @return true if the tap was on a TextBlock
+//     */
+//    private boolean onTap(float rawX, float rawY) {
+//        // Speak the text when the user taps on screen.
+//        OcrGraphic graphic = mGraphicOverlay.getGraphicAtLocation(rawX, rawY);
+//        TextBlock text = null;
+//        if(graphic != null) {
+//            text = graphic.getTextBlock();
+//            if (text != null && text.getValue() != null) {
+//                Log.d(TAG, "text data is being spoken! " + text.getValue());
+//
+//                Toast.makeText(this, text.getValue(), Toast.LENGTH_SHORT).show();
+//
+//                //// Set the current field the tapped text.
+//                setCurrentFieldValue(text.getValue());
+//                activateNextField();
+//
+//            }
+//            else {
+//                Log.d(TAG, "text data is null");
+//            }
+//        }
+//        else {
+//            Log.d(TAG,"no text detected");
+//        }
+//        return text != null;
+//    }
 
     @Override
     public void onClick(View view) {
@@ -423,13 +442,13 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         }
     }
 
-    private class CaptureGestureListener extends GestureDetector.SimpleOnGestureListener {
+    /*private class CaptureGestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             return onTap(e.getRawX(), e.getRawY()) || super.onSingleTapConfirmed(e);
         }
-    }
+    }*/
 
     private class ScaleListener implements ScaleGestureDetector.OnScaleGestureListener {
 

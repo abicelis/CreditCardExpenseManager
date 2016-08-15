@@ -3,8 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="receipt_text_size_title">20sp</dimen>
-    <dimen name="receipt_text_size_date">12sp</dimen>
-    <dimen name="receipt_text_size_description">14sp</dimen>
-    <dimen name="receipt_text_size_total">14sp</dimen>
+    <dimen name="receipt_text_size_title">26sp</dimen>
+    <dimen name="receipt_text_size_date">14sp</dimen>
+    <dimen name="receipt_text_size_description">16sp</dimen>
+    <dimen name="receipt_text_size_total">16sp</dimen>
 </resources>
