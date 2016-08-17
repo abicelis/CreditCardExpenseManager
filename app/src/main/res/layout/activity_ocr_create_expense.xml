@@ -30,99 +30,36 @@
 
 
 
-    <LinearLayout
-        android:id="@+id/create_expense_ocr_window_container"
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="0dp"
-        android:layout_weight="4"
-        >
-
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/create_expense_ocr_window_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:orientation="vertical"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            >
 
-            <View
-                android:id="@+id/create_expense_ocr_window"
-                android:layout_width="200dp"
-                android:layout_height="150dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/ocr_window_background"
-                />
-            
-            <ImageView
-                android:id="@+id/create_expense_ocr_window_resizer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                android:background="#99772299"
-                android:src="@android:drawable/btn_star_big_on"
-/>
-                <!--android:layout_marginRight="-15dp"-->
-                <!--android:layout_marginBottom="-12dp"-->
-                <!--android:layout_alignBottom="@+id/create_expense_ocr_window"-->
-                <!--android:layout_alignRight="@+id/create_expense_ocr_window"-->
-                <!--/>-->
+                <View
+                    android:id="@+id/create_expense_ocr_window"
+                    android:layout_width="200dp"
+                    android:layout_height="150dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/ocr_window_background"
+                    />
 
-        </RelativeLayout>
-
-            <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="0dp"-->
-                <!--android:layout_weight="2"-->
-                <!--android:background="#99339955"-->
-                <!--/>-->
-
-            <!--<LinearLayout-->
-                <!--android:layout_height="140dp"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:orientation="horizontal">-->
-
-                <!--<LinearLayout-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:background="@color/create_expense_ocr_background"-->
-                    <!--/>-->
-
-                <!--<View-->
-                    <!--android:id="@+id/create_expense_ocr_window"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_weight="6"-->
-                    <!--android:orientation="vertical"-->
-                    <!--&gt;-->
+                <ImageView
+                    android:id="@+id/create_expense_ocr_window_resizer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#99772299"
+                    android:src="@android:drawable/btn_star_big_on"
+                    />
 
 
-                <!--</View>-->
-
-                <!--<LinearLayout-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:background="#99339955"-->
-                    <!--android:orientation="vertical"-->
-                    <!--/>-->
-
-                <!--</LinearLayout>-->
-
-
-            <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="0dp"-->
-                <!--android:layout_weight="3"-->
-                <!--android:background="#99339955"-->
-                <!--&gt;-->
-
-                <!--<TextView-->
-                    <!--android:id="@+id/create_expense_captured_text"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:maxLines="3"-->
-                    <!--android:textSize="20sp"-->
-                    <!--android:padding="5dp"-->
-                    <!--android:text="text here \n line 2 \n line 3"/>-->
-                <!--</LinearLayout>-->
+            </RelativeLayout>
 
         </LinearLayout>
 
@@ -133,9 +70,18 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="4"
+            android:orientation="vertical"
             >
-
-
+            <TextView
+                android:id="@+id/create_expense_txt_detected_text"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                android:textSize="12sp"
+                android:maxLines="4"
+                android:ellipsize="end"
+                android:background="@color/textColorPrimary"
+                android:text="Description:"/>
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -170,31 +116,51 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/create_expense_txt_receipt_title"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="8dp"
                         android:layout_alignParentRight="true"
                         android:textSize="@dimen/receipt_text_size_date"
                         android:text="Date: 2016/05/23"/>
 
                     <TextView
-                        android:id="@+id/create_expense_txt_receipt_description"
+                        android:id="@+id/create_expense_txt_receipt_description_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/create_expense_txt_receipt_date"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="0dp"
                         android:textSize="@dimen/receipt_text_size_description"
                         android:maxLines="3"
                         android:ellipsize="end"
-                        android:text="Description:"/>
+                        android:text="@string/activity_ocr_create_expense_label_description"/>
+                    <TextView
+                        android:id="@+id/create_expense_txt_receipt_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/create_expense_txt_receipt_description_label"
+                        android:textSize="@dimen/receipt_text_size_description"
+                        android:maxLines="3"
+                        android:ellipsize="end"
+                        android:text="-"/>
 
 
                     <TextView
-                        android:id="@+id/create_expense_txt_receipt_total"
+                        android:id="@+id/create_expense_txt_receipt_total_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="28dp"
                         android:textSize="@dimen/receipt_text_size_total"
-                        android:text="Total:"/>
+                        android:text="@string/activity_ocr_create_expense_label_total"/>
+                    <TextView
+                        android:id="@+id/create_expense_txt_receipt_total"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/create_expense_txt_receipt_total_label"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="28dp"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="@dimen/receipt_text_size_total"
+                        android:lines="1"
+                        android:text="-"/>
 
                 </RelativeLayout>
 

@@ -3,13 +3,13 @@ package ve.com.abicelis.creditcardexpensemanager.app.dialogs;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDialogFragment;
 
 /**
  * Created by Alex on 10/8/2016.
  */
-public class DeleteExpenseDialogFragment extends DialogFragment {
+public class DeleteExpenseDialogFragment extends AppCompatDialogFragment {
 
     public DeleteExpenseDialogFragment() {
         // Empty constructor is required for DialogFragment
