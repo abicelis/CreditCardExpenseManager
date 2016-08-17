@@ -38,45 +38,91 @@
         android:layout_weight="4"
         >
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:background="#99339955"
-                />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="0dp"
-                android:layout_weight="0.5"
-                >
-                <View
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="match_parent"
-                    android:background="#99339955"
-                    />
-                <View
-                    android:id="@+id/create_expense_ocr_window"
-                    android:layout_width="0dp"
-                    android:layout_weight="10"
-                    android:layout_height="match_parent"/>
-                <View
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="match_parent"
-                    android:background="#99339955"
-                    />
-
-                </LinearLayout>
-
-            <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:background="#99339955"
-            />
+            android:layout_height="match_parent">
+
+            <View
+                android:id="@+id/create_expense_ocr_window"
+                android:layout_width="200dp"
+                android:layout_height="150dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/ocr_window_background"
+                />
+            
+            <ImageView
+                android:id="@+id/create_expense_ocr_window_resizer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:background="#99772299"
+                android:src="@android:drawable/btn_star_big_on"
+/>
+                <!--android:layout_marginRight="-15dp"-->
+                <!--android:layout_marginBottom="-12dp"-->
+                <!--android:layout_alignBottom="@+id/create_expense_ocr_window"-->
+                <!--android:layout_alignRight="@+id/create_expense_ocr_window"-->
+                <!--/>-->
+
+        </RelativeLayout>
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0dp"-->
+                <!--android:layout_weight="2"-->
+                <!--android:background="#99339955"-->
+                <!--/>-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_height="140dp"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@color/create_expense_ocr_background"-->
+                    <!--/>-->
+
+                <!--<View-->
+                    <!--android:id="@+id/create_expense_ocr_window"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="6"-->
+                    <!--android:orientation="vertical"-->
+                    <!--&gt;-->
+
+
+                <!--</View>-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="#99339955"-->
+                    <!--android:orientation="vertical"-->
+                    <!--/>-->
+
+                <!--</LinearLayout>-->
+
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0dp"-->
+                <!--android:layout_weight="3"-->
+                <!--android:background="#99339955"-->
+                <!--&gt;-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/create_expense_captured_text"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:maxLines="3"-->
+                    <!--android:textSize="20sp"-->
+                    <!--android:padding="5dp"-->
+                    <!--android:text="text here \n line 2 \n line 3"/>-->
+                <!--</LinearLayout>-->
 
         </LinearLayout>
 
@@ -183,6 +229,7 @@
         fab:fab_hideAnimation="@anim/fab_scale_down"
         android:src="@android:drawable/ic_media_next"
         fab:fab_size="normal" />
+
 
 
 </FrameLayout>

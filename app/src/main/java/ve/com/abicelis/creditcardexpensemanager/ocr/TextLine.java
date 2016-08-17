@@ -1,8 +1,10 @@
 package ve.com.abicelis.creditcardexpensemanager.ocr;
 
 
+import android.graphics.Point;
 import android.graphics.Rect;
 
+import com.google.android.gms.vision.text.Element;
 import com.google.android.gms.vision.text.Text;
 
 import java.util.ArrayList;
@@ -11,27 +13,28 @@ import java.util.List;
 /**
  * Created by Alex on 14/8/2016.
  */
-public class TextParagraph {
+public class TextLine implements Text {
 
-    List<Text> mTexts;
-    Rect mBundingBox = null;
+    List<Element> mElements;
+    Rect mBoundingBox = null;
 
-    public TextParagraph() {
-        mTexts = new ArrayList<>();
+    public TextLine() {
+        mElements = new ArrayList<>();
     }
 
-    public void addComponent(Text text) {
-        mTexts.add(text);
+    public void addComponent(Element element) {
+        mElements.add(element);
     }
 
-    public List<Text> getComponents() {
-        return mTexts;
+    public List<Element> getComponents() {
+        return mElements;
     }
+
 
 
     public Rect getBoundingBox() {
 
-        if(mBundingBox == null) {
+        if(mBoundingBox == null) {
             int top = Integer.MAX_VALUE, bottom = 0, right = 0, left = Integer.MAX_VALUE;
 
             for (Text text : getComponents()) {
@@ -40,18 +43,19 @@ public class TextParagraph {
                 left = (text.getBoundingBox().left < left ? text.getBoundingBox().left : left);
                 right = (text.getBoundingBox().right > right ? text.getBoundingBox().right : right);
             }
-            mBundingBox = new Rect(left, top, right, bottom);
+            mBoundingBox = new Rect(left, top, right, bottom);
         }
 
-        return mBundingBox;
+        return mBoundingBox;
     }
 
+
     public int centerX() {
-        return mBundingBox.right - mBundingBox.left;
+        return mBoundingBox.right - mBoundingBox.left;
     }
 
     public int centerY() {
-        return mBundingBox.bottom - mBundingBox.top;
+        return mBoundingBox.bottom - mBoundingBox.top;
     }
 
     public float exactCenterX() {
@@ -65,13 +69,23 @@ public class TextParagraph {
 
 
 
+    @Override
+    public Point[] getCornerPoints() {
+        //TODO: implement, maybe?
+        return new Point[0];
+    }
+
+    @Override
+    public String getValue() {
+        return this.toString();
+    }
 
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Text text: mTexts) {
-            sb.append(text.toString());
+        for (Element element: mElements) {
+            sb.append(element.getValue()).append(" ");
         }
         return sb.toString();
     }

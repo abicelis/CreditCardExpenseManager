@@ -27,8 +27,6 @@ import ve.com.abicelis.creditcardexpensemanager.ocr.camera.GraphicOverlay;
 import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 
-import java.util.List;
-
 /**
  * Graphic instance for rendering TextBlock position, size, and ID within an associated graphic
  * overlay view.
@@ -38,63 +36,74 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
     private int mId;
 
     private static final int TEXT_COLOR = Color.WHITE;
-    private static final int LINE_COLOR = Color.BLUE;
-    private static final int RECT_COLOR = Color.CYAN;
-    private static final int DISTANCE_LINE_COLOR = Color.YELLOW;
-    private static final int DISTANCE_LINE_SELECTED_COLOR = Color.GREEN;
+    private static final int SELECTED_COLOR = Color.GREEN;
+    private static final int UNSELECTED_COLOR = Color.RED;
+
+    private static final int DEBUG_SELECTED_TEXT_COLOR = Color.BLUE;
+    private static final int DEBUG_UNSELECTED_TEXT_COLOR = Color.YELLOW;
+
 
     private static Paint sTextPaint;
-    private static Paint sLinePaint;
-    private static Paint sRectPaint;
-    private static Paint sDistLinePaint;
-    private static Paint sDistLineSelPaint;
-    private final TextParagraph mText;
-    private Rect mDetectionBoundingBox;
-    private boolean mIsSelected;
+    private static Paint sSelectedPaint;
+    private static Paint sUnselectedPaint;
+    private static Paint sDebugSelectedTextPaint;
+    private static Paint sDebugUnselectedTextPaint;
 
+    private Text mText = null;
+    private Rect mOcrWindowBoundingBox = null;
+    private boolean mIsSelected = false;
 
-    OcrGraphic(GraphicOverlay overlay, TextParagraph text, Rect detectionBoundingBox, boolean isSelected) {
+    private OcrGraphic(GraphicOverlay overlay) {
         super(overlay);
-
-        mText = text;
-        mDetectionBoundingBox = detectionBoundingBox;
-        mIsSelected = isSelected;
 
         if (sTextPaint == null) {
             sTextPaint = new Paint();
             sTextPaint.setColor(TEXT_COLOR);
-            sTextPaint.setTextSize(34.0f);
+            sTextPaint.setTextSize(24.0f);
         }
 
-        if (sLinePaint == null) {
-            sLinePaint = new Paint();
-            sLinePaint.setColor(LINE_COLOR);
-            sLinePaint.setStyle(Paint.Style.STROKE);
-            sLinePaint.setStrokeWidth(2.0f);
-        }
-        if (sRectPaint == null) {
-            sRectPaint = new Paint();
-            sRectPaint.setColor(RECT_COLOR);
-            sRectPaint.setStyle(Paint.Style.STROKE);
-            sRectPaint.setStrokeWidth(2.0f);
-        }
-        if (sDistLinePaint == null) {
-            sDistLinePaint = new Paint();
-            sDistLinePaint.setColor(DISTANCE_LINE_COLOR);
-            sDistLinePaint.setStyle(Paint.Style.STROKE);
-            sDistLinePaint.setStrokeWidth(3.0f);
-        }
-        if (sDistLineSelPaint == null) {
-            sDistLineSelPaint = new Paint();
-            sDistLineSelPaint.setColor(DISTANCE_LINE_SELECTED_COLOR);
-            sDistLineSelPaint.setStyle(Paint.Style.STROKE);
-            sDistLineSelPaint.setStrokeWidth(6.0f);
+        if (sSelectedPaint == null) {
+            sSelectedPaint = new Paint();
+            sSelectedPaint.setColor(SELECTED_COLOR);
+            sSelectedPaint.setStyle(Paint.Style.STROKE);
+            sSelectedPaint.setStrokeWidth(2.0f);
         }
 
+        if (sUnselectedPaint == null) {
+            sUnselectedPaint = new Paint();
+            sUnselectedPaint.setColor(UNSELECTED_COLOR);
+            sUnselectedPaint.setStyle(Paint.Style.STROKE);
+            sUnselectedPaint.setStrokeWidth(2.0f);
+        }
+        if (sDebugSelectedTextPaint == null) {
+            sDebugSelectedTextPaint = new Paint();
+            sDebugSelectedTextPaint.setColor(DEBUG_SELECTED_TEXT_COLOR);
+            sDebugSelectedTextPaint.setStyle(Paint.Style.STROKE);
+            sDebugSelectedTextPaint.setStrokeWidth(2.0f);
+        }
+        if (sDebugUnselectedTextPaint == null) {
+            sDebugUnselectedTextPaint = new Paint();
+            sDebugUnselectedTextPaint.setColor(DEBUG_UNSELECTED_TEXT_COLOR);
+            sDebugUnselectedTextPaint.setStyle(Paint.Style.STROKE);
+            sDebugUnselectedTextPaint.setStrokeWidth(3.0f);
+        }
 
         // Redraw the overlay, as this graphic has been added.
         postInvalidate();
     }
+
+    OcrGraphic(GraphicOverlay overlay, Rect ocrWindowBoundingBox) {
+        this(overlay);
+        mOcrWindowBoundingBox = ocrWindowBoundingBox;
+    }
+
+    OcrGraphic(GraphicOverlay overlay, Text text, boolean isSelected) {
+        this(overlay);
+
+        mText = text;
+        mIsSelected = isSelected;
+    }
+
 
     public int getId() {
         return mId;
@@ -104,7 +113,7 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
         this.mId = id;
     }
 
-    public TextParagraph getTextBlock() {
+    public Text getTextBlock() {
         return mText;
     }
 
@@ -134,82 +143,32 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
      */
     @Override
     public void draw(Canvas canvas) {
-        // TODO: Draw the text onto the canvas.
-        if(mText == null) {
-            return;
+
+        if(mOcrWindowBoundingBox != null) {
+            canvas.drawRect(mOcrWindowBoundingBox.left, mOcrWindowBoundingBox.top, mOcrWindowBoundingBox.right, mOcrWindowBoundingBox.bottom, sDebugSelectedTextPaint);
         }
+        if(mText != null) {
+
+            RectF rect = new RectF(mText.getBoundingBox());
+            rect.left = translateX(rect.left);
+            rect.top = translateY(rect.top);
+            rect.right = translateX(rect.right);
+            rect.bottom = translateY(rect.bottom);
+            //canvas.drawRect(rect, sRectPaint);
 
 
-
-        RectF rect = new RectF(mText.getBoundingBox());
-        rect.left = translateX(rect.left);
-        rect.top = translateY(rect.top);
-        rect.right = translateX(rect.right);
-        rect.bottom = translateY(rect.bottom);
-        canvas.drawRect(rect, sRectPaint);
-
-
-        if(mIsSelected) {
-            canvas.drawCircle(rect.centerX(), rect.centerY(), 15f, sDistLineSelPaint);
-            canvas.drawLine(rect.centerX(), rect.centerY(), mDetectionBoundingBox.centerX(), mDetectionBoundingBox.centerY(), sDistLineSelPaint);
-
-            // Break the text into multiple lines and draw each one according to its own bounding box.
-            List<? extends Text> textComponents = mText.getComponents();
-
-            for(Text currentText : textComponents) {
-
-                RectF textRect = new RectF(currentText.getBoundingBox());
-                textRect.left = translateX(textRect.left);
-                textRect.top = translateY(textRect.top);
-                textRect.right = translateX(textRect.right);
-                textRect.bottom = translateY(textRect.bottom);
-                canvas.drawLine(textRect.left, textRect.bottom, textRect.right, textRect.bottom, sLinePaint);
+            if (mIsSelected) {
+                canvas.drawLine(rect.left, rect.bottom, rect.right, rect.bottom, sSelectedPaint);
                 //canvas.drawRect(rect, sRectPaint);
 
-                float left = translateX(currentText.getBoundingBox().left);
-                float bottom = translateY(currentText.getBoundingBox().bottom);
-                canvas.drawText(currentText.getValue(), left, bottom, sTextPaint);
+                canvas.drawText(mText.getValue(), rect.left, rect.bottom, sTextPaint);
+            } else {
+                canvas.drawLine(rect.left, rect.bottom, rect.right, rect.bottom, sUnselectedPaint);
             }
-
-        } else {
-            canvas.drawCircle(rect.centerX(), rect.centerY(), 6f, sDistLinePaint);
-            canvas.drawLine(rect.centerX(), rect.centerY(), mDetectionBoundingBox.centerX(), mDetectionBoundingBox.centerY(), sDistLinePaint);
         }
 
     }
 
 
 
-    private TextParagraph getOcrLinesInsideDetectionBoundingBox(TextBlock item) {
-        int maxLines = 2;
-        int detectedLines = 0;
-        TextParagraph texts = new TextParagraph();
-        Text text;
-
-        for (int i = 0; i < item.getComponents().size(); ++i) {
-            detectedLines++;
-            text = item.getComponents().get(i);
-
-            if(onePointInsideDetectionBoundingBox(text.getCornerPoints())) {
-                texts.addComponent(text);
-            }
-
-            if(detectedLines == maxLines) {
-                break;
-            }
-        }
-        return texts;
-    }
-
-
-    private boolean onePointInsideDetectionBoundingBox(Point[] points) {
-        for (Point point : points) {
-            if(point.x > mDetectionBoundingBox.left &&
-                    point.x < mDetectionBoundingBox.right &&
-                    point.y < mDetectionBoundingBox.bottom &&
-                    point.y > mDetectionBoundingBox.top)
-                return true;
-        }
-        return false;
-    }
 }

@@ -30,6 +30,8 @@
 
 
         <activity android:name=".app.OcrCreateExpenseActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
             android:label="Read Text">
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->

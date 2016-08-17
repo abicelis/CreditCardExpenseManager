@@ -22,6 +22,7 @@
     <color name="gray_900">#212121</color>
 
     <color name="receipt_text_title">#e4665c</color>
+    <color name="create_expense_ocr_background">#99339955</color>
 
 
 </resources>

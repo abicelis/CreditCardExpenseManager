@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -19,12 +20,15 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +56,7 @@ import ve.com.abicelis.creditcardexpensemanager.ocr.camera.GraphicOverlay;
  * rear facing camera. During detection overlay graphics are drawn to indicate the position,
  * size, and contents of each TextBlock.
  */
-public final class OcrCreateExpenseActivity extends AppCompatActivity implements View.OnClickListener {
+public final class OcrCreateExpenseActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
     private static final String TAG = "OcrCreateExpenseActvty";
 
     // Intent request code to handle updating play services if needed.
@@ -60,6 +64,9 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
 
     // Permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
+
+    private static int STATUS_BAR_HEIGHT_OFFSET;
+    private static int RESIZER_MARGIN = 50;
 
     // Constants used to pass extra data in the intent
     public static final String AutoFocus = "AutoFocus";
@@ -80,9 +87,14 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
     TextView txtDate;
     TextView txtDescription;
     TextView txtTotal;
-    View mOcrDetectionWindow;
     FrameLayout mContainer;
     LinearLayout mOcrWindowContainer;
+    View mOcrWindow;
+    ImageView mOcrWindowResizer;
+    Point resizerCenterOffset;
+    Point resizerMinPosition;
+    Point resizerMaxPosition;
+    Point containerCenter;
 
     FloatingActionButton fabNext;
     FloatingActionButton fabPrev;
@@ -100,11 +112,18 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_ocr_create_expense);
 
 
+        //Capture Views
+        txtDate = (TextView) findViewById(R.id.create_expense_txt_receipt_date);
+        txtDescription = (TextView) findViewById(R.id.create_expense_txt_receipt_description);
+        txtTotal = (TextView) findViewById(R.id.create_expense_txt_receipt_total);
         mContainer = (FrameLayout) findViewById(R.id.create_expense_container);
         mOcrWindowContainer = (LinearLayout) findViewById(R.id.create_expense_ocr_window_container);
+        mOcrWindow = findViewById(R.id.create_expense_ocr_window);
+        mOcrWindowResizer = (ImageView) findViewById(R.id.create_expense_ocr_window_resizer);
+        fabNext = (FloatingActionButton) findViewById(R.id.create_expense_fab_next);
+        fabPrev = (FloatingActionButton) findViewById(R.id.create_expense_fab_prev);
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.graphicOverlay);
-        mOcrDetectionWindow = findViewById(R.id.create_expense_ocr_window);
 
 
         // Set good defaults for capturing text.
@@ -126,28 +145,74 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         Snackbar.make(mGraphicOverlay, "Capture the Receipt's data using your camera!", Snackbar.LENGTH_LONG).show();
 
 
-        //Get fields to be filled with data, set fieldsToFill List
-        txtDate = (TextView) findViewById(R.id.create_expense_txt_receipt_date);
+
+        //Set receipt's date
         SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
         txtDate.setText("Date: " + df.format(new Date()));
 
-
-        txtDescription = (TextView) findViewById(R.id.create_expense_txt_receipt_description);
-        txtTotal = (TextView) findViewById(R.id.create_expense_txt_receipt_total);
+        //Set up fields to fill
         fieldsToFill.add(txtDescription);
         fieldsToFill.add(txtTotal);
-
         activateNextField();
 
-
-        //Setup Fabs
-        fabNext = (FloatingActionButton) findViewById(R.id.create_expense_fab_next);
-        fabPrev = (FloatingActionButton) findViewById(R.id.create_expense_fab_prev);
-
+        //Set up fabs
         fabNext.setOnClickListener(this);
         fabPrev.setOnClickListener(this);
 
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        calculateStatusBarHeightOffset();
+        setupOcrWindowResizer();
+
+        mDetectorProcessor.setOcrWindowBoundingBox(calculateViewBoundingBox(mOcrWindow));
+        mDetectorProcessor.setOcrWindowContainerBoundingBox(calculateViewBoundingBox(mOcrWindowContainer));
+
+    }
+
+    private void calculateStatusBarHeightOffset() {
+        //Calculate statusbar height offset
+        DisplayMetrics dm = new DisplayMetrics();
+        this.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        STATUS_BAR_HEIGHT_OFFSET = (dm.heightPixels - mContainer.getMeasuredHeight());
+        Log.d (TAG, "STATUSBAR OFFSET = " + STATUS_BAR_HEIGHT_OFFSET);
+    }
+
+    private void setupOcrWindowResizer() {
+        resizerCenterOffset = new Point();
+        resizerCenterOffset.x = mOcrWindowResizer.getMeasuredWidth()/2;
+        resizerCenterOffset.y = mOcrWindowResizer.getMeasuredHeight()/2;
+        mOcrWindowResizer.setOnTouchListener(this);
+
+
+        //Position the widget on the lower right corner of the mOcrWindow
+        mOcrWindowResizer.setX(mOcrWindow.getRight() - resizerCenterOffset.x);
+        mOcrWindowResizer.setY(mOcrWindow.getBottom() - resizerCenterOffset.y);
+
+        //Calculate max and min positions for the resizer
+        Point containerLRCorner = new Point();
+        containerCenter = new Point();
+        containerLRCorner.x = mOcrWindowContainer.getRight();
+        containerLRCorner.y = mOcrWindowContainer.getBottom();
+        containerCenter.x = mOcrWindowContainer.getLeft() + (mOcrWindowContainer.getWidth() / 2);
+        containerCenter.y = mOcrWindowContainer.getTop() + (mOcrWindowContainer.getHeight() / 2);
+
+        resizerMinPosition = new Point(containerCenter.x + RESIZER_MARGIN, containerCenter.y + RESIZER_MARGIN);
+        resizerMaxPosition = new Point(containerLRCorner.x - RESIZER_MARGIN, containerLRCorner.y - RESIZER_MARGIN);
+    }
+
+    private Rect calculateViewBoundingBox(View view){
+
+        int[] loc = new int[2];
+        view.getLocationInWindow(loc);
+        loc[1] += STATUS_BAR_HEIGHT_OFFSET/2;        //Apply statusbar offset!
+        return new Rect(loc[0], loc[1], loc[0] + view.getWidth(), loc[1] + view.getHeight());
+    }
+
+
 
     private void setCurrentFieldValue(String value) {
         fieldsToFill.get(currentField).setText(value);
@@ -179,27 +244,7 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
     }
 
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        mDetectorProcessor.setDetectionBoundingBox(calculateViewBoundingBox(mOcrDetectionWindow));
-        mDetectorProcessor.setContainerDetectionBoundingBox(calculateViewBoundingBox(mOcrWindowContainer));
-    }
 
-    private Rect calculateViewBoundingBox(View view){
-
-        //Calculate statusbar height offset
-        DisplayMetrics dm = new DisplayMetrics();
-        this.getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int topOffset = (dm.heightPixels - mContainer.getMeasuredHeight())/2;
-
-
-        //Calculate detection bounding box
-        int[] loc = new int[2];
-        view.getLocationInWindow(loc);
-        loc[1] += topOffset;        //Apply statusbar offset!
-        return new Rect(loc[0], loc[1], loc[0] + view.getWidth(), loc[1] + view.getHeight());
-    }
 
 
     /**
@@ -238,9 +283,9 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
     public boolean onTouchEvent(MotionEvent e) {
         //boolean b = scaleGestureDetector.onTouchEvent(e);
 
-        boolean c = gestureDetector.onTouchEvent(e);
+        //boolean c = gestureDetector.onTouchEvent(e);
 
-        return c || super.onTouchEvent(e);
+        return super.onTouchEvent(e);
     }
 
     /**
@@ -440,6 +485,39 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
                 activatePreviousField();
                 break;
         }
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        int X = (int) motionEvent.getRawX();
+        int Y = (int) motionEvent.getRawY();
+
+
+        switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_MOVE:
+                X = (X < resizerMinPosition.x ? resizerMinPosition.x : X);
+                X = (X > resizerMaxPosition.x ? resizerMaxPosition.x : X);
+                Y = (Y < resizerMinPosition.y ? resizerMinPosition.y : Y);
+                Y = (Y > resizerMaxPosition.y ? resizerMaxPosition.y : Y);
+
+                view.setX(X - resizerCenterOffset.x);
+                view.setY(Y - resizerCenterOffset.y - STATUS_BAR_HEIGHT_OFFSET);
+
+                mOcrWindow.setLeft(containerCenter.x - (X - containerCenter.x));
+                mOcrWindow.setTop(containerCenter.y - (Y - containerCenter.y));
+                mOcrWindow.setRight(X);
+                mOcrWindow.setBottom(Y - STATUS_BAR_HEIGHT_OFFSET);
+
+                //Log.d(TAG, "ACTION_MOVE X=" + X + " Y=" + Y + " mOcrWindow X=" + mOcrWindow.getX() + " mOcrWindow Y=" + mOcrWindow.getY()
+                //        + " mOcrWindow left=" + mOcrWindow.getBottom() + " mOcrWindow right=" + mOcrWindow.getRight());
+                break;
+
+            case MotionEvent.ACTION_UP:
+                mDetectorProcessor.setOcrWindowBoundingBox(calculateViewBoundingBox(mOcrWindow));
+                break;
+        }
+
+        return true;
     }
 
     /*private class CaptureGestureListener extends GestureDetector.SimpleOnGestureListener {
