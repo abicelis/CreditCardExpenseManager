@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -42,6 +43,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     //UI
     LineChartFragment chartFragment;
     RecyclerView recyclerViewExpenses;
+    LinearLayoutManager layoutManager;
     ExpensesAdapter adapter;
     Toolbar toolbar;
     FloatingActionMenu fabMenu;
@@ -63,7 +65,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         Handler handler = new Handler();
         final Runnable r = new Runnable() {
             public void run() {
-                refreshDataFromDB();
+                getData();
                 setUpExpensesRecyclerView();
             }
         };
@@ -84,9 +86,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         chartFragment = (LineChartFragment) getSupportFragmentManager().findFragmentById(R.id.home_chart_container);
     }
 
-    private void refreshDataFromDB() {
+    private ExpenseManagerDAO getDao() {
         if(dao == null)
             dao = new ExpenseManagerDAO(getApplicationContext());
+        return dao;
+    }
+
+    private void getData() {
+        getDao();
 
         creditCards.clear();
         creditCards.addAll(dao.getCreditCardList());
@@ -99,6 +106,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         payments.clear();
         payments.addAll(dao.getPaymentsFromCreditPeriod(creditPeriods.get(0).getId()));
+    }
+
+
+    private boolean refreshExpenses() {
+        getDao();
+        int oldCount = expenses.size();
+
+        expenses.clear();
+        expenses.addAll(dao.getExpensesFromCreditPeriod(creditPeriods.get(0).getId()));
+
+        return (expenses.size() == oldCount+1);
     }
 
 
@@ -128,7 +146,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         adapter = new ExpensesAdapter(getApplicationContext(), expenses);
         recyclerViewExpenses.setAdapter(adapter);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         recyclerViewExpenses.setLayoutManager(layoutManager);
     }
 
@@ -138,7 +156,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                                                     @Override
                                                     public void onRefresh() {
-                                                        refreshDataFromDB();
+                                                        refreshExpenses();
                                                         adapter.notifyDataSetChanged();
                                                         swipeRefreshLayout.setRefreshing(false);
                                                     }
@@ -192,10 +210,18 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onDismiss(DialogInterface dialogInterface) {
-        refreshDataFromDB();
-        chartFragment.refreshChartData();
-        adapter.notifyItemInserted(expenses.size()-1);
-        adapter.notifyDataSetChanged();
+        if(chartFragment != null)
+            chartFragment.refreshChartData();
+        else
+            Toast.makeText(this, "Error on onDismiss, chartFragment == null!", Toast.LENGTH_SHORT).show();
+
+        if(refreshExpenses()) {
+            adapter.notifyItemInserted(0);
+            adapter.notifyItemRangeChanged(1, expenses.size()-1);
+            layoutManager.scrollToPosition(0);
+        } else {
+            adapter.notifyDataSetChanged();
+        }
     }
 
 }

@@ -120,7 +120,9 @@ public class ExpenseManagerDAO {
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
 
         Cursor cursor =  db.query(ExpenseManagerContract.ExpenseTable.TABLE_NAME, null,
-                ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName() + " == " + periodId, null, null, null, null);
+                ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName() + " == " + periodId,
+                null, null, null, ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getName() + " DESC");
+
 
         try {
             while (cursor.moveToNext()) {
@@ -138,7 +140,8 @@ public class ExpenseManagerDAO {
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
 
         Cursor cursor =  db.query(ExpenseManagerContract.PaymentTable.TABLE_NAME, null,
-                ExpenseManagerContract.PaymentTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName() + " == " + periodId, null, null, null, null);
+                ExpenseManagerContract.PaymentTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName() + " == " + periodId,
+                null, null, null, ExpenseManagerContract.PaymentTable.COLUMN_NAME_DATE.getName() + " DESC");
 
         try {
             while (cursor.moveToNext()) {

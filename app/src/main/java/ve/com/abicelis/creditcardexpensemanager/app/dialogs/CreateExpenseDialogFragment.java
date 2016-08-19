@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -166,29 +167,10 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
      */
     private void requestCameraPermission() {
         Log.w(TAG, "Camera permission is not granted. Requesting permission");
-
         final String[] permissions = new String[]{Manifest.permission.CAMERA};
 
-        if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                Manifest.permission.CAMERA)) {
-            ActivityCompat.requestPermissions(getActivity(), permissions, RC_HANDLE_CAMERA_PERM);
-            return;
-        }
-
-        final Activity thisActivity = getActivity();
-
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ActivityCompat.requestPermissions(thisActivity, permissions,
-                        RC_HANDLE_CAMERA_PERM);
-            }
-        };
-
-//        Snackbar.make(mGraphicOverlay, R.string.permission_camera_rationale,
-//                Snackbar.LENGTH_INDEFINITE)
-//                .setAction(R.string.ok, listener)
-//                .show();
+        //Not using ActivityCompat since im asking permissions from a fragment
+        requestPermissions(permissions, RC_HANDLE_CAMERA_PERM);
     }
 
 
@@ -273,6 +255,11 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
+
+        int poop = 123;
+
+        poop = poop + poop;
+
         final Activity activity = getActivity();
         if (activity instanceof DialogInterface.OnDismissListener) {
             ((DialogInterface.OnDismissListener) activity).onDismiss(dialog);

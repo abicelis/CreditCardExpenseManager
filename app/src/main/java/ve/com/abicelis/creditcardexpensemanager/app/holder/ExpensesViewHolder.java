@@ -1,5 +1,6 @@
 package ve.com.abicelis.creditcardexpensemanager.app.holder;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,8 +17,10 @@ import ve.com.abicelis.creditcardexpensemanager.model.Expense;
  */
 public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
+    private ExpensesAdapter mAdapter;
+    private Context mContext;
+
     //UI
-    private ExpensesAdapter adapter;
     private TextView amount;
     private TextView description;
     private TextView date;
@@ -25,7 +28,7 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
     private ImageView delete;
     private ImageView edit;
 
-    //Data
+    //DATA
     private Expense current;
     private int position;
 
@@ -40,8 +43,9 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
         edit = (ImageView) itemView.findViewById(R.id.img_edit);
     }
 
-    public void setData(ExpensesAdapter adapter, Expense current, int position) {
-        this.adapter = adapter;
+    public void setData(ExpensesAdapter adapter, Context context, Expense current, int position) {
+        this.mAdapter = adapter;
+        this.mContext = context;
         this.current = current;
         this.position = position;
 
@@ -51,6 +55,8 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
 
         if(current.getImage().length > 0)
             this.expenseImage.setImageBitmap(ImageUtils.getBitmap(current.getImage()));
+        else
+            this.expenseImage.setImageResource(R.drawable.expense_icon);
     }
 
     public void setListeners() {

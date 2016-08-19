@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:inputType="text"
             android:singleLine="false"
-            android:text="jadoiwjdiojadiojadoijawiodjaoiwdjoiwajdoiawjdoioijwdoaw"
+            android:text=""
             android:imeOptions="actionDone" />
     </LinearLayout>
 

@@ -19,8 +19,10 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesViewHolder> {
 
     private List<Expense> mExpenses;
     private LayoutInflater mInflater;
+    private Context mContext;
 
     public ExpensesAdapter(Context context, List<Expense> expenses) {
+        mContext = context;
         mExpenses = expenses;
         mInflater = LayoutInflater.from(context);
     }
@@ -35,7 +37,7 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesViewHolder> {
     @Override
     public void onBindViewHolder(ExpensesViewHolder holder, int position) {
         Expense current = mExpenses.get(position);
-        holder.setData(this, current, position);
+        holder.setData(this, mContext, current, position);
         holder.setListeners();
     }
 

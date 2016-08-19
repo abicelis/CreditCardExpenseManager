@@ -88,7 +88,7 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
                         ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_START_DATE.getName() + COMMA_SEP +
                         ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_END_DATE.getName() + COMMA_SEP +
                         ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_CREDIT_LIMIT.getName() +
-                        ") VALUES (0, 0, 0, '" + period1StartDate + "', '" + period1EndDate + "', '100000'), (1, 0, 0, '" + period2StartDate + "', '" + period2EndDate + "', '150000'); ";
+                        ") VALUES (0, 0, 0, '" + period1StartDate + "', '" + period1EndDate + "', '60000'), (1, 0, 0, '" + period2StartDate + "', '" + period2EndDate + "', '80000'); ";
         sqLiteDatabase.execSQL(statement);
 
         cal = Calendar.getInstance();
