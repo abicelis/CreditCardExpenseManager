@@ -14,6 +14,7 @@ import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardType;
 import ve.com.abicelis.creditcardexpensemanager.enums.Currency;
 import ve.com.abicelis.creditcardexpensemanager.enums.ExpenseCategory;
 import ve.com.abicelis.creditcardexpensemanager.enums.ExpenseType;
+import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotGetDataException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotInsertDataException;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditPeriod;
@@ -89,6 +90,29 @@ public class ExpenseManagerDAO {
         }
 
         return creditPeriods;
+    }
+
+    public CreditPeriod getCreditPeriod(int periodId) throws CouldNotGetDataException {
+        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
+        CreditPeriod creditPeriod;
+
+        Cursor cursor =  db.query(ExpenseManagerContract.CreditPeriodTable.TABLE_NAME, null, ExpenseManagerContract.ExpenseTable._ID + " == " + periodId, null, null, null, null);
+
+        if(cursor.getCount() == 0)
+            throw new CouldNotGetDataException("No creditPeriod found for id= " + periodId);
+        if(cursor.getCount() > 1)
+            throw new CouldNotGetDataException("Database UNIQUE constraint failure, more than one record found for id= " + periodId);
+
+        try{
+            cursor.moveToNext();
+            creditPeriod = getCreditPeriodFromCursor(cursor);
+            creditPeriod.setExpenses(getExpensesFromCreditPeriod(periodId));
+            creditPeriod.setPayments(getPaymentsFromCreditPeriod(periodId));
+        } finally {
+            cursor.close();
+        }
+
+        return creditPeriod;
     }
 
     public List<Expense> getExpensesFromCreditPeriod(int periodId) {

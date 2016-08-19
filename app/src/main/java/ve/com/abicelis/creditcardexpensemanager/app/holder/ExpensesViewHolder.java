@@ -19,6 +19,7 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
     private ExpensesAdapter adapter;
     private TextView amount;
     private TextView description;
+    private TextView date;
     private ImageView delete;
     private ImageView edit;
 
@@ -31,6 +32,7 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
 
         amount = (TextView) itemView.findViewById(R.id.txt_amount);
         description = (TextView) itemView.findViewById(R.id.txt_description);
+        date = (TextView) itemView.findViewById(R.id.txt_date);
         delete = (ImageView) itemView.findViewById(R.id.img_delete);
         edit = (ImageView) itemView.findViewById(R.id.img_edit);
     }
@@ -42,6 +44,8 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
 
         this.amount.setText(current.getAmount().toPlainString() + " " + current.getCurrency().getCode());
         this.description.setText(current.getDescription());
+
+        this.date.setText(current.getDate().getTime().toString());
     }
 
     public void setListeners() {

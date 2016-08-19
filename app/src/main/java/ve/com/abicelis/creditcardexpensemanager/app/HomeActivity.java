@@ -23,6 +23,7 @@ import java.util.List;
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.adapter.ExpensesAdapter;
 import ve.com.abicelis.creditcardexpensemanager.app.dialogs.CreateExpenseDialogFragment;
+import ve.com.abicelis.creditcardexpensemanager.app.fragments.LineChartFragment;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditPeriod;
@@ -39,6 +40,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     ExpenseManagerDAO dao;
 
     //UI
+    LineChartFragment chartFragment;
     RecyclerView recyclerViewExpenses;
     ExpensesAdapter adapter;
     Toolbar toolbar;
@@ -48,11 +50,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     SwipeRefreshLayout swipeRefreshLayout;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().add(R.id.home_chart_container, new LineChartFragment()).commit();
+        }
 
 
         Handler handler = new Handler();
@@ -62,17 +67,22 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 setUpExpensesRecyclerView();
             }
         };
-        handler.postDelayed(r, 1000);
+        handler.post(r);
 
 
 
-        //setUpExpensesRecyclerView();
         setUpSwipeRefresh();
         setUpToolbar();
         setUpFab();
     }
 
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        chartFragment = (LineChartFragment) getSupportFragmentManager().findFragmentById(R.id.home_chart_container);
+    }
 
     private void refreshDataFromDB() {
         if(dao == null)
@@ -183,6 +193,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onDismiss(DialogInterface dialogInterface) {
         refreshDataFromDB();
+        chartFragment.refreshChartData();
         adapter.notifyItemInserted(expenses.size()-1);
         adapter.notifyDataSetChanged();
     }

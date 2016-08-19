@@ -28,5 +28,6 @@ dependencies {
     compile 'com.android.support:design:24.0.0'
     compile 'com.github.clans:fab:1.6.4'
     compile 'com.google.android.gms:play-services-vision:9.4.0'
+    compile 'com.github.lecho:hellocharts-library:1.5.8@aar'
 
 }

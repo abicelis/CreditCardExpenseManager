@@ -32,10 +32,13 @@ public class CreditCard {
         this.cardNumber = cardNumber;
         this.currency = currency;
         this.cardType = cardType;
-        this.cardExpiration = cardExpiration;
         this.dueDay = dueDay;
         this.closingDay = closingDay;
         this.creditPeriods = creditPeriods;
+
+        this.cardExpiration = Calendar.getInstance();
+        this.cardExpiration.setTimeZone(cardExpiration.getTimeZone());
+        this.cardExpiration.setTimeInMillis(cardExpiration.getTimeInMillis());
     }
 
     public CreditCard(int id, String cardAlias, String bankName, String cardNumber, Currency currency, CreditCardType cardType, Calendar cardExpiration, int closingDay, int dueDay) {

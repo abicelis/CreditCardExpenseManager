@@ -24,7 +24,10 @@ public class Payment {
         this.description = description;
         this.amount = amount;
         this.currency = currency;
-        this.date = date;
+
+        this.date = Calendar.getInstance();
+        this.date.setTimeZone(date.getTimeZone());
+        this.date.setTimeInMillis(date.getTimeInMillis());
     }
 
     public int getId() {

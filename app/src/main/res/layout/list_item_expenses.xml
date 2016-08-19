@@ -33,7 +33,7 @@
 
             <TextView
                 android:id="@+id/txt_amount"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginLeft="8dp"
                 android:textSize="18sp"
                 android:textColor="@color/gray_700"
@@ -51,6 +51,17 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="Expense description" />
+
+            <TextView
+                android:id="@+id/txt_date"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="8dp"
+                android:textColor="@color/gray_700"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="2016/05/01 14:32:22:0000" />
 
         </LinearLayout>
 

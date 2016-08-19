@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.StringBuilderPrinter;
 
+import java.util.Calendar;
+
 import ve.com.abicelis.creditcardexpensemanager.mocks.CreditMock;
 
 
@@ -43,6 +45,20 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
     private void insertMockData(SQLiteDatabase sqLiteDatabase) {
         String statement;
 
+        Calendar cal = Calendar.getInstance();
+        // Set cal to be at midnight (start of day) today.
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        cal.add(Calendar.DAY_OF_MONTH, -10);
+        int closingDay = cal.get(Calendar.DAY_OF_MONTH);        //closingDay 10 days ago
+        cal.add(Calendar.DAY_OF_MONTH, 20);
+        int dueDay = cal.get(Calendar.DAY_OF_MONTH);            //dueDay in 10 days
+        cal.add(Calendar.DAY_OF_MONTH, -10);
+
+
         statement = "INSERT INTO " + ExpenseManagerContract.CreditCardTable.TABLE_NAME + " (" +
                         ExpenseManagerContract.CreditCardTable._ID + COMMA_SEP +
                         ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_ALIAS.getName() + COMMA_SEP +
@@ -53,8 +69,17 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
                         ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_EXPIRATION.getName() + COMMA_SEP +
                         ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CLOSING_DAY.getName() + COMMA_SEP +
                         ExpenseManagerContract.CreditCardTable.COLUMN_NAME_DUE_DAY.getName() +
-                        ") VALUES (0, 'MockCard', 'MockBank', '1234-5678-1234-5678', 'VEF', 'MASTERCARD', '0', 20, 8); ";
+                        ") VALUES (0, 'MockCardAlias', 'MockBank', '1234-5678-1234-5678', 'VEF', 'MASTERCARD', '0', " + closingDay + ", " + dueDay + "); ";
         sqLiteDatabase.execSQL(statement);
+
+        cal.add(Calendar.DAY_OF_MONTH, -9);
+        long period1StartDate = cal.getTimeInMillis();
+        cal.add(Calendar.MONTH, 1);
+        long period2StartDate = cal.getTimeInMillis();
+        cal.add(Calendar.MILLISECOND, -1);
+        long period1EndDate = cal.getTimeInMillis();
+        cal.add(Calendar.MONTH, 1);
+        long period2EndDate = cal.getTimeInMillis();
 
         statement = "INSERT INTO " + ExpenseManagerContract.CreditPeriodTable.TABLE_NAME + " (" +
                         ExpenseManagerContract.CreditPeriodTable._ID + COMMA_SEP +
@@ -63,8 +88,20 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
                         ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_START_DATE.getName() + COMMA_SEP +
                         ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_END_DATE.getName() + COMMA_SEP +
                         ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_CREDIT_LIMIT.getName() +
-                        ") VALUES (0, 0, 0, '1470856422283', '1470956422283', '100000'), (1, 0, 0, '1470856422283', '1470956422283', '150000'); ";
+                        ") VALUES (0, 0, 0, '" + period1StartDate + "', '" + period1EndDate + "', '100000'), (1, 0, 0, '" + period2StartDate + "', '" + period2EndDate + "', '150000'); ";
         sqLiteDatabase.execSQL(statement);
+
+        cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -6);
+        long expense1period1 = cal.getTimeInMillis();
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        long expense2period1 = cal.getTimeInMillis();
+        cal.add(Calendar.DAY_OF_MONTH, 2);
+        long expense3period1 = cal.getTimeInMillis();
+        long expense4period1 = cal.getTimeInMillis();
+        cal.add(Calendar.DAY_OF_MONTH, 2);
+        long expense5period1 = cal.getTimeInMillis();
+
 
         statement  = "INSERT INTO " + ExpenseManagerContract.ExpenseTable.TABLE_NAME + " (" +
                         ExpenseManagerContract.ExpenseTable._ID + COMMA_SEP +
@@ -76,8 +113,11 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getName() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getName() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getName() +
-                        ") VALUES (0, 0, 'MockExpense 1', X'0102030405060708090a0b0c0d0e0f', '5000', 'VEF', '1470856422283', 'ENTERTAINMENT', 'EXTRAORDINARY'), " +
-                        "(1, 0, 'MockExpense 2', X'0102030405060708090a0b0c0d0e0f', '10000', 'VEF', '1470856422283', 'ENTERTAINMENT', 'ORDINARY'); ";
+                        ") VALUES (0, 0, 'MockExpense 1', X'0102030405060708090a0b0c0d0e0f', '5300', 'VEF', '" + expense1period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY'), " +
+                        "(1, 0, 'MockExpense 2', X'0102030405060708090a0b0c0d0e0f', '10000', 'VEF', '" + expense2period1 + "', 'ENTERTAINMENT', 'ORDINARY')," +
+                        "(2, 0, 'MockExpense 3', X'0102030405060708090a0b0c0d0e0f', '4500', 'VEF', '" + expense3period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY')," +
+                        "(3, 0, 'MockExpense 4', X'0102030405060708090a0b0c0d0e0f', '2000', 'VEF', '" + expense4period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY')," +
+                        "(4, 0, 'MockExpense 5', X'0102030405060708090a0b0c0d0e0f', '12000', 'VEF', '" + expense5period1 + "', 'ENTERTAINMENT', 'ORDINARY');";
         sqLiteDatabase.execSQL(statement);
 
     }
