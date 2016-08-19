@@ -14,7 +14,6 @@
         android:orientation="vertical"
         android:padding="24dp"
         >
-
         <TextView
             android:id="@+id/dialog_expense_txt_title"
             android:layout_width="match_parent"
@@ -25,19 +24,47 @@
             android:layout_marginBottom="20dp"
             android:text="Create an Expense"/>
 
-        <TextView
-            android:id="@+id/dialog_expense_txt_label_amount"
-            android:text="@string/dialog_create_expense_amount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <EditText
-            android:id="@+id/dialog_expense_edit_amount"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
-            android:imeOptions="actionNext"
-            />
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/dialog_expense_txt_label_amount"
+                    android:text="@string/dialog_create_expense_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    android:id="@+id/dialog_expense_edit_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:imeOptions="actionNext"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                >
+                <ImageView
+                    android:id="@+id/dialog_expense_img_image"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:src="@drawable/camera_icon"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
 
         <TextView
             android:id="@+id/dialog_expense_txt_label_description"
@@ -50,6 +77,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
+            android:singleLine="false"
+            android:text="jadoiwjdiojadiojadoijawiodjaoiwdjoiwajdoiawjdoioijwdoaw"
             android:imeOptions="actionDone" />
     </LinearLayout>
 

@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.adapter.ExpensesAdapter;
+import ve.com.abicelis.creditcardexpensemanager.app.utils.ImageUtils;
 import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 
 /**
@@ -20,6 +21,7 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
     private TextView amount;
     private TextView description;
     private TextView date;
+    private ImageView expenseImage;
     private ImageView delete;
     private ImageView edit;
 
@@ -33,6 +35,7 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
         amount = (TextView) itemView.findViewById(R.id.txt_amount);
         description = (TextView) itemView.findViewById(R.id.txt_description);
         date = (TextView) itemView.findViewById(R.id.txt_date);
+        expenseImage = (ImageView) itemView.findViewById(R.id.img_image);
         delete = (ImageView) itemView.findViewById(R.id.img_delete);
         edit = (ImageView) itemView.findViewById(R.id.img_edit);
     }
@@ -44,8 +47,10 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
 
         this.amount.setText(current.getAmount().toPlainString() + " " + current.getCurrency().getCode());
         this.description.setText(current.getDescription());
-
         this.date.setText(current.getDate().getTime().toString());
+
+        if(current.getImage().length > 0)
+            this.expenseImage.setImageBitmap(ImageUtils.getBitmap(current.getImage()));
     }
 
     public void setListeners() {

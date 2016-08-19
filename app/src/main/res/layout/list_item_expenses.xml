@@ -19,7 +19,7 @@
 
 
         <ImageView
-            android:id="@+id/img_icon"
+            android:id="@+id/img_image"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="7dp"

@@ -113,11 +113,11 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getName() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getName() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getName() +
-                        ") VALUES (0, 0, 'MockExpense 1', X'0102030405060708090a0b0c0d0e0f', '5300', 'VEF', '" + expense1period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY'), " +
-                        "(1, 0, 'MockExpense 2', X'0102030405060708090a0b0c0d0e0f', '10000', 'VEF', '" + expense2period1 + "', 'ENTERTAINMENT', 'ORDINARY')," +
-                        "(2, 0, 'MockExpense 3', X'0102030405060708090a0b0c0d0e0f', '4500', 'VEF', '" + expense3period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY')," +
-                        "(3, 0, 'MockExpense 4', X'0102030405060708090a0b0c0d0e0f', '2000', 'VEF', '" + expense4period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY')," +
-                        "(4, 0, 'MockExpense 5', X'0102030405060708090a0b0c0d0e0f', '12000', 'VEF', '" + expense5period1 + "', 'ENTERTAINMENT', 'ORDINARY');";
+                        ") VALUES (0, 0, 'MockExpense 1', X'', '5300', 'VEF', '" + expense1period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY'), " +
+                        "(1, 0, 'MockExpense 2', X'', '10000', 'VEF', '" + expense2period1 + "', 'ENTERTAINMENT', 'ORDINARY')," +
+                        "(2, 0, 'MockExpense 3', X'', '4500', 'VEF', '" + expense3period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY')," +
+                        "(3, 0, 'MockExpense 4', X'', '2000', 'VEF', '" + expense4period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY')," +
+                        "(4, 0, 'MockExpense 5', X'', '12000', 'VEF', '" + expense5period1 + "', 'ENTERTAINMENT', 'ORDINARY');";
         sqLiteDatabase.execSQL(statement);
 
     }

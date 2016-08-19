@@ -7,7 +7,11 @@
 
     <string name="dialog_create_expense_title">Create new Expense</string>
     <string name="dialog_create_expense_amount">Amount</string>
+    <string name="dialog_create_expense_image">Image</string>
     <string name="dialog_create_expense_description">Description</string>
+
+    <string name="dialog_create_expense_error_bad_amount">Please enter a valid amount</string>
+
 
 
     /*Labels for ocr captured receipt*/
