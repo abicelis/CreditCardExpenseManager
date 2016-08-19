@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,22 +32,9 @@ import ve.com.abicelis.creditcardexpensemanager.model.DailyExpense;
  * Created by Alex on 17/8/2016.
  */
 public class LineChartFragment extends Fragment {
-    private int numberOfLines = 1;
-    private int maxNumberOfLines = 4;
-    private int numberOfPoints = 12;
-
-    float[][] randomNumbersTab = new float[maxNumberOfLines][numberOfPoints];
 
     //UI
     private LineChartView chart;
-    private ValueShape shape = ValueShape.CIRCLE;
-    private boolean isFilled = false;
-    private boolean isCubic = true;
-    private boolean hasLines = true;
-    private boolean hasPoints = true;
-    private boolean hasAxes = true;
-    private boolean hasLabels = false;
-    private boolean hasLabelForSelected = false;
 
     //DATA
     private ExpenseManagerDAO dao;
@@ -60,33 +48,13 @@ public class LineChartFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View rootView = inflater.inflate(R.layout.fragment_line_chart, container, false);
-
         chart = (LineChartView) rootView.findViewById(R.id.chart);
 
-       // generateValues();
-        //generateData();
         refreshChartData();
-
-
-
-        //chart.setViewportCalculationEnabled(false);
-        //resetViewport();
-
-
 
         return rootView;
     }
 
-    private void resetViewport() {
-        // Reset viewport height range to (0,100)
-        final Viewport v = new Viewport(chart.getMaximumViewport());
-        v.bottom = 0;
-        v.top = 100;
-        v.left = 0;
-        v.right = numberOfPoints - 1;
-        chart.setMaximumViewport(v);
-        chart.setCurrentViewport(v);
-    }
 
 
     public void refreshChartData() {
@@ -105,58 +73,85 @@ public class LineChartFragment extends Fragment {
         }
 
 
-
-        //Convert the data to PointValues
+        //Convert the data to PointValues, add those to lines
+        List<Line> lines = new ArrayList<>();
         List<AxisValue> axisValues = new ArrayList<AxisValue>();
-        List<PointValue> values = new ArrayList<>();
+        List<PointValue> accumulatedValues = new ArrayList<>();
+        List<PointValue> dailyValues = new ArrayList<>();
+        List<PointValue> maxValue = new ArrayList<>();
+
+        //Set max values
+        maxValue.add(new PointValue(0, creditPeriod.getCreditLimit().floatValue()));
+        maxValue.add(new PointValue(creditPeriod.getTotalDaysInPeriod(), creditPeriod.getCreditLimit().floatValue()));
 
 
-        List<DailyExpense> accumulatedDailyExpenses = creditPeriod.getDailyExpenses();
-
-
+        //Set daily and accumulated values.
+        List<DailyExpense> dailyExpenses = creditPeriod.getDailyExpenses();
+        List<DailyExpense> accumulatedDailyExpenses = creditPeriod.getAccumulatedDailyExpenses();
         for (int i = 0; i < creditPeriod.getTotalDaysInPeriod(); ++i) {
-            values.add(new PointValue(i, accumulatedDailyExpenses.get(i).getAmount().floatValue()));
+            accumulatedValues.add(new PointValue(i, accumulatedDailyExpenses.get(i).getAmount().floatValue()));
+            dailyValues.add(new PointValue(i, dailyExpenses.get(i).getAmount().floatValue()));
             axisValues.add(new AxisValue(i).setLabel(accumulatedDailyExpenses.get(i).getFormattedDate()));
         }
 
-        Line line = new Line(values);
-        line.setColor(ChartUtils.COLORS[0]);
-        line.setShape(shape);
-        line.setCubic(isCubic);
-        line.setFilled(isFilled);
-        line.setHasLabels(hasLabels);
-        line.setHasLabelsOnlyForSelected(hasLabelForSelected);
-        line.setHasLines(hasLines);
-        line.setHasPoints(hasPoints);
-
-
-        List<Line> lines = new ArrayList<>();
+        //Add accumulatedValues line
+        Line line = new Line(accumulatedValues);
+        line.setColor(ChartUtils.COLOR_BLUE);
+        line.setCubic(true);
+        line.setFilled(true);
+        line.setHasPoints(false);
         lines.add(line);
 
+        //Add maxValue line
+        line = new Line(maxValue);
+        line.setColor(ChartUtils.COLOR_RED);
+        line.setHasPoints(false);
+        lines.add(line);
+
+
+        //Add dailyValues line
+        line = new Line(dailyValues);
+        line.setColor(ChartUtils.COLOR_ORANGE);
+        line.setPointRadius(5);
+        line.setHasLines(false);
+        lines.add(line);
+
+
+        //Add lines to chart data
         data = new LineChartData(lines);
-
-
-        if (hasAxes) {
-            Axis axisX = new Axis(axisValues).setHasTiltedLabels(true);
-            Axis axisY = new Axis().setHasLines(true)
-                    .setHasTiltedLabels(true);
-                    //.setFormatter(new SimpleAxisValueFormatter().setAppendedText(creditCard.getCurrency().getCode().toCharArray()));
-            axisX.setName("Days");
-            axisY.setName("Money (" + creditCard.getCurrency().getCode() + ")");
-
-            data.setAxisXBottom(axisX);
-            data.setAxisYLeft(axisY);
-        } else {
-            data.setAxisXBottom(null);
-            data.setAxisYLeft(null);
-        }
-
         data.setBaseValue(Float.NEGATIVE_INFINITY);
+
+        //Setup axis
+        Axis axisX = new Axis(axisValues)
+                .setHasTiltedLabels(true)
+                .setName("Days");
+
+        Axis axisY = new Axis().setHasLines(true)
+                .setHasTiltedLabels(true)
+                .setName("Money (" + creditCard.getCurrency().getCode() + ")");
+
+        data.setAxisXBottom(axisX);
+        data.setAxisYLeft(axisY);
+
+
+        //Setup chart
         chart.setLineChartData(data);
         chart.setMaxZoom(0);
-        chart.startDataAnimation(300);
-
+        //chart.startDataAnimation(1000);
+        //chart.setViewportCalculationEnabled(false);
+        //resetViewport(creditPeriod.getCreditLimit().intValue(), creditPeriod.getTotalDaysInPeriod());
     }
 
+
+    private void resetViewport(int top, int right) {
+        // Reset viewport height range to (0,100)
+        final Viewport v = new Viewport(chart.getMaximumViewport());
+        v.bottom = 0;
+        v.top = top;
+        v.left = 0;
+        v.right = right - 1;
+        chart.setMaximumViewport(v);
+        chart.setCurrentViewport(v);
+    }
 
 }

@@ -35,8 +35,9 @@
             android:id="@+id/dialog_expense_edit_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:imeOptions="actionDone" />
+            android:inputType="number"
+            android:imeOptions="actionNext"
+            />
 
         <TextView
             android:id="@+id/dialog_expense_txt_label_description"
