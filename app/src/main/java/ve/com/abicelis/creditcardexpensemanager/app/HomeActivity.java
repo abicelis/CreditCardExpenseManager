@@ -143,7 +143,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         recyclerViewExpenses = (RecyclerView) findViewById(R.id.home_recycler_expenses);
 
-        adapter = new ExpensesAdapter(getApplicationContext(), expenses);
+        adapter = new ExpensesAdapter(getApplicationContext(), this, expenses);
         recyclerViewExpenses.setAdapter(adapter);
 
         layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);

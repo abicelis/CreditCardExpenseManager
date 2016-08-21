@@ -12,14 +12,15 @@
     >
 
     <LinearLayout
+        android:id="@+id/list_item_expenses_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:orientation="horizontal">
 
 
-        <ImageView
-            android:id="@+id/img_image"
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/list_item_expenses_img_image"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="7dp"
@@ -31,8 +32,8 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txt_amount"
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/list_item_expenses_txt_amount"
                 android:layout_marginTop="2dp"
                 android:layout_marginLeft="8dp"
                 android:textSize="18sp"
@@ -42,7 +43,7 @@
                 android:text="123.29 USD" />
 
             <TextView
-                android:id="@+id/txt_description"
+                android:id="@+id/list_item_expenses_txt_description"
                 android:layout_marginTop="4dp"
                 android:layout_marginLeft="8dp"
                 android:textColor="@color/gray_700"
@@ -53,7 +54,7 @@
                 android:text="Expense description" />
 
             <TextView
-                android:id="@+id/txt_date"
+                android:id="@+id/list_item_expenses_txt_date"
                 android:layout_marginTop="4dp"
                 android:layout_marginLeft="8dp"
                 android:textColor="@color/gray_700"
@@ -71,7 +72,7 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/img_delete"
+                android:id="@+id/list_item_expenses_img_delete"
                 android:paddingLeft="-5dp"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -80,7 +81,7 @@
                 android:tint="@color/gray_500"/>
 
             <ImageView
-                android:id="@+id/img_edit"
+                android:id="@+id/list_item_expenses_img_edit"
                 android:paddingLeft="-5dp"
                 android:layout_width="20dp"
                 android:layout_height="20dp"

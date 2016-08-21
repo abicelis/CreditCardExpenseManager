@@ -8,4 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="LargeTextView" parent="Widget.AppCompat.TextView.SpinnerItem">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:layout_margin">@dimen/activity_horizontal_margin</item>
+
+    </style>
+
 </resources>

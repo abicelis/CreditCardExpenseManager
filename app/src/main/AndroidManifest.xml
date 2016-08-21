@@ -28,6 +28,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".app.ExpenseDetailActivity">
+
+        </activity>
+
 
         <activity android:name=".app.OcrCreateExpenseActivity"
             android:screenOrientation="portrait"

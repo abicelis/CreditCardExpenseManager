@@ -1,5 +1,6 @@
 package ve.com.abicelis.creditcardexpensemanager.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.UUID;
@@ -11,7 +12,7 @@ import ve.com.abicelis.creditcardexpensemanager.enums.ExpenseType;
 /**
  * Created by Alex on 6/8/2016.
  */
-public class Expense {
+public class Expense implements Serializable {
 
     private int id;
     private String description;

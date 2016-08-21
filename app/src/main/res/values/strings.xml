@@ -2,6 +2,13 @@
     <string name="app_name">CC Manager</string>
 
 
+    /*Expense detail activity*/
+    <string name="transition_name_expense_detail_image">expense_detail_image</string>
+    <string name="transition_name_expense_detail_amount">expense_detail_amount</string>
+    <string name="transition_name_expense_detail_description">expense_detail_description</string>
+    <string name="transition_name_expense_detail_date">expense_detail_date</string>
+
+
     /*Dialogs*/
     <string name="dialog_capture_ocr_text_title">Capture text</string>
 
