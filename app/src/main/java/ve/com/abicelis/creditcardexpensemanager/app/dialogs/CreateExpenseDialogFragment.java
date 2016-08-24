@@ -15,9 +15,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,7 +35,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
-import ve.com.abicelis.creditcardexpensemanager.app.ImageCropperActivity;
+import ve.com.abicelis.creditcardexpensemanager.app.activities.ImageCropperActivity;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.ImageUtils;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.PermissionUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;

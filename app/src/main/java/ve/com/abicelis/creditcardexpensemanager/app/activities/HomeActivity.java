@@ -1,4 +1,4 @@
-package ve.com.abicelis.creditcardexpensemanager.app;
+package ve.com.abicelis.creditcardexpensemanager.app.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
-import ve.com.abicelis.creditcardexpensemanager.app.adapter.ExpensesAdapter;
+import ve.com.abicelis.creditcardexpensemanager.app.adapters.ExpensesAdapter;
 import ve.com.abicelis.creditcardexpensemanager.app.dialogs.CreateExpenseDialogFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.LineChartFragment;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;

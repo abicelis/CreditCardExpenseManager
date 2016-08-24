@@ -1,9 +1,8 @@
-package ve.com.abicelis.creditcardexpensemanager.app.holder;
+package ve.com.abicelis.creditcardexpensemanager.app.holders;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
@@ -13,11 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.FileNotFoundException;
-
 import ve.com.abicelis.creditcardexpensemanager.R;
-import ve.com.abicelis.creditcardexpensemanager.app.ExpenseDetailActivity;
-import ve.com.abicelis.creditcardexpensemanager.app.adapter.ExpensesAdapter;
+import ve.com.abicelis.creditcardexpensemanager.app.activities.ExpenseDetailActivity;
+import ve.com.abicelis.creditcardexpensemanager.app.adapters.ExpensesAdapter;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.ImageUtils;
 import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 

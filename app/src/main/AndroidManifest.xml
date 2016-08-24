@@ -32,7 +32,7 @@
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="ocr" />
 
-        <activity android:name=".app.HomeActivity">
+        <activity android:name=".app.activities.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,11 +40,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".app.ExpenseDetailActivity"></activity>
-        <activity android:name=".app.ImageCropperActivity"></activity>
+        <activity android:name=".app.activities.ExpenseDetailActivity"></activity>
+        <activity android:name=".app.activities.ImageCropperActivity"></activity>
+        <activity android:name=".app.activities.ImageViewerActivity"></activity>
 
 
-        <activity android:name=".app.OcrCreateExpenseActivity"
+        <activity android:name=".app.activities.OcrCreateExpenseActivity"
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden"
             android:label="Read Text">

@@ -1,9 +1,11 @@
-package ve.com.abicelis.creditcardexpensemanager.app;
+package ve.com.abicelis.creditcardexpensemanager.app.activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
@@ -20,7 +22,7 @@ import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 /**
  * Created by Alex on 19/8/2016.
  */
-public class ExpenseDetailActivity extends AppCompatActivity {
+public class ExpenseDetailActivity extends AppCompatActivity implements  View.OnClickListener {
 
     //UI
     private ImageView mImage;
@@ -69,6 +71,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         try {
             Bitmap image = mExpense.getFullImage();
             this.mImage.setImageBitmap(image);
+            mImage.setOnClickListener(this);
         } catch (FileNotFoundException e) {
             if(mExpense.getThumbnail().length > 0)
                 this.mImage.setImageBitmap(ImageUtils.getBitmap(mExpense.getThumbnail()));
@@ -76,19 +79,23 @@ public class ExpenseDetailActivity extends AppCompatActivity {
                 this.mImage.setImageResource(R.drawable.expense_icon);
         }
 
-
-        mImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                supportFinishAfterTransition();
-            }
-        });
-
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         supportFinishAfterTransition();     //When user backs out, transition back!
+    }
+
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+        if(i == R.id.expense_detail_image) {
+
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, mImage, getResources().getString(R.string.transition_name_expense_detail_image));
+            Intent imageViewerIntent = new Intent(this, ImageViewerActivity.class);
+            imageViewerIntent.putExtra("imagePath", mExpense.getFullImagePath());
+            startActivity(imageViewerIntent, options.toBundle());
+        }
     }
 }

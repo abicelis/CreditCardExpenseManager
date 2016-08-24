@@ -1,4 +1,4 @@
-package ve.com.abicelis.creditcardexpensemanager.app.adapter;
+package ve.com.abicelis.creditcardexpensemanager.app.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
-import ve.com.abicelis.creditcardexpensemanager.app.holder.ExpensesViewHolder;
+import ve.com.abicelis.creditcardexpensemanager.app.holders.ExpensesViewHolder;
 import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 
 /**

@@ -15,9 +15,7 @@
  */
 package ve.com.abicelis.creditcardexpensemanager.ocr;
 
-import android.app.Activity;
 import android.graphics.Rect;
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.google.android.gms.vision.Detector;
@@ -29,7 +27,7 @@ import com.google.android.gms.vision.text.TextBlock;
 import java.util.ArrayList;
 import java.util.List;
 
-import ve.com.abicelis.creditcardexpensemanager.app.OcrCreateExpenseActivity;
+import ve.com.abicelis.creditcardexpensemanager.app.activities.OcrCreateExpenseActivity;
 import ve.com.abicelis.creditcardexpensemanager.ocr.camera.GraphicOverlay;
 
 /**

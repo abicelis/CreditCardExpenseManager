@@ -1,8 +1,7 @@
-package ve.com.abicelis.creditcardexpensemanager.app.anim;
+package ve.com.abicelis.creditcardexpensemanager.app.anims;
 
 import android.view.View;
 import android.view.animation.AlphaAnimation;
-import android.view.animation.LinearInterpolator;
 
 /**
  * Created by Alex on 12/8/2016.

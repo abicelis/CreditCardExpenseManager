@@ -1,4 +1,4 @@
-package ve.com.abicelis.creditcardexpensemanager.app;
+package ve.com.abicelis.creditcardexpensemanager.app.activities;
 
 import android.app.Activity;
 import android.content.Intent;

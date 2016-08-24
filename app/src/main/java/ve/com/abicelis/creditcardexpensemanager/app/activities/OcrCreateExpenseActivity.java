@@ -1,4 +1,4 @@
-package ve.com.abicelis.creditcardexpensemanager.app;
+package ve.com.abicelis.creditcardexpensemanager.app.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -21,7 +21,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -29,7 +28,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,13 +40,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
-import ve.com.abicelis.creditcardexpensemanager.app.anim.FadeAnimator;
+import ve.com.abicelis.creditcardexpensemanager.app.anims.FadeAnimator;
 import ve.com.abicelis.creditcardexpensemanager.app.dialogs.CaptureOcrTextDialogFragment;
 import ve.com.abicelis.creditcardexpensemanager.ocr.OcrDetectorProcessor;
 import ve.com.abicelis.creditcardexpensemanager.ocr.OcrGraphic;
