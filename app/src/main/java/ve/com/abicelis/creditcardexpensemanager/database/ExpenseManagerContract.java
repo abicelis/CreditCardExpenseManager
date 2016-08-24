@@ -42,7 +42,8 @@ public final class ExpenseManagerContract {
         public static final TableColumn COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD = new TableColumn(DataType.INTEGER, "fk_creditperiod");
 
         public static final TableColumn COLUMN_NAME_DESCRIPTION = new TableColumn(DataType.TEXT, "description");
-        public static final TableColumn COLUMN_NAME_IMAGE = new TableColumn(DataType.BLOB, "image");
+        public static final TableColumn COLUMN_NAME_THUMBNAIL = new TableColumn(DataType.BLOB, "thumbnail");
+        public static final TableColumn COLUMN_NAME_FULL_IMAGE_PATH = new TableColumn(DataType.TEXT, "fullimagepath");
         public static final TableColumn COLUMN_NAME_AMOUNT = new TableColumn(DataType.TEXT, "amount");
         public static final TableColumn COLUMN_NAME_CURRENCY = new TableColumn(DataType.TEXT, "currency");
         public static final TableColumn COLUMN_NAME_DATE = new TableColumn(DataType.INTEGER, "date");

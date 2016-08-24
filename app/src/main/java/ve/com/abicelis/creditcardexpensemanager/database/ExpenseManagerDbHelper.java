@@ -3,12 +3,8 @@ package ve.com.abicelis.creditcardexpensemanager.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.StringBuilderPrinter;
 
 import java.util.Calendar;
-
-import ve.com.abicelis.creditcardexpensemanager.mocks.CreditMock;
-
 
 
 /**
@@ -107,17 +103,18 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
                         ExpenseManagerContract.ExpenseTable._ID + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DESCRIPTION.getName() + COMMA_SEP +
-                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_IMAGE.getName() + COMMA_SEP +
+                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_THUMBNAIL.getName() + COMMA_SEP +
+                        ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FULL_IMAGE_PATH.getName() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_AMOUNT.getName() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_CURRENCY.getName() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getName() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getName() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getName() +
-                        ") VALUES (0, 0, 'MockExpense 1', X'', '5300', 'VEF', '" + expense1period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY'), " +
-                        "(1, 0, 'MockExpense 2', X'', '10000', 'VEF', '" + expense2period1 + "', 'ENTERTAINMENT', 'ORDINARY')," +
-                        "(2, 0, 'MockExpense 3', X'', '4500', 'VEF', '" + expense3period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY')," +
-                        "(3, 0, 'MockExpense 4', X'', '2000', 'VEF', '" + expense4period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY')," +
-                        "(4, 0, 'MockExpense 5', X'', '12000', 'VEF', '" + expense5period1 + "', 'ENTERTAINMENT', 'ORDINARY');";
+                        ") VALUES (0, 0, 'MockExpense 1', X'', 'mockpath', '5300', 'VEF', '" + expense1period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY'), " +
+                                 "(1, 0, 'MockExpense 2', X'', 'mockpath', '10000', 'VEF', '" + expense2period1 + "', 'ENTERTAINMENT', 'ORDINARY')," +
+                                 "(2, 0, 'MockExpense 3', X'', 'mockpath', '4500', 'VEF', '" + expense3period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY')," +
+                                 "(3, 0, 'MockExpense 4', X'', 'mockpath', '2000', 'VEF', '" + expense4period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY')," +
+                                 "(4, 0, 'MockExpense 5', X'', 'mockpath', '12000', 'VEF', '" + expense5period1 + "', 'ENTERTAINMENT', 'ORDINARY');";
         sqLiteDatabase.execSQL(statement);
 
     }
@@ -156,7 +153,8 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
         statement = "CREATE TABLE " + ExpenseManagerContract.ExpenseTable.TABLE_NAME + " (" +
                 ExpenseManagerContract.ExpenseTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
                 ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DESCRIPTION.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DESCRIPTION.getDataType() + COMMA_SEP +
-                ExpenseManagerContract.ExpenseTable.COLUMN_NAME_IMAGE.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_IMAGE.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.ExpenseTable.COLUMN_NAME_THUMBNAIL.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_THUMBNAIL.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FULL_IMAGE_PATH.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FULL_IMAGE_PATH.getDataType() + COMMA_SEP +
                 ExpenseManagerContract.ExpenseTable.COLUMN_NAME_AMOUNT.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_AMOUNT.getDataType() + COMMA_SEP +
                 ExpenseManagerContract.ExpenseTable.COLUMN_NAME_CURRENCY.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_CURRENCY.getDataType() + COMMA_SEP +
                 ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getName() + " " + ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getDataType() + COMMA_SEP +

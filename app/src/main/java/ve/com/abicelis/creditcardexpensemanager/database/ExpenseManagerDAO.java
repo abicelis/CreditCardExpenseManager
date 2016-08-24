@@ -96,7 +96,7 @@ public class ExpenseManagerDAO {
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
         CreditPeriod creditPeriod;
 
-        Cursor cursor =  db.query(ExpenseManagerContract.CreditPeriodTable.TABLE_NAME, null, ExpenseManagerContract.ExpenseTable._ID + " == " + periodId, null, null, null, null);
+        Cursor cursor =  db.query(ExpenseManagerContract.CreditPeriodTable.TABLE_NAME, null, ExpenseManagerContract.CreditPeriodTable._ID + " == " + periodId, null, null, null, null);
 
         if(cursor.getCount() == 0)
             throw new CouldNotGetDataException("No creditPeriod found for id= " + periodId);
@@ -163,7 +163,8 @@ public class ExpenseManagerDAO {
         ContentValues values = new ContentValues();
         values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName(), new Integer(creditPeriodId));
         values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DESCRIPTION.getName(), expense.getDescription());
-        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_IMAGE.getName(), expense.getImage());
+        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_THUMBNAIL.getName(), expense.getThumbnail());
+        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FULL_IMAGE_PATH.getName(), expense.getFullImagePath());
         values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_AMOUNT.getName(), expense.getAmount().toPlainString());
         values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_CURRENCY.getName(), expense.getCurrency().getCode());
         values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getName(), expense.getDate().getTimeInMillis());
@@ -239,7 +240,8 @@ public class ExpenseManagerDAO {
 
         int id = cursor.getInt(cursor.getColumnIndex(ExpenseManagerContract.ExpenseTable._ID));
         String description = cursor.getString(cursor.getColumnIndex(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DESCRIPTION.getName()));
-        byte[] image = cursor.getBlob(cursor.getColumnIndex(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_IMAGE.getName()));
+        byte[] image = cursor.getBlob(cursor.getColumnIndex(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_THUMBNAIL.getName()));
+        String fullImagePath = cursor.getString(cursor.getColumnIndex(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FULL_IMAGE_PATH.getName()));
         BigDecimal amount = new BigDecimal(cursor.getString(cursor.getColumnIndex(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_AMOUNT.getName())));
         Currency currency = Currency.valueOf(cursor.getString(cursor.getColumnIndex(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_CURRENCY.getName())));
         Calendar date = Calendar.getInstance();
@@ -247,7 +249,7 @@ public class ExpenseManagerDAO {
         ExpenseCategory expenseCategory = ExpenseCategory.valueOf(cursor.getString(cursor.getColumnIndex(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getName())));
         ExpenseType expenseType = ExpenseType.valueOf(cursor.getString(cursor.getColumnIndex(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getName())));
 
-        return new Expense(id, description, image, amount, currency, date, expenseCategory, expenseType);
+        return new Expense(id, description, image, fullImagePath, amount, currency, date, expenseCategory, expenseType);
     }
 
 

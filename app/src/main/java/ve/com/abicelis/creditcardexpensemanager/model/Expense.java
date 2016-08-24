@@ -1,9 +1,12 @@
 package ve.com.abicelis.creditcardexpensemanager.model;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.UUID;
 
 import ve.com.abicelis.creditcardexpensemanager.enums.Currency;
 import ve.com.abicelis.creditcardexpensemanager.enums.ExpenseCategory;
@@ -16,17 +19,19 @@ public class Expense implements Serializable {
 
     private int id;
     private String description;
-    byte[] image;
+    byte[] thumbnail;
+    String fullImagePath;
     BigDecimal amount;
     Currency currency;
     Calendar date;
     ExpenseCategory expenseCategory;
     ExpenseType expenseType;
 
-    public Expense (int id, String description, byte[] image, BigDecimal amount, Currency currency, Calendar date, ExpenseCategory expenseCategory, ExpenseType expenseType) {
+    public Expense (int id, String description, byte[] thumbnail, String fullImagePath, BigDecimal amount, Currency currency, Calendar date, ExpenseCategory expenseCategory, ExpenseType expenseType) {
         this.id = id;
         this.description = description;
-        this.image = image;
+        this.thumbnail = thumbnail;
+        this.fullImagePath = fullImagePath;
         this.amount = amount;
         this.currency = currency;
         this.expenseCategory = expenseCategory;
@@ -45,8 +50,21 @@ public class Expense implements Serializable {
         return description;
     }
 
-    public byte[] getImage() {
-        return image;
+    public byte[] getThumbnail() {
+        return thumbnail;
+    }
+
+    public String getFullImagePath() {
+        return fullImagePath;
+    }
+
+    public Bitmap getFullImage() throws FileNotFoundException {
+        Bitmap fullImage = BitmapFactory.decodeFile(fullImagePath);
+
+        if(fullImage == null)
+            throw new FileNotFoundException("This image does not exist, has probably been deleted");
+
+        return fullImage;
     }
 
     public BigDecimal getAmount() {
