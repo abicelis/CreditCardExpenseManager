@@ -8,13 +8,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,11 +29,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
+import ve.com.abicelis.creditcardexpensemanager.app.ImageCropperActivity;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.ImageUtils;
+import ve.com.abicelis.creditcardexpensemanager.app.utils.PermissionUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
 import ve.com.abicelis.creditcardexpensemanager.enums.Currency;
 import ve.com.abicelis.creditcardexpensemanager.enums.ExpenseCategory;
@@ -50,6 +59,7 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
     private static final int IMAGE_HEIGHT = 400;
     private static final int IMAGE_COMPRESSION_PERCENTAGE = 30;
     private static final int REQUEST_IMAGE_CAPTURE = 123;
+    private static final int REQUEST_IMAGE_CROP = 124;
     private static final int RESULT_OK = -1;
 
     //DB
@@ -63,8 +73,10 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
     private ImageView mImage;
 
     //DATA
-    private Bitmap expenseImage;
-    private byte[] expenseImageBytes = new byte[0];
+    Bitmap expenseImageThumbnail;
+    byte[] expenseImageThumbnailBytes;
+    private Uri imageUri;
+    private String imagePath = null;
 
     public CreateExpenseDialogFragment() {
         // Empty constructor is required for DialogFragment
@@ -90,6 +102,7 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -132,10 +145,17 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
                 break;
 
             case R.id.dialog_expense_button_create:
-                createNewExpense();
+                handleNewExpenseCreation();
                 break;
 
             case R.id.dialog_expense_button_cancel:
+                if(imagePath != null) {
+                    try {
+                        new File(imagePath).delete();
+                    } catch (Exception e) {
+                        Toast.makeText(getActivity(), "Damn son, there was a problem deleting the unneeded picture!", Toast.LENGTH_SHORT).show();
+                    }
+                }
                 this.dismiss();
                 break;
 
@@ -145,34 +165,77 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
     private void handleExpenseImageCapture() {
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
-        int rc = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA);
-        if (rc == PackageManager.PERMISSION_GRANTED) {
-            doCaptureImageFromCamera();
-        } else {
-            requestCameraPermission();
+        String[] nonGrantedPermissions;
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)
+            nonGrantedPermissions = PermissionUtils.checkIfPermissionsAreGranted(getContext(), Manifest.permission.CAMERA);
+        else
+            nonGrantedPermissions = PermissionUtils.checkIfPermissionsAreGranted(getContext(), Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if(nonGrantedPermissions == null)
+            dispatchTakePictureIntent();
+        else {
+            Log.w(TAG, "Camera permission is not granted. Requesting permission");
+            PermissionUtils.requestPermissions(this, nonGrantedPermissions, RC_HANDLE_CAMERA_PERM);
         }
     }
 
-    private void doCaptureImageFromCamera() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+    private void dispatchTakePictureIntent() {
+
+        File expensesDir = new File(getActivity().getExternalFilesDir(null), "expenses/");
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        //Create an /expenses dir if it doesnt exist
+        try {
+            createDirIfNotExists(expensesDir);
+        } catch (IOException ex) {
+            Toast.makeText(getActivity(), "Sorry! There was a problem while creating the image directory", Toast.LENGTH_SHORT).show();
+        }
+
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFileInDir(expensesDir);
+            } catch (IOException ex) {
+                Toast.makeText(getActivity(), "Sorry! There was a problem while creating the image", Toast.LENGTH_SHORT).show();
+            }
+
+            if(photoFile != null) {
+                try {
+                    imagePath = photoFile.getPath();
+                    imageUri = FileProvider.getUriForFile(getContext(), "ve.com.abicelis.creditcardexpensemanager.fileprovider", photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity(), "Sorry! There was a problem with the image", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        } else {
+            Toast.makeText(getActivity(), "Sorry! Cant take images if there's not a camera app installed", Toast.LENGTH_SHORT).show();
+
+        }
     }
 
-
-
-    /**
-     * Handles the requesting of the camera permission.  This includes
-     * showing a "Snackbar" message of why the permission is needed then
-     * sending the request.
-     */
-    private void requestCameraPermission() {
-        Log.w(TAG, "Camera permission is not granted. Requesting permission");
-        final String[] permissions = new String[]{Manifest.permission.CAMERA};
-
-        //Not using ActivityCompat since im asking permissions from a fragment
-        requestPermissions(permissions, RC_HANDLE_CAMERA_PERM);
+    private void createDirIfNotExists(File directory) throws IOException, SecurityException  {
+        if (directory.mkdir()){
+            File nomedia = new File(directory, ".nomedia");
+            nomedia.createNewFile();
+        }
     }
 
+    private File createImageFileInDir(File directory) throws IOException, SecurityException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File image = File.createTempFile(imageFileName, ".jpg", directory);
+
+        // Save a file: path for use with ACTION_VIEW intents
+        //String mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
 
     /**
      * Callback for the result from requesting permissions. This method
@@ -191,20 +254,29 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
      * @see #requestPermissions(String[], int)
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode != RC_HANDLE_CAMERA_PERM) {
             Log.d(TAG, "Got unexpected permission result: " + requestCode);
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             return;
         }
 
-        if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "Camera permission granted - initialize the camera source");
-            // We have permission, so launch camera
-            doCaptureImageFromCamera();
-            return;
+        //Check if all permissions have been granted
+        if (grantResults.length != 0) {
+            boolean permissionsGranted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    permissionsGranted = false;
+                    break;
+                }
+            }
+
+            if(permissionsGranted) {
+                Log.d(TAG, "Camera permission granted - initialize the camera source");
+                // We have permission, so launch camera
+                dispatchTakePictureIntent();
+                return;
+            }
         }
 
         Log.e(TAG, "Permission not granted: results len = " + grantResults.length +
@@ -216,6 +288,8 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
             }
         };
 
+
+        //TODO: fix this message
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Multitracker sample")
                 .setMessage(R.string.no_camera_permission)
@@ -224,7 +298,57 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
     }
 
 
-    private void createNewExpense() {
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+
+            try {
+                //Go to the imageCropper activity
+                Intent cropImageIntent = new Intent(getActivity(), ImageCropperActivity.class);
+                cropImageIntent.putExtra(ImageCropperActivity.IMAGE_PATH, imagePath);
+                startActivityForResult(cropImageIntent, REQUEST_IMAGE_CROP);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else if (requestCode == REQUEST_IMAGE_CROP && resultCode == RESULT_OK) {
+
+            try {
+                expenseImageThumbnail = BitmapFactory.decodeFile(imagePath);
+                expenseImageThumbnail = ImageUtils.scaleBitmap(expenseImageThumbnail, 120);
+                expenseImageThumbnailBytes = ImageUtils.toByteArray(expenseImageThumbnail);
+
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "Peos!", Toast.LENGTH_SHORT).show();
+            }
+            mImage.setImageBitmap(expenseImageThumbnail);
+
+        } else {
+            Toast.makeText(getContext(), "OnActivityResult but reqCode =" +requestCode + " and resCode=" + resultCode, Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        int poop = 5;
+
+        poop = poop +394;
+
+        final Activity activity = getActivity();
+        if (activity instanceof DialogInterface.OnDismissListener) {
+            ((DialogInterface.OnDismissListener) activity).onDismiss(dialog);
+        }
+    }
+
+    private void handleNewExpenseCreation() {
 
         String amount = mAmountText.getText().toString();
         String description = mDescriptionText.getText().toString();
@@ -237,7 +361,7 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
             description = "-";
         }
 
-        Expense expense = new Expense(1, description, expenseImageBytes,
+        Expense expense = new Expense(1, description, expenseImageThumbnailBytes, imagePath,
                 new BigDecimal(mAmountText.getText().toString()), Currency.VEF,
                 Calendar.getInstance(), ExpenseCategory.CLOTHING, ExpenseType.ORDINARY);
 
@@ -250,42 +374,4 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
     }
 
 
-
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
-
-        int poop = 123;
-
-        poop = poop + poop;
-
-        final Activity activity = getActivity();
-        if (activity instanceof DialogInterface.OnDismissListener) {
-            ((DialogInterface.OnDismissListener) activity).onDismiss(dialog);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            if(data != null ) {
-                expenseImage = (Bitmap) data.getExtras().get("data");
-                expenseImage = Bitmap.createScaledBitmap(expenseImage, IMAGE_WIDTH, IMAGE_HEIGHT, true);
-                expenseImageBytes = ImageUtils.toCompressedByteArray(expenseImage, IMAGE_COMPRESSION_PERCENTAGE);
-
-
-                mImage.setImageBitmap(expenseImage);
-
-            } else {
-                Toast.makeText(getContext(), "Camera data returned null", Toast.LENGTH_SHORT).show();
-            }
-
-        } else {
-            Toast.makeText(getContext(), "OnActivityResult but reqCode =" +requestCode + " and resCode=" + resultCode, Toast.LENGTH_SHORT).show();
-
-        }
-    }
 }
