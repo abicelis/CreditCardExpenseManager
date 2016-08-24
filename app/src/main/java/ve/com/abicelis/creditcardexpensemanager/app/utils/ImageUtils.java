@@ -74,6 +74,34 @@ public class ImageUtils {
     }
 
 
+    /**
+     * Returns a scaled Bitmap with:
+     *  - Its larger dimension = largerScaledDimension in px
+     *  - Its smaller dimension scaled, according to the bitmap's original aspect ratio
+     *
+     *  Note: if the bitmap's dimensions are already smaller than largerScaledDimension
+     *  then nothing will be done to the bitmap
+     */
+    public static Bitmap scaleBitmap(Bitmap image, int largerScaledDimension) {
+
+        if (image == null || image.getWidth() == 0 || image.getHeight() == 0)
+            return image;
+
+        //if the image is already small, leave as is
+        if (image.getHeight() <= largerScaledDimension && image.getWidth() <= largerScaledDimension)
+            return image;
+
+        // Resize the larger dimension of the image to largerScaledDimension and calculate other size
+        // respecting the image's aspect ratio
+        boolean heightLargerThanWidth = (image.getHeight() > image.getWidth());
+        float aspectRatio = (heightLargerThanWidth ? (float)image.getHeight() / (float)image.getWidth() : (float)image.getWidth() / (float)image.getHeight());
+        int smallerScaledDimension = (int) (largerScaledDimension / aspectRatio);
+        int scaledWidth = (heightLargerThanWidth ? smallerScaledDimension : largerScaledDimension);
+        int scaledHeight = (heightLargerThanWidth ? largerScaledDimension : smallerScaledDimension);
+
+        return Bitmap.createScaledBitmap(image, scaledWidth, scaledHeight, true);
+    }
+
 
     /**
      * Bitmap to byte[]
@@ -113,4 +141,17 @@ public class ImageUtils {
         bitmap.compress(format, quality, stream);
         return stream.toByteArray();
     }
+
+    /**
+     * Bitmap to compressed Bitmap
+     *
+     * @param bitmap  Bitmap
+     * @param quality int
+     * @return Bitmap
+     */
+    public static Bitmap compressBitmap(Bitmap bitmap, int quality) {
+        byte[] arr = toCompressedByteArray(bitmap, quality, Bitmap.CompressFormat.JPEG);
+        return BitmapFactory.decodeByteArray(arr, 0, arr.length);
+    }
+
 }
