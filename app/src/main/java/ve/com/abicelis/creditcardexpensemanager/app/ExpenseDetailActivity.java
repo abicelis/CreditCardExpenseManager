@@ -1,15 +1,17 @@
 package ve.com.abicelis.creditcardexpensemanager.app;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.TextureView;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.FileNotFoundException;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.ImageUtils;
@@ -64,10 +66,16 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         mDate.setText(mExpense.getDate().getTime().toString());
 
 
-        if(mExpense.getImage().length > 0)
-            this.mImage.setImageBitmap(ImageUtils.getBitmap(mExpense.getImage()));
-        else
-            this.mImage.setImageResource(R.drawable.expense_icon);
+        try {
+            Bitmap image = mExpense.getFullImage();
+            this.mImage.setImageBitmap(image);
+        } catch (FileNotFoundException e) {
+            if(mExpense.getThumbnail().length > 0)
+                this.mImage.setImageBitmap(ImageUtils.getBitmap(mExpense.getThumbnail()));
+            else
+                this.mImage.setImageResource(R.drawable.expense_icon);
+        }
+
 
         mImage.setOnClickListener(new View.OnClickListener() {
             @Override
