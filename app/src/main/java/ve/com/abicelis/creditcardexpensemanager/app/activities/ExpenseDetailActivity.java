@@ -73,7 +73,7 @@ public class ExpenseDetailActivity extends AppCompatActivity implements  View.On
             this.mImage.setImageBitmap(image);
             mImage.setOnClickListener(this);
         } catch (FileNotFoundException e) {
-            if(mExpense.getThumbnail().length > 0)
+            if(mExpense.getThumbnail() != null && mExpense.getThumbnail().length > 0)
                 this.mImage.setImageBitmap(ImageUtils.getBitmap(mExpense.getThumbnail()));
             else
                 this.mImage.setImageResource(R.drawable.expense_icon);
