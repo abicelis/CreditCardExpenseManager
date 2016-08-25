@@ -14,6 +14,7 @@ import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardType;
 import ve.com.abicelis.creditcardexpensemanager.enums.Currency;
 import ve.com.abicelis.creditcardexpensemanager.enums.ExpenseCategory;
 import ve.com.abicelis.creditcardexpensemanager.enums.ExpenseType;
+import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotDeleteDataException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotGetDataException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotInsertDataException;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
@@ -156,6 +157,14 @@ public class ExpenseManagerDAO {
 
 
 
+    public boolean deleteExpense(int expenseId) throws CouldNotDeleteDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+        String[] whereArgs = new String[]{String.valueOf(expenseId)};
+
+        return db.delete(ExpenseManagerContract.ExpenseTable.TABLE_NAME,
+                ExpenseManagerContract.ExpenseTable._ID + " =?",
+                whereArgs) > 0;
+    }
 
     public long insertExpense(int creditPeriodId, Expense expense) throws CouldNotInsertDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
