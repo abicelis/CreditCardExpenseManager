@@ -109,7 +109,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private boolean refreshExpenses() {
+    public boolean refreshExpenses() {
         getDao();
         int oldCount = expenses.size();
 
@@ -117,6 +117,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         expenses.addAll(dao.getExpensesFromCreditPeriod(creditPeriods.get(0).getId()));
 
         return (expenses.size() == oldCount+1);
+    }
+
+    public void refreshExpensesAndChart() {
+        if(chartFragment != null)
+            chartFragment.refreshChartData();
+        else
+            Toast.makeText(this, "Error on onDismiss, chartFragment == null!", Toast.LENGTH_SHORT).show();
+
+        if(refreshExpenses()) {
+            adapter.notifyItemInserted(0);
+            adapter.notifyItemRangeChanged(1, expenses.size()-1);
+            layoutManager.scrollToPosition(0);
+        } else {
+            adapter.notifyDataSetChanged();
+        }
     }
 
 
@@ -210,18 +225,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onDismiss(DialogInterface dialogInterface) {
-        if(chartFragment != null)
-            chartFragment.refreshChartData();
-        else
-            Toast.makeText(this, "Error on onDismiss, chartFragment == null!", Toast.LENGTH_SHORT).show();
-
-        if(refreshExpenses()) {
-            adapter.notifyItemInserted(0);
-            adapter.notifyItemRangeChanged(1, expenses.size()-1);
-            layoutManager.scrollToPosition(0);
-        } else {
-            adapter.notifyDataSetChanged();
-        }
+        refreshExpensesAndChart();
     }
+
+
 
 }

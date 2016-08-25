@@ -1,21 +1,27 @@
 package ve.com.abicelis.creditcardexpensemanager.app.holders;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.activities.ExpenseDetailActivity;
+import ve.com.abicelis.creditcardexpensemanager.app.activities.HomeActivity;
 import ve.com.abicelis.creditcardexpensemanager.app.adapters.ExpensesAdapter;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.ImageUtils;
+import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
+import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotDeleteDataException;
 import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 
 /**
@@ -23,18 +29,20 @@ import ve.com.abicelis.creditcardexpensemanager.model.Expense;
  */
 public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-    private ExpensesAdapter mAdapter;
+    public ExpensesAdapter mAdapter;
     private Context mContext;
-    private Activity mActivity;
+    private HomeActivity mActivity;
 
     //UI
-    private LinearLayout mContainer;
+    private RelativeLayout mContainer;
     private TextView mAmount;
     private TextView mDescription;
     private TextView mDate;
     private ImageView mImage;
+    private TextView mCategory;
+    private TextView mType;
     private ImageView mDeleteIcon;
-    private ImageView mEditIcon;
+    //private ImageView mEditIcon;
 
     //DATA
     private Expense current;
@@ -43,16 +51,18 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
     public ExpensesViewHolder(View itemView) {
         super(itemView);
 
-        mContainer = (LinearLayout) itemView.findViewById(R.id.list_item_expenses_container);
+        mContainer = (RelativeLayout) itemView.findViewById(R.id.list_item_expenses_container);
         mAmount = (TextView) itemView.findViewById(R.id.list_item_expenses_txt_amount);
         mDescription = (TextView) itemView.findViewById(R.id.list_item_expenses_txt_description);
         mDate = (TextView) itemView.findViewById(R.id.list_item_expenses_txt_date);
         mImage = (ImageView) itemView.findViewById(R.id.list_item_expenses_img_image);
+        mCategory = (TextView) itemView.findViewById(R.id.list_item_expenses_txt_category);
+        mType = (TextView) itemView.findViewById(R.id.list_item_expenses_txt_type);
         mDeleteIcon = (ImageView) itemView.findViewById(R.id.list_item_expenses_img_delete);
-        mEditIcon = (ImageView) itemView.findViewById(R.id.list_item_expenses_img_edit);
+        //mEditIcon = (ImageView) itemView.findViewById(R.id.list_item_expenses_img_edit);
     }
 
-    public void setData(ExpensesAdapter adapter, Context context, Activity activity, Expense current, int position) {
+    public void setData(ExpensesAdapter adapter, Context context, HomeActivity activity, Expense current, int position) {
         this.mAdapter = adapter;
         this.mContext = context;
         this.mActivity = activity;
@@ -61,10 +71,16 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
 
         this.mAmount.setText(current.getAmount().toPlainString() + " " + current.getCurrency().getCode());
         this.mDescription.setText(current.getDescription());
-        this.mDate.setText(current.getDate().getTime().toString());
+        this.mDate.setText(current.getShortDateString());
+
+        this.mCategory.setText(current.getExpenseCategory().getFriendlyName());
+        ((GradientDrawable)this.mCategory.getBackground()).setColor(ContextCompat.getColor(mContext, current.getExpenseCategory().getColor()));
+
+        this.mType.setText(current.getExpenseType().getShortName());
+        ((GradientDrawable)this.mType.getBackground()).setColor(ContextCompat.getColor(mContext, current.getExpenseType().getColor()));
 
 
-        if(current.getThumbnail().length > 0)
+        if(current.getThumbnail() != null && current.getThumbnail().length > 0)
             this.mImage.setImageBitmap(ImageUtils.getBitmap(current.getThumbnail()));
         else
             this.mImage.setImageResource(R.drawable.expense_icon);
@@ -73,9 +89,10 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
 
     public void setListeners() {
         mDeleteIcon.setOnClickListener(this);
-        mEditIcon.setOnClickListener(this);
+        //mEditIcon.setOnClickListener(this);
         mContainer.setOnClickListener(this);
     }
+
 
     @Override
     public void onClick(View view) {
@@ -94,10 +111,34 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
                 mActivity.startActivity(expenseDetailIntent, options.toBundle());
 
                 break;
-            default:
-                Toast.makeText(mDeleteIcon.getContext(), "You clicked on something on list_item_expenses!", Toast.LENGTH_SHORT).show();
+
+            case R.id.list_item_expenses_img_delete:
+
+                DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        mAdapter.removeExpense(position);
+                        mAdapter.notifyItemRemoved(position);
+                        mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+                        try {
+                            new ExpenseManagerDAO(mContext).deleteExpense(current.getId());
+                            mActivity.refreshExpensesAndChart();
+                        }catch (CouldNotDeleteDataException e) {
+                            Toast.makeText(mActivity, "There was an error deleting this expense!", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                builder.setTitle("Delete expense")
+                        .setMessage("Are you sure you want to delete this expense?")
+                        .setPositiveButton("Yes", listener)
+                        .setNegativeButton("No", null)
+                        .show();
                 break;
 
+            //case R.id.list_item_expenses_img_edit:
+            //    break;
         }
     }
 }

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
+import ve.com.abicelis.creditcardexpensemanager.app.activities.HomeActivity;
 import ve.com.abicelis.creditcardexpensemanager.app.holders.ExpensesViewHolder;
 import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 
@@ -21,9 +22,9 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesViewHolder> {
     private List<Expense> mExpenses;
     private LayoutInflater mInflater;
     private Context mContext;
-    private Activity mActivity;
+    private HomeActivity mActivity;
 
-    public ExpensesAdapter(Context context, Activity activity,  List<Expense> expenses) {
+    public ExpensesAdapter(Context context, HomeActivity activity, List<Expense> expenses) {
         mContext = context;
         mActivity = activity;
         mExpenses = expenses;
@@ -47,5 +48,9 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesViewHolder> {
     @Override
     public int getItemCount() {
         return mExpenses.size();
+    }
+
+    public void removeExpense(int position) {
+        mExpenses.remove(position);
     }
 }
