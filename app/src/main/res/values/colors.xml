@@ -25,4 +25,16 @@
     <color name="create_expense_ocr_background">#99339955</color>
 
 
+    /*ExpenseCategories*/
+    <color name="expense_category_1">#AB47BC</color>
+    <color name="expense_category_2">#5C6BC0</color>
+    <color name="expense_category_3">#009688</color>
+    <color name="expense_category_4">#43A047</color>
+    <color name="expense_category_5">#FB8C00</color>
+    <color name="expense_category_6">#8D6E63</color>
+    <color name="expense_category_7">#FF5722</color>
+    <color name="expense_category_8">#757575</color>
+
+
+
 </resources>
