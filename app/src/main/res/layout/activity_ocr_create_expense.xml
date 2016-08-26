@@ -47,7 +47,7 @@
                     android:layout_width="200dp"
                     android:layout_height="150dp"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/ocr_window_background"
+                    android:background="@drawable/background_ocr_window"
                     />
 
                 <ImageView
@@ -93,7 +93,7 @@
                     android:layout_marginLeft="38dp"
                     android:layout_marginRight="38dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/receipt_background"
+                    android:src="@drawable/background_receipt"
                     />
                 <RelativeLayout
                     android:layout_width="match_parent"

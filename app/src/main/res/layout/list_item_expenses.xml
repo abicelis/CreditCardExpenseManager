@@ -81,7 +81,7 @@
             android:layout_marginRight="6dp"
             android:layout_marginBottom="6dp"
             android:textColor="@android:color/white"
-            android:background="@drawable/round_corner_shape"
+            android:background="@drawable/shape_round_corner"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="ORD" />
@@ -100,7 +100,7 @@
             android:layout_marginBottom="6dp"
             android:layout_marginRight="8dp"
             android:textColor="@android:color/white"
-            android:background="@drawable/round_corner_shape"
+            android:background="@drawable/shape_round_corner"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Category" />

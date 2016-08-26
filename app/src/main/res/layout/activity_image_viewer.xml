@@ -10,7 +10,7 @@
         android:id="@+id/image_viewer_imageview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/expense_icon"
+        android:src="@drawable/icon_expense"
         android:transitionName="@string/transition_name_expense_detail_image"/>
 
 

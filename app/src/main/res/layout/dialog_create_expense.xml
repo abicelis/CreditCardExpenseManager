@@ -57,7 +57,7 @@
                     android:id="@+id/dialog_expense_img_image"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
-                    android:src="@drawable/camera_icon"
+                    android:src="@drawable/icon_camera"
                     />
             </LinearLayout>
 

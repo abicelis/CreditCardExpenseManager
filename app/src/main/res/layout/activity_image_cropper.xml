@@ -27,7 +27,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_weight="1"
-                android:background="@drawable/cropper_cancel_button"
+                android:background="@drawable/button_cropper_cancel"
                 android:gravity="center" />
 
         </RelativeLayout>
@@ -44,7 +44,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_weight="1"
-                android:background="@drawable/cropper_rotate_button"
+                android:background="@drawable/button_cropper_rotate"
                 android:gravity="center" />
         </RelativeLayout>
 
@@ -60,7 +60,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_weight="1"
-                android:background="@drawable/cropper_check_button"
+                android:background="@drawable/button_cropper_check"
                 android:gravity="center" />
         </RelativeLayout>
 

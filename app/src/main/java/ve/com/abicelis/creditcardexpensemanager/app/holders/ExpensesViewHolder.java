@@ -83,7 +83,7 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
         if(current.getThumbnail() != null && current.getThumbnail().length > 0)
             this.mImage.setImageBitmap(ImageUtils.getBitmap(current.getThumbnail()));
         else
-            this.mImage.setImageResource(R.drawable.expense_icon);
+            this.mImage.setImageResource(R.drawable.icon_expense);
 
     }
 

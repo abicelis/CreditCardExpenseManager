@@ -9,7 +9,7 @@
         android:id="@+id/expense_detail_image"
         android:layout_width="match_parent"
         android:layout_height="240dp"
-        android:src="@drawable/expense_icon"
+        android:src="@drawable/icon_expense"
         android:scaleType="centerCrop"
         android:transitionName="@string/transition_name_expense_detail_image"/>
 
