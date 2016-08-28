@@ -30,5 +30,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-vision:9.4.0'
     compile 'com.github.lecho:hellocharts-library:1.5.8@aar'
     compile 'com.githang:com.edmodo.cropper:1.0.2'
+    compile 'com.code-troopers.betterpickers:library:3.0.0'
+
 
 }
