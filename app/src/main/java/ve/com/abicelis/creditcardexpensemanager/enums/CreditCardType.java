@@ -5,7 +5,7 @@ package ve.com.abicelis.creditcardexpensemanager.enums;
  */
 public enum CreditCardType {
 
-    AMEX("American ExpressEuro"),
+    AMEX("American Express"),
     DISCOVER("Discover"),
     MASTERCARD("Master-Card"),
     VISA("Visa");
