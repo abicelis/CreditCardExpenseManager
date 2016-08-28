@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.adapters.ExpensesAdapter;
 import ve.com.abicelis.creditcardexpensemanager.app.dialogs.CreateExpenseDialogFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.LineChartFragment;
+import ve.com.abicelis.creditcardexpensemanager.app.fragments.NavigationDrawerFragment;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditPeriod;
@@ -56,7 +58,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        //setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_home_with_drawer);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.home_chart_container, new LineChartFragment()).commit();
         }
@@ -72,7 +76,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         handler.post(r);
 
 
-
+        setUpDrawer();
         setUpSwipeRefresh();
         setUpToolbar();
         setUpFab();
@@ -150,7 +154,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
+    private void setUpDrawer() {
+        NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.nav_drawer_fragment);
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerFragment.setUpDrawer(R.id.nav_drawer_fragment, drawerLayout, toolbar);
+    }
 
 
 
