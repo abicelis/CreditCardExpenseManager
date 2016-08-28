@@ -1,24 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:background="#902020">
+    android:background="@drawable/background_welcome_activity"
+    >
 
-    <ImageView
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:src="@drawable/icon_expense"/>
+        android:layout_centerInParent="true">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textColor="@android:color/white"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/activity_welcome_txt_title" />
+        <ImageView
+            android:id="@+id/activity_welcome_img_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/icon_expense"/>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/activity_welcome_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/activity_welcome_img_icon"
+            android:textColor="@android:color/white"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/activity_welcome_txt_title" />
+
+
+        <TextView
+            android:id="@+id/activity_welcome_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/activity_welcome_title"
+            android:textColor="@android:color/white"
+            android:textAppearance="?android:attr/textAppearance"
+            android:text="@string/activity_welcome_txt_subtitle" />
+
+
+        <Button
+            android:id="@+id/activity_welcome_add_credit_card"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="70dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/activity_welcome_subtitle"
+            android:text="@string/activity_welcome_button_add_cc"
+            android:background="@android:color/white"
+            style="?attr/borderlessButtonStyle"/>
+
+        <Button
+            android:id="@+id/activity_welcome_go_home"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/activity_welcome_add_credit_card"
+            android:text="Home!"
+            android:background="@android:color/white"
+            style="?attr/borderlessButtonStyle"/>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
