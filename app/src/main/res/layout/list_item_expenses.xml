@@ -25,7 +25,7 @@
             android:layout_height="60dp"
             android:layout_margin="7dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/expense_icon"/>
+            android:src="@drawable/icon_expense"/>
 
 
             <android.support.v7.widget.AppCompatTextView

@@ -1,17 +1,26 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+         Customize your theme here.
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlNormal">@android:color/white</item>
     </style>
 
     <style name="LargeTextView" parent="Widget.AppCompat.TextView.SpinnerItem">
         <item name="android:textSize">@dimen/text_size_large</item>
         <item name="android:layout_margin">@dimen/activity_horizontal_margin</item>
+    </style>
 
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:textColorPrimary">@android:color/white</item>   <!-- Text color of toolbar title text -->
+        <item name="android:textColorSecondary">@android:color/white</item> <!-- Text color of navigation drawer icon-->
+        <item name="color">@android:color/white</item> <!-- Text color of navigation drawer icon-->
+    </style>
+
+    <style name="SpinnerStyle" parent="AppTheme">
+        <item name="colorControlNormal">@color/gray_400</item>
     </style>
 
 </resources>

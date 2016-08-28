@@ -1,6 +1,35 @@
 <resources>
     <string name="app_name">CC Manager</string>
 
+    /*Nav Drawer*/
+    <string name="drawer_open">Drawer opened!</string>
+    <string name="drawer_closed">Drawer Closed!</string>
+
+    /*Welcome Activity*/
+    <string name="activity_welcome_txt_title">Welcome to CC Manager</string>
+    <string name="activity_welcome_txt_subtitle">To get started, add a new Credit Card</string>
+    <string name="activity_welcome_button_add_cc">Add a Credit Card</string>
+
+    /*Add new Credit Card Activity *
+    <string name="activity_add_new_cc_title">Add a Credit Card</string>
+    <string name="activity_add_new_cc_alias">Alias</string>
+    <string name="activity_add_new_cc_bank">Bank Name</string>
+    <string name="activity_add_new_cc_number">Card Number</string>
+    <string name="activity_add_new_cc_currency">Currency</string>
+    <string name="activity_add_new_cc_type">Card Type</string>
+    <string name="activity_add_new_cc_expiration">Card Expiration</string>
+    <string name="activity_add_new_cc_closing_day">Closing Day</string>
+    <string name="activity_add_new_cc_due_day">Due Day</string>
+    <string name="activity_add_new_cc_button_add_cc">Add Credit Card</string>
+    <string name="activity_add_new_cc_expiration_datepicker_button_select">Select</string>
+    <string name="activity_add_new_cc_expiration_datepicker_button_cancel">Cancel</string>
+    <string name="activity_add_new_cc_error_bad_alias">Please enter an alias</string>
+    <string name="activity_add_new_cc_error_bad_closing_due_days">Closing and Due days must be different</string>
+    <string name="activity_add_new_cc_exit_dialog_title">Exit the app</string>
+    <string name="activity_add_new_cc_exit_dialog_message">Are you sure you want to exit CC Manager?</string>
+    <string name="activity_add_new_cc_exit_dialog_button_exit">Yes</string>
+    <string name="activity_add_new_cc_exit_dialog_button_cancel">Cancel</string>
+
 
     /*Expense detail activity*/
     <string name="transition_name_expense_detail_image">expense_detail_image</string>
@@ -9,7 +38,7 @@
     <string name="transition_name_expense_detail_date">expense_detail_date</string>
 
 
-    /*Dialogs*/
+    /*Dialog create expense*/
     <string name="dialog_capture_ocr_text_title">Capture text</string>
 
     <string name="dialog_create_expense_title">Create new Expense</string>

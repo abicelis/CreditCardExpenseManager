@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    /*CreditCard colors*/
+    <color name="list_item_credit_card_gradient_start">#FFA000</color>
+    <color name="list_item_credit_card_gradient_end">#FF6F00</color>
+
+
+    /*Welcome activity */
+    <color name="welcome_activity_gradient_start">#2196F3</color>
+    <color name="welcome_activity_gradient_end">#1565C0</color>
+    <color name="welcome_activity_status_bar">#2196F3</color>
+
+
     <color name="colorPrimary">#009688</color>
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorAccent">#FFCC80</color>
