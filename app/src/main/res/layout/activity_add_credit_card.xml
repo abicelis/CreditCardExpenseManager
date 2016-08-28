@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/add_cc_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:theme="@style/ToolbarTheme"
+        android:background="@color/colorPrimary"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/add_cc_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            >
+
+
+
+
+            <EditText
+                android:id="@+id/add_cc_edit_bank"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/gray_700"
+                android:hint="@string/activity_add_new_cc_bank"
+                android:maxLength="15"
+                android:inputType="text"
+                android:imeOptions="actionNext" />
+
+            <EditText
+                android:id="@+id/add_cc_edit_alias"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/gray_700"
+                android:hint="@string/activity_add_new_cc_alias"
+                android:maxLength="15"
+                android:inputType="text"
+                android:imeOptions="actionNext" />
+
+            <EditText
+                android:id="@+id/add_cc_edit_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/gray_600"
+                android:hint="@string/activity_add_new_cc_number"
+                android:maxLength="30"
+                android:digits="1234567890-"
+                android:inputType="number"
+                android:imeOptions="actionNext" />
+
+            <EditText
+                android:id="@+id/add_cc_edit_expiration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/gray_600"
+                android:hint="@string/activity_add_new_cc_expiration"
+                android:imeOptions="actionNext" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:text="@string/activity_add_new_cc_currency"/>
+            <Spinner
+                android:id="@+id/add_cc_spinner_currency"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:theme="@style/SpinnerStyle"/>
+
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:text="@string/activity_add_new_cc_type"/>
+            <Spinner
+                android:id="@+id/add_cc_spinner_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:theme="@style/SpinnerStyle"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/activity_add_new_cc_closing_day"/>
+
+                    <Spinner
+                        android:id="@+id/add_cc_edit_closing"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:theme="@style/SpinnerStyle"/>
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/activity_add_new_cc_due_day"/>
+
+                    <Spinner
+                        android:id="@+id/add_cc_edit_due"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:theme="@style/SpinnerStyle"/>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <Button
+        android:id="@+id/add_cc_button_add_cc"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="8dp"
+        android:text="@string/activity_add_new_cc_button_add_cc"
+        android:background="@color/colorPrimary"
+        android:textColor="@android:color/white"
+        style="?attr/borderlessButtonStyle"/>
+
+</LinearLayout>
