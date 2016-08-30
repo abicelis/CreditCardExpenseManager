@@ -36,6 +36,7 @@ import ve.com.abicelis.creditcardexpensemanager.model.Payment;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener, DialogInterface.OnDismissListener {
 
     //Data
+    CreditCard activeCreditCard = null;
     List<CreditCard> creditCards = new ArrayList<>();
     List<CreditPeriod> creditPeriods = new ArrayList<>();
     List<Expense> expenses = new ArrayList<>();
@@ -70,13 +71,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         final Runnable r = new Runnable() {
             public void run() {
                 getData();
+                setUpDrawer();
                 setUpExpensesRecyclerView();
             }
         };
         handler.post(r);
 
 
-        setUpDrawer();
         setUpSwipeRefresh();
         setUpToolbar();
         setUpFab();
@@ -101,6 +102,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         creditCards.clear();
         creditCards.addAll(dao.getCreditCardList());
+
+        if(creditCards.size() > 0)
+            activeCreditCard = creditCards.get(0);
 
         creditPeriods.clear();
         creditPeriods.addAll(dao.getCreditPeriodListFromCard(creditCards.get(0).getId()));
@@ -157,7 +161,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void setUpDrawer() {
         NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.nav_drawer_fragment);
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerFragment.setUpDrawer(R.id.nav_drawer_fragment, drawerLayout, toolbar);
+        drawerFragment.setUpDrawer(R.id.nav_drawer_fragment, drawerLayout, toolbar, activeCreditCard);
     }
 
 

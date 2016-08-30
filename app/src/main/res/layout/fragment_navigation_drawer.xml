@@ -7,23 +7,30 @@
     android:background="@android:color/white">
 
     <RelativeLayout
-        android:id="@+id/nav_header_container"
+        android:id="@+id/nav_drawer_header_container"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
         android:background="@color/colorPrimary">
 
-        <ImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:scaleType="fitCenter"
-            android:src="@android:drawable/sym_action_chat"
-            />
+            >
+
+            <include
+                android:id="@+id/nav_drawer_credit_card"
+                layout="@layout/list_item_credit_card"/>
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview_drawer_list"
+        android:id="@+id/nad_drawer_recyclerview_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

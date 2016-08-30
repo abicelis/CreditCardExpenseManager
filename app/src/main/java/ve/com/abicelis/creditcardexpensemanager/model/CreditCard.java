@@ -1,6 +1,10 @@
 package ve.com.abicelis.creditcardexpensemanager.model;
 
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -10,7 +14,7 @@ import ve.com.abicelis.creditcardexpensemanager.enums.Currency;
 /**
  * Created by Alex on 6/8/2016.
  */
-public class CreditCard {
+public class CreditCard implements Serializable {
 
     private int id;
     private String cardAlias;
@@ -24,25 +28,7 @@ public class CreditCard {
 
     private Map<Integer, CreditPeriod> creditPeriods;
 
-
-    public CreditCard(int id, String cardAlias, String bankName, String cardNumber, Currency currency, CreditCardType cardType, Calendar cardExpiration, int closingDay, int dueDay, Map<Integer, CreditPeriod> creditPeriods) {
-        this.id = id;
-        this.cardAlias = cardAlias;
-        this.bankName = bankName;
-        this.cardNumber = cardNumber;
-        this.currency = currency;
-        this.cardType = cardType;
-        this.dueDay = dueDay;
-        this.closingDay = closingDay;
-        this.creditPeriods = creditPeriods;
-
-        this.cardExpiration = Calendar.getInstance();
-        this.cardExpiration.setTimeZone(cardExpiration.getTimeZone());
-        this.cardExpiration.setTimeInMillis(cardExpiration.getTimeInMillis());
-    }
-
-    public CreditCard(int id, String cardAlias, String bankName, String cardNumber, Currency currency, CreditCardType cardType, Calendar cardExpiration, int closingDay, int dueDay) {
-        this.id = id;
+    public CreditCard(String cardAlias, String bankName, String cardNumber, Currency currency, CreditCardType cardType, Calendar cardExpiration, int closingDay, int dueDay) {
         this.cardAlias = cardAlias;
         this.bankName = bankName;
         this.cardNumber = cardNumber;
@@ -52,6 +38,21 @@ public class CreditCard {
         this.dueDay = dueDay;
         this.closingDay = closingDay;
     }
+
+    public CreditCard(int id, String cardAlias, String bankName, String cardNumber, Currency currency, CreditCardType cardType, Calendar cardExpiration, int closingDay, int dueDay) {
+        this(cardAlias, bankName, cardNumber, currency, cardType, cardExpiration, closingDay, dueDay);
+        this.id = id;
+    }
+
+    public CreditCard(int id, String cardAlias, String bankName, String cardNumber, Currency currency, CreditCardType cardType, Calendar cardExpiration, int closingDay, int dueDay, Map<Integer, CreditPeriod> creditPeriods) {
+        this(id, cardAlias, bankName, cardNumber, currency, cardType, cardExpiration, closingDay, dueDay);
+        this.cardExpiration = Calendar.getInstance();
+        this.cardExpiration.setTimeZone(cardExpiration.getTimeZone());
+        this.cardExpiration.setTimeInMillis(cardExpiration.getTimeInMillis());
+    }
+
+
+
 
     public int getId() {
         return id;
@@ -79,6 +80,12 @@ public class CreditCard {
 
     public Calendar getCardExpiration() {
         return cardExpiration;
+    }
+
+    public String getShortCardExpirationString() {
+        SimpleDateFormat yearFormatter = new SimpleDateFormat("yy", Locale.getDefault());
+        SimpleDateFormat monthFormatter = new SimpleDateFormat("MM", Locale.getDefault());
+        return yearFormatter.format(cardExpiration.getTime()) + "/" + monthFormatter.format(cardExpiration.getTime());
     }
 
     public int getClosingDay() {
