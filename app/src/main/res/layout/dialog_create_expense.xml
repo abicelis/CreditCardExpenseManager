@@ -22,7 +22,7 @@
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:layout_marginBottom="20dp"
-            android:text="Create an Expense"/>
+            android:text="@string/dialog_create_expense_title"/>
 
         <LinearLayout
             android:layout_width="match_parent"
