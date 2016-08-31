@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <gradient android:angle="270"
-        android:startColor="@color/list_item_credit_card_gradient_start"
-        android:endColor="@color/list_item_credit_card_gradient_end" />
-</shape>

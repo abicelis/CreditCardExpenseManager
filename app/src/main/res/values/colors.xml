@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    /*CreditCard colors*/
-    <color name="list_item_credit_card_gradient_start">#FFA000</color>
-    <color name="list_item_credit_card_gradient_end">#FF6F00</color>
-
 
     /*Welcome activity */
     <color name="welcome_activity_gradient_start">#2196F3</color>
@@ -46,6 +42,34 @@
     <color name="expense_category_6">#8D6E63</color>
     <color name="expense_category_7">#FF5722</color>
     <color name="expense_category_8">#757575</color>
+
+
+    /* Colors for CC Background enum */
+    <color name="cc_text_white">#FAFAFA</color>
+    <color name="cc_text_black">#424242</color>
+
+    <color name="cc_foreground_red">#B12025</color>
+    <color name="cc_foreground_green">#006838</color>
+    <color name="cc_foreground_gold">#BF8329</color>
+    <color name="cc_foreground_orange">#BF1E2D</color>
+    <color name="cc_foreground_light_blue">#0061EF</color>
+    <color name="cc_foreground_light_gray">#666666</color>
+
+
+    <color name="cc_background_dark_red_start">#440A11</color>
+    <color name="cc_background_dark_red_end">#231F20</color>
+    <color name="cc_background_red_start">#5E0000</color>
+    <color name="cc_background_red_end">#800000</color>
+    <color name="cc_background_dark_green_start">#0A723A</color>
+    <color name="cc_background_dark_green_end">#231F20</color>
+    <color name="cc_background_gold_start">#D2AC60</color>
+    <color name="cc_background_gold_end">#F4E6D0</color>
+    <color name="cc_background_orange_start">#832117</color>
+    <color name="cc_background_orange_end">#EF6E36</color>
+    <color name="cc_background_light_blue_start">#035372</color>
+    <color name="cc_background_light_blue_end">#00AEEF</color>
+    <color name="cc_background_light_gray_start">#818285</color>
+    <color name="cc_background_light_gray_end">#BBBDBF</color>
 
 
 

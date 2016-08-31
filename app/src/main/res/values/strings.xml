@@ -20,11 +20,13 @@
     <string name="activity_add_new_cc_expiration">Card Expiration</string>
     <string name="activity_add_new_cc_closing_day">Closing Day</string>
     <string name="activity_add_new_cc_due_day">Due Day</string>
+    <string name="activity_add_new_cc_background">Preview and Background Color</string>
     <string name="activity_add_new_cc_button_add_cc">Add Credit Card</string>
     <string name="activity_add_new_cc_expiration_datepicker_button_select">Select</string>
     <string name="activity_add_new_cc_expiration_datepicker_button_cancel">Cancel</string>
     <string name="activity_add_new_cc_error_bad_alias">Please enter an alias</string>
     <string name="activity_add_new_cc_error_bad_closing_due_days">Closing and Due days must be different</string>
+    <string name="activity_add_new_cc_error_cc_background_not_selected">Please select a Background for the Credit Card</string>
     <string name="activity_add_new_cc_exit_dialog_title">Exit the app</string>
     <string name="activity_add_new_cc_exit_dialog_message">Are you sure you want to exit CC Manager?</string>
     <string name="activity_add_new_cc_exit_dialog_button_exit">Yes</string>
@@ -40,14 +42,15 @@
 
     /*Dialog create expense*/
     <string name="dialog_capture_ocr_text_title">Capture text</string>
-
     <string name="dialog_create_expense_title">Create new Expense</string>
     <string name="dialog_create_expense_amount">Amount</string>
     <string name="dialog_create_expense_image">Image</string>
     <string name="dialog_create_expense_description">Description</string>
-
     <string name="dialog_create_expense_error_bad_amount">Please enter a valid amount</string>
 
+
+    /*Dialog select CC*/
+    <string name="dialog_select_cc_title">Select a Credit Card</string>
 
 
     /*Labels for ocr captured receipt*/
