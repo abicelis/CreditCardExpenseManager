@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
+    android:id="@+id/list_item_credit_card_cardview_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="280dp"
+    android:layout_height="160dp"
     android:layout_marginLeft="5dp"
     android:layout_marginTop="5dp"
     android:layout_marginRight="5dp"
@@ -12,36 +12,65 @@
     >
 
     <RelativeLayout
-        android:id="@+id/list_item_expenses_container"
+        android:id="@+id/list_item_credit_card_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background_credit_card"
+        android:padding="14dp"
+        android:background="@drawable/cc_background_dark_red"
         android:orientation="horizontal">
 
 
-
+        <TextView
+            android:id="@+id/list_item_credit_card_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray_300"
+            android:textSize="14sp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Credit Card" />
 
         <TextView
             android:id="@+id/list_item_credit_card_bank_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
-            android:textColor="@color/gray_800"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/gray_300"
             android:textSize="24sp"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Wells Fargo" />
+
+        <TextView
+            android:id="@+id/list_item_credit_card_alias"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/list_item_credit_card_bank_name"
+            android:textColor="@color/gray_300"
+            android:textSize="16sp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Alias of Card" />
+
+        <TextView
+            android:id="@+id/list_item_credit_card_currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/list_item_credit_card_alias"
+            android:textSize="12sp"
+            android:textColor="@color/gray_300"
+            android:maxLines="1"
+            android:text="USD" />
 
 
         <ImageView
             android:id="@+id/list_item_credit_card_chip"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_below="@+id/list_item_credit_card_bank_name"
-            android:layout_marginTop="0dp"
-            android:layout_marginLeft="20dp"
-            android:src="@drawable/credit_card_chip"/>
+            android:layout_marginTop="30dp"
+            android:src="@drawable/cc_chip"/>
 
 
         <TextView
@@ -49,8 +78,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/list_item_credit_card_chip"
-            android:layout_marginLeft="20dp"
-            android:textColor="@color/gray_800"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/gray_300"
             android:textSize="21sp"
             android:ellipsize="end"
             android:maxLines="1"
@@ -61,12 +90,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/list_item_credit_card_number"
-            android:layout_marginTop="6dp"
-            android:layout_marginLeft="140dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="120dp"
             android:gravity="right"
             android:textSize="8dp"
-
-            android:textColor="@color/gray_900"
+            android:textColor="@color/gray_300"
             android:text="VALID\nTHRU" />
 
         <TextView
@@ -75,10 +103,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/list_item_credit_card_number"
             android:layout_toRightOf="@id/list_item_credit_card_expiration_label"
-            android:gravity="right"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="12dp"
             android:layout_marginLeft="8dp"
-            android:textColor="@color/gray_800"
+            android:textColor="@color/gray_300"
             android:maxLines="1"
             android:text="08/02" />
 
@@ -87,13 +114,10 @@
             android:id="@+id/list_item_credit_card_type"
             android:layout_width="50dp"
             android:layout_height="30dp"
-            android:layout_below="@id/list_item_credit_card_number"
-            android:layout_toRightOf="@+id/list_item_credit_card_expiration"
-            android:layout_marginTop="6dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
             android:src="@drawable/logo_visa"/>
+
 
 
 

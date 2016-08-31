@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/background_0">
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <gradient android:angle="225"
+                android:startColor="@color/cc_background_orange_start"
+                android:endColor="@color/cc_background_orange_end" />
+        </shape>
+    </item>
+    <item android:id="@+id/background_1" android:drawable="@drawable/cc_foreground_shape_1"/>
+</layer-list>
