@@ -1,8 +1,9 @@
 package ve.com.abicelis.creditcardexpensemanager.app.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,14 +13,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.adapters.NavigationDrawerAdapter;
+import ve.com.abicelis.creditcardexpensemanager.app.dialogs.SelectCreditCardDialogFragment;
+import ve.com.abicelis.creditcardexpensemanager.app.holders.CreditCardViewHolder;
+import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
 import ve.com.abicelis.creditcardexpensemanager.model.NavigationDrawerItem;
 
@@ -33,56 +37,30 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
 
     //DATA
     private CreditCard mActiveCreditCard = null;
+    private ExpenseManagerDAO mDao;
 
     //UI
+    CreditCardViewHolder holder;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-    TextView bankName;
-    TextView cardNumber;
-    TextView cardExpiration;
-    ImageView cardType;
+    private RelativeLayout mContainer;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_navigation_drawer, container);
 
-        View creditCardView = view.findViewById(R.id.nav_drawer_credit_card);
-        bankName = (TextView) creditCardView.findViewById(R.id.list_item_credit_card_bank_name);
-        cardNumber = (TextView) creditCardView.findViewById(R.id.list_item_credit_card_number);
-        cardExpiration = (TextView) creditCardView.findViewById(R.id.list_item_credit_card_expiration);
-        cardType = (ImageView) creditCardView.findViewById(R.id.list_item_credit_card_type);
+        mContainer = (RelativeLayout) view.findViewById(R.id.nav_drawer_header_container);
+        mContainer.setOnClickListener(this);
 
-        //Bundle bundle = getArguments();
-        //mActiveCreditCard = (CreditCard) bundle.getSerializable(ACTIVE_CREDIT_CARD);
+        View creditCardView = view.findViewById(R.id.nav_drawer_credit_card);
+        View creditCardListItem = creditCardView.findViewById(R.id.list_item_credit_card_container);
+        holder = new CreditCardViewHolder(creditCardListItem);
 
         setUpRecyclerView(view);
-        //setUpActiveCC(view);
 
         return view;
-    }
-
-    private void setUpActiveCC(CreditCard activeCreditCard) {
-        mActiveCreditCard = activeCreditCard;
-
-        bankName.setText(mActiveCreditCard.getBankName());
-        cardNumber.setText(mActiveCreditCard.getCardNumber());
-        cardExpiration.setText(mActiveCreditCard.getShortCardExpirationString());
-
-        switch(mActiveCreditCard.getCardType()) {
-            case AMEX:
-                cardType.setImageResource(R.drawable.logo_amex);
-                break;
-            case DISCOVER:
-                cardType.setImageResource(R.drawable.logo_discover);
-                break;
-            case MASTERCARD:
-                cardType.setImageResource(R.drawable.logo_mastercard);
-                break;
-            case VISA:
-                cardType.setImageResource(R.drawable.logo_visa);
-                break;
-        }
     }
 
     private void setUpRecyclerView(View view) {
@@ -104,11 +82,14 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
 
     }
 
-    public void setUpDrawer(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar, CreditCard activeCreditCard) {
 
-        setUpActiveCC(activeCreditCard);
+    public void setUpDrawer(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar, CreditCard activeCreditCard, ExpenseManagerDAO dao) {
+
+        mActiveCreditCard = activeCreditCard;
+        holder.setData(getContext(), mActiveCreditCard, 0);
 
         mDrawerLayout = drawerLayout;
+        mDao = dao;
 
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout,toolbar, R.string.drawer_open, R.string.drawer_closed) {
             @Override
@@ -138,8 +119,18 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
         });
     }
 
+
     @Override
     public void onClick(View view) {
-        Toast.makeText(getActivity(), "NAvDrawer Something was clicked", Toast.LENGTH_SHORT).show();
+        int i = view.getId();
+        switch (i) {
+            case R.id.nav_drawer_header_container:
+                List<CreditCard> creditCardList = mDao.getCreditCardList();
+
+                FragmentManager fm = getFragmentManager();
+                SelectCreditCardDialogFragment dialog = SelectCreditCardDialogFragment.newInstance(creditCardList);
+                dialog.show(fm, "fragment_dialog_create_expense");
+
+        }
     }
 }
