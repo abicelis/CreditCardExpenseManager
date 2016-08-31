@@ -22,6 +22,7 @@ public final class ExpenseManagerContract {
         public static final TableColumn COLUMN_NAME_CARD_EXPIRATION = new TableColumn(DataType.TEXT, "cardexpiration");
         public static final TableColumn COLUMN_NAME_CLOSING_DAY = new TableColumn(DataType.TEXT, "closingday");
         public static final TableColumn COLUMN_NAME_DUE_DAY = new TableColumn(DataType.TEXT, "dueday");
+        public static final TableColumn COLUMN_NAME_BACKGROUND = new TableColumn(DataType.TEXT, "background");
     }
 
     /* CreditPeriod Table */

@@ -64,8 +64,9 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
                         ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_TYPE.getName() + COMMA_SEP +
                         ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_EXPIRATION.getName() + COMMA_SEP +
                         ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CLOSING_DAY.getName() + COMMA_SEP +
-                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_DUE_DAY.getName() +
-                        ") VALUES (0, 'MockCardAlias', 'MockBank', '1234-5678-1234-5678', 'VEF', 'MASTERCARD', '0', " + closingDay + ", " + dueDay + "); ";
+                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_DUE_DAY.getName() + COMMA_SEP +
+                        ExpenseManagerContract.CreditCardTable.COLUMN_NAME_BACKGROUND.getName() +
+                        ") VALUES (0, 'Shopping Card', 'Bank Of America', '1234-5678-1234-5678', 'USD', 'MASTERCARD', '0', " + closingDay + ", " + dueDay + ", 'DARK_RED'); ";
         sqLiteDatabase.execSQL(statement);
 
         cal.add(Calendar.DAY_OF_MONTH, -9);
@@ -131,7 +132,8 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
                 ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_TYPE.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_TYPE.getDataType() + COMMA_SEP +
                 ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_EXPIRATION.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_EXPIRATION.getDataType() + COMMA_SEP +
                 ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CLOSING_DAY.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CLOSING_DAY.getDataType() + COMMA_SEP +
-                ExpenseManagerContract.CreditCardTable.COLUMN_NAME_DUE_DAY.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_DUE_DAY.getDataType() +
+                ExpenseManagerContract.CreditCardTable.COLUMN_NAME_DUE_DAY.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_DUE_DAY.getDataType() + COMMA_SEP +
+                ExpenseManagerContract.CreditCardTable.COLUMN_NAME_BACKGROUND.getName() + " " + ExpenseManagerContract.CreditCardTable.COLUMN_NAME_BACKGROUND.getDataType() +
                 " ); " ;
         sqLiteDatabase.execSQL(statement);
 
