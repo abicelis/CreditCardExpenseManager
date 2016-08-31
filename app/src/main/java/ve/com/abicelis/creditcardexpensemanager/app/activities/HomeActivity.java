@@ -159,9 +159,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setUpDrawer() {
-        NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.nav_drawer_fragment);
+        NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.nav_drawer_fragment);
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerFragment.setUpDrawer(R.id.nav_drawer_fragment, drawerLayout, toolbar, activeCreditCard);
+        drawerFragment.setUpDrawer(R.id.nav_drawer_fragment, drawerLayout, toolbar, activeCreditCard, dao);
     }
 
 
