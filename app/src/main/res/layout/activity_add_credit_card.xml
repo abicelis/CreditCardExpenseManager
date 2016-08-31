@@ -78,31 +78,87 @@
                 android:hint="@string/activity_add_new_cc_expiration"
                 android:imeOptions="actionNext" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:text="@string/activity_add_new_cc_currency"/>
-            <Spinner
-                android:id="@+id/add_cc_spinner_currency"
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:text="@string/activity_add_new_cc_currency"/>-->
+            <!--<Spinner-->
+                <!--android:id="@+id/add_cc_spinner_currency"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:theme="@style/SpinnerStyle"/>-->
+
+
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:text="@string/activity_add_new_cc_type"/>-->
+            <!--<Spinner-->
+                <!--android:id="@+id/add_cc_spinner_type"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:theme="@style/SpinnerStyle"/>-->
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:theme="@style/SpinnerStyle"/>
+                android:orientation="horizontal">
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
 
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
-                android:text="@string/activity_add_new_cc_type"/>
-            <Spinner
-                android:id="@+id/add_cc_spinner_type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:theme="@style/SpinnerStyle"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/activity_add_new_cc_currency"/>
+
+                    <Spinner
+                        android:id="@+id/add_cc_spinner_currency"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:theme="@style/SpinnerStyle"/>
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/activity_add_new_cc_type"/>
+
+                    <Spinner
+                        android:id="@+id/add_cc_spinner_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:theme="@style/SpinnerStyle"/>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -159,8 +215,17 @@
                 </LinearLayout>
 
             </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:text="@string/activity_add_new_cc_background"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/add_cc_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-
+            </android.support.v7.widget.RecyclerView>
 
 
         </LinearLayout>
