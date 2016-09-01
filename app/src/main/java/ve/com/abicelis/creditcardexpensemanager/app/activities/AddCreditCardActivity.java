@@ -107,15 +107,16 @@ public class AddCreditCardActivity extends AppCompatActivity {
 
 
     private void setUpToolbar() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getResources().getString(R.string.activity_add_new_cc_title));
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_material));
+        toolbar.setTitle(getResources().getString(R.string.activity_add_new_cc_title));
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.icon_back_material));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
+        setSupportActionBar(toolbar);
+
     }
 
     private void setUpPickers() {
@@ -252,10 +253,12 @@ public class AddCreditCardActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                for (CreditCard c : mCreditCardList) {
-                    c.setCardExpiration(cardExpirationCal);
+                if(cardExpirationCal != null) {
+                    for (CreditCard c : mCreditCardList) {
+                        c.setCardExpiration(cardExpirationCal);
+                    }
+                    mAdapter.notifyDataSetChanged();
                 }
-                mAdapter.notifyDataSetChanged();
             }
         });
 

@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -33,6 +34,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.activities.ImageCropperActivity;
@@ -164,7 +166,7 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
         String[] nonGrantedPermissions;
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             nonGrantedPermissions = PermissionUtils.checkIfPermissionsAreGranted(getContext(), Manifest.permission.CAMERA);
         else
             nonGrantedPermissions = PermissionUtils.checkIfPermissionsAreGranted(getContext(), Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -191,6 +193,7 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
 
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+
             // Create the File where the photo should go
             File photoFile = null;
             try {
@@ -204,6 +207,14 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
                     imagePath = photoFile.getPath();
                     imageUri = FileProvider.getUriForFile(getContext(), "ve.com.abicelis.creditcardexpensemanager.fileprovider", photoFile);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+
+                    //HACK: Before starting the camera activity on pre-lolipop devices, make sure to grant permissions to all packages that need it
+                    List<ResolveInfo> resInfoList = getContext().getPackageManager().queryIntentActivities(takePictureIntent, PackageManager.MATCH_DEFAULT_ONLY);
+                    for (ResolveInfo resolveInfo : resInfoList) {
+                        String packageName = resolveInfo.activityInfo.packageName;
+                        getContext().grantUriPermission(packageName, imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    }
+
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 }catch (Exception e) {
                     e.printStackTrace();

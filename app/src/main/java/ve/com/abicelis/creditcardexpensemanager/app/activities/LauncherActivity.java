@@ -1,5 +1,6 @@
 package ve.com.abicelis.creditcardexpensemanager.app.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +11,7 @@ import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
 /**
  * Created by Alex on 26/8/2016.
  */
-public class LauncherActivity extends AppCompatActivity {
+public class LauncherActivity extends Activity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -66,6 +66,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             getSupportFragmentManager().beginTransaction().add(R.id.home_chart_container, new LineChartFragment()).commit();
         }
 
+        //TODO: quitar los mocks y las vainas que si get(0) en los credit cards o periods
+        //leer de los sharedpreferences el creditcadr active...?
+        //stuff like that
+        //ah que el dialog de select el active cc refresque esta actividad, o la actividad que sea que este displayed...?
 
         Handler handler = new Handler();
         final Runnable r = new Runnable() {
