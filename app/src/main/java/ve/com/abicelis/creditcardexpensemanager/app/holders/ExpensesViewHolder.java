@@ -99,11 +99,11 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
         int id = view.getId();
         switch (id) {
             case R.id.list_item_expenses_container:
-                Pair[] pairs = new Pair[4];
+                Pair[] pairs = new Pair[1];
                 pairs[0] = new Pair<View, String>(mImage, mActivity.getResources().getString(R.string.transition_name_expense_detail_image));
-                pairs[1] = new Pair<View, String>(mAmount,  mActivity.getResources().getString(R.string.transition_name_expense_detail_amount));
-                pairs[2] = new Pair<View, String>(mDescription,  mActivity.getResources().getString(R.string.transition_name_expense_detail_description));
-                pairs[3] = new Pair<View, String>(mDate,  mActivity.getResources().getString(R.string.transition_name_expense_detail_date));
+                //pairs[1] = new Pair<View, String>(mAmount,  mActivity.getResources().getString(R.string.transition_name_expense_detail_amount));
+                //pairs[2] = new Pair<View, String>(mDescription,  mActivity.getResources().getString(R.string.transition_name_expense_detail_description));
+                //pairs[3] = new Pair<View, String>(mDate,  mActivity.getResources().getString(R.string.transition_name_expense_detail_date));
 
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, pairs);
                 Intent expenseDetailIntent = new Intent(mActivity, ExpenseDetailActivity.class);
@@ -116,11 +116,12 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
 
                 DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mAdapter.removeExpense(position);
-                        mAdapter.notifyItemRemoved(position);
-                        mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+
                         try {
                             new ExpenseManagerDAO(mContext).deleteExpense(current.getId());
+                            mAdapter.removeExpense(position);
+                            mAdapter.notifyItemRemoved(position);
+                            mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
                             mActivity.refreshExpensesAndChart();
                         }catch (CouldNotDeleteDataException e) {
                             Toast.makeText(mActivity, "There was an error deleting this expense!", Toast.LENGTH_SHORT).show();
@@ -130,10 +131,10 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
                 };
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-                builder.setTitle("Delete expense")
-                        .setMessage("Are you sure you want to delete this expense?")
-                        .setPositiveButton("Yes", listener)
-                        .setNegativeButton("No", null)
+                builder.setTitle(R.string.dialog_delete_expense_title)
+                        .setMessage(R.string.dialog_delete_expense_message)
+                        .setPositiveButton((R.string.dialog_delete_expense_button_yes), listener)
+                        .setNegativeButton((R.string.dialog_delete_expense_button_no), null)
                         .show();
                 break;
 
