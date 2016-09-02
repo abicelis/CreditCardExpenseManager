@@ -34,11 +34,24 @@
 
 
     /*Expense detail activity*/
+    <string name="activity_expense_detail_title">Expense Details</string>
+    <string name="activity_expense_detail_label_amount">Amount:</string>
+    <string name="activity_expense_detail_label_date">Date:</string>
+    <string name="activity_expense_detail_label_description">Description:</string>
+    <string name="activity_expense_detail_label_category">Category:</string>
+    <string name="activity_expense_detail_label_type">Type:</string>
+    <string name="activity_expense_detail_button_edit">Edit</string>
+    <string name="activity_expense_detail_button_delete">Delete</string>
+    <string name="activity_expense_detail_error_cant_find_image">Error, couldn\'t find full size image, can only display thumbnail.</string>
+    <string name="activity_expense_detail_error_cant_delete_expense">There was an error deleting the expense.</string>
     <string name="transition_name_expense_detail_image">expense_detail_image</string>
-    <string name="transition_name_expense_detail_amount">expense_detail_amount</string>
-    <string name="transition_name_expense_detail_description">expense_detail_description</string>
-    <string name="transition_name_expense_detail_date">expense_detail_date</string>
 
+
+    /*Dialog delete expense*/
+    <string name="dialog_delete_expense_title">Delete Expense</string>
+    <string name="dialog_delete_expense_message">Are you sure you want to delete this Expense?</string>
+    <string name="dialog_delete_expense_button_yes">Yes</string>
+    <string name="dialog_delete_expense_button_no">No</string>
 
     /*Dialog create expense*/
     <string name="dialog_capture_ocr_text_title">Capture text</string>
