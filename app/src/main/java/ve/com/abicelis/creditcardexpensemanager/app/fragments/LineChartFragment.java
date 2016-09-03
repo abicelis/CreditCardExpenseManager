@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,13 +17,12 @@ import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PointValue;
-import lecho.lib.hellocharts.model.ValueShape;
 import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.LineChartView;
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
-import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotGetDataException;
+import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditPeriodNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditPeriod;
 import ve.com.abicelis.creditcardexpensemanager.model.DailyExpense;
@@ -67,9 +65,9 @@ public class LineChartFragment extends Fragment {
         //Refresh list from DB
         try {
             //TODO: get correct periods, cards, this is a for-now hack
-            creditPeriod = dao.getCreditPeriod(0);
+            creditPeriod = dao.getCreditPeriodFromPeriodId(0);
             creditCard = dao.getCreditCardList().get(0);
-        }catch(CouldNotGetDataException e) {
+        }catch(CreditPeriodNotFoundException e) {
             Toast.makeText(getContext(), "ERROR getting data for chart", Toast.LENGTH_SHORT).show();
         }
 
