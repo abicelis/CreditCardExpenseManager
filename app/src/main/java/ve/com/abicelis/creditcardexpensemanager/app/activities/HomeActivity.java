@@ -2,7 +2,6 @@ package ve.com.abicelis.creditcardexpensemanager.app.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentManager;
@@ -27,7 +26,12 @@ import ve.com.abicelis.creditcardexpensemanager.app.adapters.ExpensesAdapter;
 import ve.com.abicelis.creditcardexpensemanager.app.dialogs.CreateExpenseDialogFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.LineChartFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.NavigationDrawerFragment;
+import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
+import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
+import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditCardNotFoundException;
+import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditPeriodNotFoundException;
+import ve.com.abicelis.creditcardexpensemanager.exceptions.SharedPreferenceNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditPeriod;
 import ve.com.abicelis.creditcardexpensemanager.model.Expense;
@@ -36,11 +40,8 @@ import ve.com.abicelis.creditcardexpensemanager.model.Payment;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener, DialogInterface.OnDismissListener {
 
     //Data
+    int activeCreditCardId = -1;
     CreditCard activeCreditCard = null;
-    List<CreditCard> creditCards = new ArrayList<>();
-    List<CreditPeriod> creditPeriods = new ArrayList<>();
-    List<Expense> expenses = new ArrayList<>();
-    List<Payment> payments = new ArrayList<>();
     ExpenseManagerDAO dao;
 
     //UI
@@ -71,15 +72,35 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         //stuff like that
         //ah que el dialog de select el active cc refresque esta actividad, o la actividad que sea que este displayed...?
 
-        Handler handler = new Handler();
-        final Runnable r = new Runnable() {
-            public void run() {
-                getData();
+
+        loadDao();
+
+        try {
+            activeCreditCardId = SharedPreferencesUtils.getInt(this, Constants.ACTIVE_CC_ID);
+            activeCreditCard = dao.getCreditCardWithCreditPeriod(activeCreditCardId, 0);
+        }catch(SharedPreferenceNotFoundException | CreditCardNotFoundException e) {
+            if(dao.getCreditCardList().size() > 0) {
+                activeCreditCard = dao.getCreditCardList().get(0);
+                activeCreditCardId = activeCreditCard.getId();
+                SharedPreferencesUtils.setInt(this, Constants.ACTIVE_CC_ID, activeCreditCard.getId());
+            } else {
+                //There are no credit cards in the system, must create a credit card
+                Intent addCCIntent = new Intent(this, AddCreditCardActivity.class);
+                startActivity(addCCIntent);
+                finish();
+            }
+        }catch (CreditPeriodNotFoundException e) {
+            Toast.makeText(HomeActivity.this, "Megapeo en oncreate, creditperiod not found! Hay que handle esto y crear el credirperiod con un util o algo", Toast.LENGTH_SHORT).show();
+        }
+
+        //Handler handler = new Handler();
+        //final Runnable r = new Runnable() {
+        //    public void run() {
                 setUpDrawer();
                 setUpExpensesRecyclerView();
-            }
-        };
-        handler.post(r);
+        //    }
+        //};
+        //handler.post(r);
 
 
         setUpSwipeRefresh();
@@ -87,48 +108,30 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         setUpFab();
     }
 
-
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-
         chartFragment = (LineChartFragment) getSupportFragmentManager().findFragmentById(R.id.home_chart_container);
     }
 
-    private ExpenseManagerDAO getDao() {
+
+    private void loadDao() {
         if(dao == null)
             dao = new ExpenseManagerDAO(getApplicationContext());
-        return dao;
     }
+    public boolean refreshData() {
+        loadDao();
+        int oldCount = 0;
+        if(activeCreditCard != null)
+            oldCount = activeCreditCard.getCreditPeriods().get(0).getExpenses().size();
 
-    private void getData() {
-        getDao();
+        try {
+            activeCreditCard = dao.getCreditCardWithCreditPeriod(activeCreditCardId, 0);
+        }catch (CreditCardNotFoundException | CreditPeriodNotFoundException e) {
+            Toast.makeText(this, "Sorry, there has been a problem refreshing the data", Toast.LENGTH_SHORT).show();
+        }
 
-        creditCards.clear();
-        creditCards.addAll(dao.getCreditCardList());
-
-        if(creditCards.size() > 0)
-            activeCreditCard = creditCards.get(0);
-
-        creditPeriods.clear();
-        creditPeriods.addAll(dao.getCreditPeriodListFromCard(creditCards.get(0).getId()));
-
-        expenses.clear();
-        expenses.addAll(dao.getExpensesFromCreditPeriod(creditPeriods.get(0).getId()));
-
-        payments.clear();
-        payments.addAll(dao.getPaymentsFromCreditPeriod(creditPeriods.get(0).getId()));
-    }
-
-
-    public boolean refreshExpenses() {
-        getDao();
-        int oldCount = expenses.size();
-
-        expenses.clear();
-        expenses.addAll(dao.getExpensesFromCreditPeriod(creditPeriods.get(0).getId()));
-
-        return (expenses.size() == oldCount+1);
+        return (activeCreditCard.getCreditPeriods().get(0).getExpenses().size() == oldCount+1);
     }
 
     public void refreshExpensesAndChart() {
@@ -137,9 +140,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         else
             Toast.makeText(this, "Error on onDismiss, chartFragment == null!", Toast.LENGTH_SHORT).show();
 
-        if(refreshExpenses()) {
+        if(refreshData()) {
             adapter.notifyItemInserted(0);
-            adapter.notifyItemRangeChanged(1, expenses.size()-1);
+            adapter.notifyItemRangeChanged(1, activeCreditCard.getCreditPeriods().get(0).getExpenses().size()-1);
             layoutManager.scrollToPosition(0);
         } else {
             adapter.notifyDataSetChanged();
@@ -174,7 +177,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         recyclerViewExpenses = (RecyclerView) findViewById(R.id.home_recycler_expenses);
 
-        adapter = new ExpensesAdapter(getApplicationContext(), this, expenses);
+        adapter = new ExpensesAdapter(getApplicationContext(), this, activeCreditCard.getCreditPeriods().get(0).getExpenses());
         recyclerViewExpenses.setAdapter(adapter);
 
         layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
@@ -187,7 +190,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                                                     @Override
                                                     public void onRefresh() {
-                                                        refreshExpenses();
+                                                        refreshData();
                                                         adapter.notifyDataSetChanged();
                                                         swipeRefreshLayout.setRefreshing(false);
                                                     }
@@ -229,7 +232,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         fabNewExpense.setOnClickListener(this);
         fabNewExpenseCamera.setOnClickListener(this);
     }
-
 
 
 
