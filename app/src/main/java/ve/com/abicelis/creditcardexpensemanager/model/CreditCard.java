@@ -151,6 +151,10 @@ public class CreditCard implements Serializable {
         return creditPeriods;
     }
 
+    public void setCreditPeriods(Map<Integer, CreditPeriod> creditPeriods) {
+        this.creditPeriods = creditPeriods;
+    }
+
     /**
      * Returns a List of Credit Cards based on the number of existing CreditCardBackgrounds, instantiated with default values
      * @return List<CreditCard>
