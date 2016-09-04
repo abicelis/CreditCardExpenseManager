@@ -12,9 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,11 @@ import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.adapters.NavigationDrawerAdapter;
 import ve.com.abicelis.creditcardexpensemanager.app.dialogs.SelectCreditCardDialogFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.holders.CreditCardViewHolder;
+import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
+import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
+import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditCardNotFoundException;
+import ve.com.abicelis.creditcardexpensemanager.exceptions.SharedPreferenceNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
 import ve.com.abicelis.creditcardexpensemanager.model.NavigationDrawerItem;
 
@@ -31,11 +34,12 @@ import ve.com.abicelis.creditcardexpensemanager.model.NavigationDrawerItem;
 /**
  * Created by Alex on 5/8/2016.
  */
-public class NavigationDrawerFragment extends Fragment implements View.OnClickListener{
+public class NavigationDrawerFragment extends Fragment{
 
     public static final String ACTIVE_CREDIT_CARD = "active_cc";
 
     //DATA
+    int mActiveCreditCardID = -1;
     private CreditCard mActiveCreditCard = null;
     private ExpenseManagerDAO mDao;
 
@@ -43,24 +47,48 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
     CreditCardViewHolder holder;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-    private RelativeLayout mContainer;
+    private RelativeLayout mHeaderContainer;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_navigation_drawer, container);
+        View rootView = inflater.inflate(R.layout.fragment_navigation_drawer, container);
 
-        mContainer = (RelativeLayout) view.findViewById(R.id.nav_drawer_header_container);
-        mContainer.setOnClickListener(this);
+        //Load dao and data
+        mDao = new ExpenseManagerDAO(getActivity().getApplicationContext());
+        try {
+            mActiveCreditCardID = SharedPreferencesUtils.getInt(getContext(), Constants.ACTIVE_CC_ID);
+            mActiveCreditCard = mDao.getCreditCard(mActiveCreditCardID);
+        }catch (SharedPreferenceNotFoundException | CreditCardNotFoundException e) {
+            //This should never happen!
+            Toast.makeText(getActivity(), "Error on navigation drawer header", Toast.LENGTH_SHORT).show();
+        }
 
-        View creditCardView = view.findViewById(R.id.nav_drawer_credit_card);
-        View creditCardListItem = creditCardView.findViewById(R.id.list_item_credit_card_container);
-        holder = new CreditCardViewHolder(creditCardListItem);
 
-        setUpRecyclerView(view);
+        setUpRecyclerView(rootView);
+        setUpDrawerHeader(rootView);
 
-        return view;
+        return rootView;
+    }
+
+
+    private void setUpDrawerHeader(View rootView) {
+
+        //Set header onClick
+        mHeaderContainer = (RelativeLayout) rootView.findViewById(R.id.nav_drawer_header_container);
+        mHeaderContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SelectCreditCardDialogFragment dialog = SelectCreditCardDialogFragment.newInstance(mDao.getCreditCardList());
+                dialog.show(getFragmentManager(), "fragment_dialog_select_credit_card");
+            }
+        });
+
+        //Setup cc holder data
+        View headerCreditCardContainer = rootView.findViewById(R.id.list_item_credit_card_container);
+        holder = new CreditCardViewHolder(headerCreditCardContainer);
+        holder.setData(getContext(), mActiveCreditCard, 0);
     }
 
     private void setUpRecyclerView(View view) {
@@ -83,13 +111,9 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
     }
 
 
-    public void setUpDrawer(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar, CreditCard activeCreditCard, ExpenseManagerDAO dao) {
-
-        mActiveCreditCard = activeCreditCard;
-        holder.setData(getContext(), mActiveCreditCard, 0);
+    public void setUpDrawer(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar) {
 
         mDrawerLayout = drawerLayout;
-        mDao = dao;
 
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout,toolbar, R.string.drawer_open, R.string.drawer_closed) {
             @Override
@@ -119,18 +143,4 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
         });
     }
 
-
-    @Override
-    public void onClick(View view) {
-        int i = view.getId();
-        switch (i) {
-            case R.id.nav_drawer_header_container:
-                List<CreditCard> creditCardList = mDao.getCreditCardList();
-
-                FragmentManager fm = getFragmentManager();
-                SelectCreditCardDialogFragment dialog = SelectCreditCardDialogFragment.newInstance(creditCardList);
-                dialog.show(fm, "fragment_dialog_create_expense");
-
-        }
-    }
 }
