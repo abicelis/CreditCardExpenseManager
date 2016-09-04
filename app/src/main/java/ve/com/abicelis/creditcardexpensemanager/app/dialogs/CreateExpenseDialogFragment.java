@@ -54,6 +54,8 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
 
     //Constants
     private static final int RC_HANDLE_CAMERA_PERM = 2;                 // Permission request codes need to be < 256
+    private static final String TAG_ARGS_TITLE = "tagArgsTitle";
+    private static final String TAG_ARGS_PERIOD_ID = "tagArgsPeriodId";
     private static final String TAG = "CreateExpenseDialogFrag";
     private static final int IMAGE_WIDTH = 400;
     private static final int IMAGE_HEIGHT = 400;
@@ -66,6 +68,7 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
     private ExpenseManagerDAO mDao;
 
     //UI
+    private DialogInterface.OnDismissListener mOnDismissListener;
     private EditText mAmountText;
     private EditText mDescriptionText;
     private Button mCancelButton;
@@ -73,6 +76,7 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
     private ImageView mImage;
 
     //DATA
+    int creditperiodId = -1;
     Bitmap expenseImageThumbnail;
     byte[] expenseImageThumbnailBytes;
     private Uri imageUri;
@@ -84,10 +88,11 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
         // Use `newInstance` instead as shown below
     }
 
-    public static CreateExpenseDialogFragment newInstance(String title, ExpenseManagerDAO dao) {
+    public static CreateExpenseDialogFragment newInstance(String title, ExpenseManagerDAO dao, int creditperiodId) {
         CreateExpenseDialogFragment frag = new CreateExpenseDialogFragment();
         Bundle args = new Bundle();
-        args.putString("title", title);
+        args.putString(TAG_ARGS_TITLE, title);
+        args.putInt(TAG_ARGS_PERIOD_ID, creditperiodId);
         frag.setArguments(args);
         frag.setDao(dao);
         return frag;
@@ -127,8 +132,13 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
         mImage.setOnClickListener(this);
 
         // Fetch arguments from bundle and set title
-        String title = getArguments().getString("title", "Enter Name");
+        String title = getArguments().getString(TAG_ARGS_TITLE, "Enter Name");
         getDialog().setTitle(title);
+        creditperiodId =  getArguments().getInt(TAG_ARGS_PERIOD_ID, -1);
+        if(creditperiodId == -1) {
+            Toast.makeText(getActivity(), "Error, wrong creditPeriod id passed", Toast.LENGTH_SHORT).show();
+            dismiss();
+        }
 
         // Show soft keyboard automatically and request focus to field
         mAmountText.requestFocus();
@@ -344,18 +354,18 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
     }
 
 
+    public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
+        mOnDismissListener = onDismissListener;
+    }
+
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        int poop = 5;
-
-        poop = poop +394;
-
-        final Activity activity = getActivity();
-        if (activity instanceof DialogInterface.OnDismissListener) {
-            ((DialogInterface.OnDismissListener) activity).onDismiss(dialog);
+        if (mOnDismissListener != null) {
+            mOnDismissListener.onDismiss(dialog);
         }
     }
+
 
     private void handleNewExpenseCreation() {
 
@@ -370,12 +380,12 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
             description = "-";
         }
 
-        Expense expense = new Expense(1, description, expenseImageThumbnailBytes, imagePath,
+        Expense expense = new Expense(description, expenseImageThumbnailBytes, imagePath,
                 new BigDecimal(mAmountText.getText().toString()), Currency.VEF,
                 Calendar.getInstance(), ExpenseCategory.CLOTHING, ExpenseType.ORDINARY);
 
         try {
-            mDao.insertExpense(0, expense);
+            mDao.insertExpense(creditperiodId, expense);
             dismiss();
         } catch (CouldNotInsertDataException e) {
             e.printStackTrace();
