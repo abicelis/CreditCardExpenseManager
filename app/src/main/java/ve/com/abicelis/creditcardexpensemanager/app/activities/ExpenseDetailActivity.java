@@ -24,6 +24,7 @@ import android.widget.Toast;
 import java.io.FileNotFoundException;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
+import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.ImageUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotDeleteDataException;
@@ -66,7 +67,7 @@ public class ExpenseDetailActivity extends AppCompatActivity implements  View.On
             Runnable r = new Runnable() {
                 @Override
                 public void run() {
-                       supportFinishAfterTransition();
+                       onBackPressed();
                 }
             };
             h.postDelayed(r, 1000);
@@ -93,7 +94,8 @@ public class ExpenseDetailActivity extends AppCompatActivity implements  View.On
                             public void onClick(DialogInterface dialog, int which) {
                                 try{
                                     new ExpenseManagerDAO(ExpenseDetailActivity.this).deleteExpense(mExpense.getId());
-                                    finish();
+                                    setResult(Constants.RESULT_REFRESH_DATA);
+                                    onBackPressed();
                                 } catch(CouldNotDeleteDataException e) {
                                     Toast.makeText(ExpenseDetailActivity.this, getResources().getString(R.string.activity_expense_detail_error_cant_delete_expense), Toast.LENGTH_SHORT).show();
                                 }

@@ -62,7 +62,6 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
     private static final int IMAGE_COMPRESSION_PERCENTAGE = 30;
     private static final int REQUEST_IMAGE_CAPTURE = 123;
     private static final int REQUEST_IMAGE_CROP = 124;
-    private static final int RESULT_OK = -1;
 
     //DB
     private ExpenseManagerDAO mDao;
@@ -323,7 +322,7 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
 
             try {
                 //Go to the imageCropper activity
@@ -335,7 +334,7 @@ public class CreateExpenseDialogFragment extends AppCompatDialogFragment impleme
                 e.printStackTrace();
             }
 
-        } else if (requestCode == REQUEST_IMAGE_CROP && resultCode == RESULT_OK) {
+        } else if (requestCode == REQUEST_IMAGE_CROP && resultCode == Activity.RESULT_OK) {
 
             try {
                 expenseImageThumbnail = BitmapFactory.decodeFile(imagePath);

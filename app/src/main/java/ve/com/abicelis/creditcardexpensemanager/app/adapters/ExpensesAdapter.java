@@ -2,6 +2,7 @@ package ve.com.abicelis.creditcardexpensemanager.app.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,15 +21,13 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesViewHolder> {
 
     private List<Expense> mExpenses;
     private LayoutInflater mInflater;
-    private Context mContext;
-    private Activity mActivity;
+    private Fragment mFragment;
     private ExpensesViewHolder.ExpenseDeletedListener mListener;
 
-    public ExpensesAdapter(Context context, Activity activity, List<Expense> expenses, ExpensesViewHolder.ExpenseDeletedListener listener) {
-        mContext = context;
-        mActivity = activity;
+    public ExpensesAdapter(Fragment fragment, List<Expense> expenses, ExpensesViewHolder.ExpenseDeletedListener listener) {
+        mFragment = fragment;
         mExpenses = expenses;
-        mInflater = LayoutInflater.from(context);
+        mInflater = LayoutInflater.from(mFragment.getContext());
         mListener = listener;
     }
 
@@ -42,7 +41,7 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesViewHolder> {
     @Override
     public void onBindViewHolder(ExpensesViewHolder holder, int position) {
         Expense current = mExpenses.get(position);
-        holder.setData(this, mContext, mActivity, current, position);
+        holder.setData(this, mFragment, current, position);
         holder.setListeners();
         holder.setOnExpenseDeletedListener(mListener);
     }

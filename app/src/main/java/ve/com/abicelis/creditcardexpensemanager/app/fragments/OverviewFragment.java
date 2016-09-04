@@ -1,5 +1,6 @@
 package ve.com.abicelis.creditcardexpensemanager.app.fragments;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -22,6 +26,7 @@ import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.activities.OcrCreateExpenseActivity;
@@ -42,6 +47,8 @@ import ve.com.abicelis.creditcardexpensemanager.model.Expense;
  * Created by Alex on 3/9/2016.
  */
 public class OverviewFragment extends Fragment {
+
+
 
     //Data
     int activeCreditCardId = -1;
@@ -105,6 +112,38 @@ public class OverviewFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //If coming back from expenseDetailActivity and data was edited/deleted, refresh.
+        if (requestCode == Constants.EXPENSE_DETAIL_ACTIVITY_REQUEST_CODE && resultCode == Constants.RESULT_REFRESH_DATA) {
+            Toast.makeText(getActivity(), "Refreshing Expenses!", Toast.LENGTH_SHORT).show();
+            refreshChart();
+            refreshRecyclerView();
+        }
+
+    }
+
+
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//        inflater.inflate(R.menu.menu_overview, menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        switch(id) {
+//            case R.id.overview_menu_add_card:
+//                Toast.makeText(getActivity(), "oaiwjdoiwd", Toast.LENGTH_SHORT).show();
+//                break;
+//        }
+//
+//        return true;
+//    }
+
     private void loadDao() {
         if(dao == null)
             dao = new ExpenseManagerDAO(getActivity().getApplicationContext());
@@ -128,13 +167,13 @@ public class OverviewFragment extends Fragment {
                     refreshChart();
                 }catch (CouldNotDeleteDataException e) {
                     Toast.makeText(getActivity(), "There was an error deleting the expense!", Toast.LENGTH_SHORT).show();
-                }
+               }
 
             }
         };
 
-        //TODO: Fix this hack (HomeActivity) getActivity().. maybe use an interface?
-        adapter = new ExpensesAdapter(getContext(),getActivity(), creditCardExpenses, listener);
+
+        adapter = new ExpensesAdapter(this, creditCardExpenses, listener);
         recyclerViewExpenses.setAdapter(adapter);
 
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);

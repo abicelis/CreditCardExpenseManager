@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.activities.ExpenseDetailActivity;
 import ve.com.abicelis.creditcardexpensemanager.app.adapters.ExpensesAdapter;
+import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.ImageUtils;
 import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 
@@ -27,8 +29,7 @@ import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
     public ExpensesAdapter mAdapter;
-    private Context mContext;
-    private Activity mActivity;
+    private Fragment mFragment;
     private ExpenseDeletedListener mListener = null;
 
     //UI
@@ -43,8 +44,8 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
     //private ImageView mEditIcon;
 
     //DATA
-    private Expense current;
-    private int position;
+    private Expense mCurrent;
+    private int mExpensePosition;
 
     public ExpensesViewHolder(View itemView) {
         super(itemView);
@@ -60,22 +61,21 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
         //mEditIcon = (ImageView) itemView.findViewById(R.id.list_item_expenses_img_edit);
     }
 
-    public void setData(ExpensesAdapter adapter, Context context, Activity activity, Expense current, int position) {
-        this.mAdapter = adapter;
-        this.mContext = context;
-        this.mActivity = activity;
-        this.current = current;
-        this.position = position;
+    public void setData(ExpensesAdapter adapter, Fragment fragment, Expense current, int position) {
+        mAdapter = adapter;
+        mFragment = fragment;
+        this.mCurrent = current;
+        this.mExpensePosition = position;
 
         this.mAmount.setText(current.getAmount().toPlainString() + " " + current.getCurrency().getCode());
         this.mDescription.setText(current.getDescription());
         this.mDate.setText(current.getShortDateString());
 
         this.mCategory.setText(current.getExpenseCategory().getFriendlyName());
-        ((GradientDrawable)this.mCategory.getBackground()).setColor(ContextCompat.getColor(mContext, current.getExpenseCategory().getColor()));
+        ((GradientDrawable)this.mCategory.getBackground()).setColor(ContextCompat.getColor(mFragment.getContext(), current.getExpenseCategory().getColor()));
 
         this.mType.setText(current.getExpenseType().getShortName());
-        ((GradientDrawable)this.mType.getBackground()).setColor(ContextCompat.getColor(mContext, current.getExpenseType().getColor()));
+        ((GradientDrawable)this.mType.getBackground()).setColor(ContextCompat.getColor(mFragment.getContext(), current.getExpenseType().getColor()));
 
 
         if(current.getThumbnail() != null && current.getThumbnail().length > 0)
@@ -102,15 +102,15 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
         switch (id) {
             case R.id.list_item_expenses_container:
                 Pair[] pairs = new Pair[1];
-                pairs[0] = new Pair<View, String>(mImage, mActivity.getResources().getString(R.string.transition_name_expense_detail_image));
+                pairs[0] = new Pair<View, String>(mImage, mFragment.getResources().getString(R.string.transition_name_expense_detail_image));
                 //pairs[1] = new Pair<View, String>(mAmount,  mActivity.getResources().getString(R.string.transition_name_expense_detail_amount));
                 //pairs[2] = new Pair<View, String>(mDescription,  mActivity.getResources().getString(R.string.transition_name_expense_detail_description));
                 //pairs[3] = new Pair<View, String>(mDate,  mActivity.getResources().getString(R.string.transition_name_expense_detail_date));
 
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, pairs);
-                Intent expenseDetailIntent = new Intent(mActivity, ExpenseDetailActivity.class);
-                expenseDetailIntent.putExtra("expense", current);
-                mActivity.startActivity(expenseDetailIntent, options.toBundle());
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mFragment.getActivity(), pairs);
+                Intent expenseDetailIntent = new Intent(mFragment.getActivity(), ExpenseDetailActivity.class);
+                expenseDetailIntent.putExtra("expense", mCurrent);
+                mFragment.startActivityForResult(expenseDetailIntent, Constants.EXPENSE_DETAIL_ACTIVITY_REQUEST_CODE, options.toBundle());
 
                 break;
 
@@ -118,11 +118,11 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
 
                 DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                            mListener.OnExpenseDeleted(position);
+                            mListener.OnExpenseDeleted(mExpensePosition);
                     }
                 };
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                AlertDialog.Builder builder = new AlertDialog.Builder(mFragment.getActivity());
                 builder.setTitle(R.string.dialog_delete_expense_title)
                         .setMessage(R.string.dialog_delete_expense_message)
                         .setPositiveButton((R.string.dialog_delete_expense_button_yes), listener)
