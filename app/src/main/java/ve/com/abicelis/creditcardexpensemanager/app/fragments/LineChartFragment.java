@@ -21,8 +21,12 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.LineChartView;
 import ve.com.abicelis.creditcardexpensemanager.R;
+import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
+import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
+import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditCardNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditPeriodNotFoundException;
+import ve.com.abicelis.creditcardexpensemanager.exceptions.SharedPreferenceNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditPeriod;
 import ve.com.abicelis.creditcardexpensemanager.model.DailyExpense;
@@ -36,6 +40,7 @@ public class LineChartFragment extends Fragment {
     private LineChartView chart;
 
     //DATA
+    private int activeCreditCardId;
     private ExpenseManagerDAO dao;
     private LineChartData data;
     CreditPeriod creditPeriod;
@@ -49,14 +54,20 @@ public class LineChartFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_line_chart, container, false);
         chart = (LineChartView) rootView.findViewById(R.id.chart);
 
-        refreshChartData();
+        try {
+            activeCreditCardId = SharedPreferencesUtils.getInt(getContext(), Constants.ACTIVE_CC_ID);
+            refreshData();
+        }catch(SharedPreferenceNotFoundException e) {
+            //This shouldn't happen
+            Toast.makeText(getActivity(), "Megapeo en oncreate, SharedPreferenceNotFoundException CreditCardNotFoundException", Toast.LENGTH_SHORT).show();
+        }
 
         return rootView;
     }
 
 
 
-    public void refreshChartData() {
+    public void refreshData() {
 
         if(dao == null)
             dao = new ExpenseManagerDAO(getActivity());
@@ -64,10 +75,9 @@ public class LineChartFragment extends Fragment {
 
         //Refresh list from DB
         try {
-            //TODO: get correct periods, cards, this is a for-now hack
-            creditPeriod = dao.getCreditPeriodFromPeriodId(0);
-            creditCard = dao.getCreditCardList().get(0);
-        }catch(CreditPeriodNotFoundException e) {
+            creditCard = dao.getCreditCardWithCreditPeriod(activeCreditCardId, 0);
+            creditPeriod = creditCard.getCreditPeriods().get(0);
+        }catch(CreditCardNotFoundException | CreditPeriodNotFoundException e) {
             Toast.makeText(getContext(), "ERROR getting data for chart", Toast.LENGTH_SHORT).show();
         }
 
