@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
-import ve.com.abicelis.creditcardexpensemanager.app.activities.HomeActivity;
 import ve.com.abicelis.creditcardexpensemanager.app.holders.ExpensesViewHolder;
 import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 
@@ -22,13 +21,15 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesViewHolder> {
     private List<Expense> mExpenses;
     private LayoutInflater mInflater;
     private Context mContext;
-    private HomeActivity mActivity;
+    private Activity mActivity;
+    private ExpensesViewHolder.ExpenseDeletedListener mListener;
 
-    public ExpensesAdapter(Context context, HomeActivity activity, List<Expense> expenses) {
+    public ExpensesAdapter(Context context, Activity activity, List<Expense> expenses, ExpensesViewHolder.ExpenseDeletedListener listener) {
         mContext = context;
         mActivity = activity;
         mExpenses = expenses;
         mInflater = LayoutInflater.from(context);
+        mListener = listener;
     }
 
     @Override
@@ -43,6 +44,7 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesViewHolder> {
         Expense current = mExpenses.get(position);
         holder.setData(this, mContext, mActivity, current, position);
         holder.setListeners();
+        holder.setOnExpenseDeletedListener(mListener);
     }
 
     @Override
@@ -50,7 +52,7 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesViewHolder> {
         return mExpenses.size();
     }
 
-    public void removeExpense(int position) {
+    /*public void removeExpense(int position) {
         mExpenses.remove(position);
-    }
+    }*/
 }
