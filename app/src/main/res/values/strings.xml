@@ -18,6 +18,7 @@
     <string name="activity_add_new_cc_currency">Currency</string>
     <string name="activity_add_new_cc_type">Card Type</string>
     <string name="activity_add_new_cc_expiration">Card Expiration</string>
+    <string name="activity_add_new_cc_credit_limit">Credit Limit</string>
     <string name="activity_add_new_cc_closing_day">Closing Day</string>
     <string name="activity_add_new_cc_due_day">Due Day</string>
     <string name="activity_add_new_cc_background">Preview and Background Color</string>
@@ -25,6 +26,8 @@
     <string name="activity_add_new_cc_expiration_datepicker_button_select">Select</string>
     <string name="activity_add_new_cc_expiration_datepicker_button_cancel">Cancel</string>
     <string name="activity_add_new_cc_error_bad_alias">Please enter an alias</string>
+    <string name="activity_add_new_cc_error_bad_credit_limit">Please enter a valid credit limit</string>
+    <string name="activity_add_new_cc_error_bad_expiration">Please select an expiration date</string>
     <string name="activity_add_new_cc_error_bad_closing_due_days">Closing and Due days must be different</string>
     <string name="activity_add_new_cc_error_cc_background_not_selected">Please select a Background for the Credit Card</string>
     <string name="activity_add_new_cc_exit_dialog_title">Exit the app</string>
