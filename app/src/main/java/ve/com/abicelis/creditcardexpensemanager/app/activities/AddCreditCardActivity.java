@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -32,6 +33,8 @@ import java.util.List;
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.adapters.CreditCardAdapter;
 import ve.com.abicelis.creditcardexpensemanager.app.holders.CreditCardViewHolder;
+import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
+import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
 import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardBackground;
 import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardType;
@@ -61,6 +64,7 @@ public class AddCreditCardActivity extends AppCompatActivity {
     EditText cardBankName;
     EditText cardAlias;
     EditText cardNumber;
+    EditText creditLimit;
     EditText cardExpiration;
     Spinner cardCurrency;
     Spinner cardType;
@@ -81,6 +85,7 @@ public class AddCreditCardActivity extends AppCompatActivity {
         cardBankName = (EditText) findViewById(R.id.add_cc_edit_bank);
         cardAlias = (EditText) findViewById(R.id.add_cc_edit_alias);
         cardNumber = (EditText) findViewById(R.id.add_cc_edit_number);
+        creditLimit = (EditText) findViewById(R.id.add_cc_edit_credit_limit);
         cardExpiration = (EditText) findViewById(R.id.add_cc_edit_expiration);
         cardCurrency = (Spinner) findViewById(R.id.add_cc_spinner_currency);
         cardType = (Spinner) findViewById(R.id.add_cc_spinner_type);
@@ -320,6 +325,19 @@ public class AddCreditCardActivity extends AppCompatActivity {
             Toast.makeText(this, getResources().getString(R.string.activity_add_new_cc_error_bad_alias), Toast.LENGTH_SHORT).show();
             return;
         }
+
+        try{
+            Double.parseDouble(creditLimit.getText().toString());
+        }catch (NumberFormatException e) {
+            Toast.makeText(this, getResources().getString(R.string.activity_add_new_cc_error_bad_credit_limit), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(cardExpirationCal == null) {
+            Toast.makeText(this, getResources().getString(R.string.activity_add_new_cc_error_bad_expiration), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         int closing = days.get(cardClosingDay.getSelectedItemPosition());
         int due = days.get(cardDueDay.getSelectedItemPosition());
         if(closing == due) {
@@ -334,13 +352,18 @@ public class AddCreditCardActivity extends AppCompatActivity {
 
         String bankName = cardBankName.getText().toString();
         String number = cardNumber.getText().toString();
+        BigDecimal firstCreditPeriodLimit = new BigDecimal(creditLimit.getText().toString());
+        firstCreditPeriodLimit = firstCreditPeriodLimit.setScale(2, BigDecimal.ROUND_DOWN);
+
         Currency currency = currencies.get(cardCurrency.getSelectedItemPosition());
         CreditCardType type = cardTypes.get(cardType.getSelectedItemPosition());
 
 
         ExpenseManagerDAO dao = new ExpenseManagerDAO(this);
         try {
-            dao.insertCreditCard(new CreditCard(alias, bankName, number, currency, type, cardExpirationCal, closing, due, selectedCreditCardBackground));
+            int creditCardId = (int) dao.insertCreditCard(new CreditCard(alias, bankName, number, currency, type, cardExpirationCal, closing, due, selectedCreditCardBackground), firstCreditPeriodLimit);
+            SharedPreferencesUtils.setInt(getApplicationContext(), Constants.ACTIVE_CC_ID,  creditCardId);
+
         }catch(CouldNotInsertDataException e) {
             Toast.makeText(this, "There was a problem inserting the credit card!", Toast.LENGTH_SHORT).show();
         }

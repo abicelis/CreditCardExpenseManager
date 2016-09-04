@@ -303,7 +303,7 @@ public class ExpenseManagerDAO {
 
     /* Insert data into database */
 
-    public long insertCreditCard(CreditCard creditcard) throws CouldNotInsertDataException {
+    public long insertCreditCard(CreditCard creditcard, BigDecimal firstCreditPeriodLimit) throws CouldNotInsertDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -326,6 +326,54 @@ public class ExpenseManagerDAO {
 
         if(newRowId == -1)
             throw new CouldNotInsertDataException("There was a problem inserting the Credit Card: " + creditcard.toString());
+        else {
+            //Insert first creditPeriod
+
+            // Set dates to be at midnight (start of day) today.
+            Calendar startDate = Calendar.getInstance();
+            startDate.set(Calendar.HOUR_OF_DAY, 0);
+            startDate.set(Calendar.MINUTE, 0);
+            startDate.set(Calendar.SECOND, 0);
+            startDate.set(Calendar.MILLISECOND, 0);
+
+            Calendar endDate = Calendar.getInstance();
+            endDate.setTimeInMillis(startDate.getTimeInMillis());
+
+            //Set start date's DAY_OF_MONTH to closingDay and endDate's DAY_OF_MONTH to closingDay-1ms
+            startDate.set(Calendar.DAY_OF_MONTH, creditcard.getClosingDay());
+            endDate.set(Calendar.DAY_OF_MONTH, creditcard.getClosingDay());
+            endDate.add(Calendar.MILLISECOND, -1);
+
+
+            if(creditcard.getClosingDay() <= Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+                endDate.add(Calendar.MONTH, 1);
+            else
+                startDate.add(Calendar.MONTH, -1);
+
+            CreditPeriod creditPeriod = new CreditPeriod(CreditPeriod.PERIOD_NAME_COMPLETE, startDate, endDate, firstCreditPeriodLimit);
+            insertCreditPeriod((int)newRowId, creditPeriod);
+        }
+
+        return newRowId;
+
+    }
+
+    public long insertCreditPeriod(int creditCardId, CreditPeriod creditPeriod) throws CouldNotInsertDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_CARD.getName(), creditCardId);
+        values.put(ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_PERIOD_NAME_STYLE.getName(), creditPeriod.getPeriodNameStyle());
+        values.put(ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_START_DATE.getName(), creditPeriod.getStartDate().getTimeInMillis());
+        values.put(ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_END_DATE.getName(), creditPeriod.getEndDate().getTimeInMillis());
+        values.put(ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_CREDIT_LIMIT.getName(), creditPeriod.getCreditLimit().toPlainString());
+
+
+        long newRowId;
+        newRowId = db.insert(ExpenseManagerContract.CreditPeriodTable.TABLE_NAME, null, values);
+
+        if(newRowId == -1)
+            throw new CouldNotInsertDataException("There was a problem inserting the Credit Period: " + creditPeriod.toString());
 
         return newRowId;
 

@@ -32,9 +32,6 @@
             android:paddingRight="24dp"
             >
 
-
-
-
             <EditText
                 android:id="@+id/add_cc_edit_bank"
                 android:layout_width="match_parent"
@@ -69,6 +66,16 @@
                 android:imeOptions="actionNext" />
 
             <EditText
+                android:id="@+id/add_cc_edit_credit_limit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/gray_600"
+                android:hint="@string/activity_add_new_cc_credit_limit"
+                android:inputType="numberDecimal"
+                android:imeOptions="actionNext" />
+
+            <EditText
                 android:id="@+id/add_cc_edit_expiration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -77,32 +84,6 @@
                 android:backgroundTint="@color/gray_600"
                 android:hint="@string/activity_add_new_cc_expiration"
                 android:imeOptions="actionNext" />
-
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_marginTop="10dp"-->
-                <!--android:text="@string/activity_add_new_cc_currency"/>-->
-            <!--<Spinner-->
-                <!--android:id="@+id/add_cc_spinner_currency"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--android:theme="@style/SpinnerStyle"/>-->
-
-
-
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--android:text="@string/activity_add_new_cc_type"/>-->
-            <!--<Spinner-->
-                <!--android:id="@+id/add_cc_spinner_type"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--android:theme="@style/SpinnerStyle"/>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
