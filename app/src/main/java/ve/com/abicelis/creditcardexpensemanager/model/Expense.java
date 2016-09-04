@@ -27,8 +27,8 @@ public class Expense implements Serializable {
     ExpenseCategory expenseCategory;
     ExpenseType expenseType;
 
-    public Expense (int id, String description, byte[] thumbnail, String fullImagePath, BigDecimal amount, Currency currency, Calendar date, ExpenseCategory expenseCategory, ExpenseType expenseType) {
-        this.id = id;
+
+    public Expense (String description, byte[] thumbnail, String fullImagePath, BigDecimal amount, Currency currency, Calendar date, ExpenseCategory expenseCategory, ExpenseType expenseType) {
         this.description = description;
         this.thumbnail = thumbnail;
         this.fullImagePath = fullImagePath;
@@ -40,6 +40,11 @@ public class Expense implements Serializable {
         this.date = Calendar.getInstance();
         this.date.setTimeZone(date.getTimeZone());
         this.date.setTimeInMillis(date.getTimeInMillis());
+    }
+
+    public Expense (int id, String description, byte[] thumbnail, String fullImagePath, BigDecimal amount, Currency currency, Calendar date, ExpenseCategory expenseCategory, ExpenseType expenseType) {
+        this(description, thumbnail, fullImagePath, amount, currency, date, expenseCategory, expenseType);
+        this.id = id;
     }
 
     public int getId() {

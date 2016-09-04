@@ -17,28 +17,20 @@ public class CreditPeriod {
     public static final int PERIOD_NAME_COMPLETE = 1;
     public static final int PERIOD_NAME_COMPLETE_NUMERIC = 2;
 
-    private int id;
+    private int id = -1;
     private String periodName;
     private int periodNameStyle;
     private Calendar startDate;
     private Calendar endDate;
     private BigDecimal creditLimit;
 
+    private List<Expense> expenses = new ArrayList<>();
+    private List<Payment> payments = new ArrayList<>();
 
 
-    private List<Expense> expenses;
-    private List<Payment> payments;
-
-    public CreditPeriod(int id, int periodNameStyle, Calendar startDate, Calendar endDate, BigDecimal creditLimit) {
-        this(id, periodNameStyle, startDate, endDate, creditLimit, new ArrayList<Expense>(), new ArrayList<Payment>());
-    }
-
-    public CreditPeriod(int id, int periodNameStyle, Calendar startDate, Calendar endDate, BigDecimal creditLimit, List<Expense> expenses, List<Payment> payments) {
-        this.id = id;
+    public CreditPeriod(int periodNameStyle, Calendar startDate, Calendar endDate, BigDecimal creditLimit) {
         this.periodNameStyle = periodNameStyle;
         this.creditLimit = creditLimit;
-        this.expenses = expenses;
-        this.payments = payments;
 
         this.startDate = Calendar.getInstance();
         this.startDate.setTimeZone(startDate.getTimeZone());
@@ -48,6 +40,20 @@ public class CreditPeriod {
         this.endDate.setTimeZone(endDate.getTimeZone());
         this.endDate.setTimeInMillis(endDate.getTimeInMillis());
     }
+
+    public CreditPeriod(int id, int periodNameStyle, Calendar startDate, Calendar endDate, BigDecimal creditLimit) {
+        this(periodNameStyle, startDate, endDate, creditLimit);
+
+        this.id = id;
+    }
+
+    public CreditPeriod(int id, int periodNameStyle, Calendar startDate, Calendar endDate, BigDecimal creditLimit, List<Expense> expenses, List<Payment> payments) {
+        this(id, periodNameStyle, startDate, endDate, creditLimit);
+
+        this.expenses = expenses;
+        this.payments = payments;
+    }
+
 
 
     public int getId() {
@@ -177,21 +183,15 @@ public class CreditPeriod {
         end.setTimeZone(endDate.getTimeZone());
         end.setTimeInMillis(endDate.getTimeInMillis());
 
-        // Set the copies to be at midnight, but keep the day information.
-        start.set(Calendar.HOUR_OF_DAY, 0);
-        start.set(Calendar.MINUTE, 0);
-        start.set(Calendar.SECOND, 0);
-        start.set(Calendar.MILLISECOND, 0);
-        end.set(Calendar.HOUR_OF_DAY, 0);
-        end.set(Calendar.MINUTE, 0);
-        end.set(Calendar.SECOND, 0);
-        end.set(Calendar.MILLISECOND, 0);
+        // Add one millisecond so that the subtraction below works.
+        // If end = Aug 5 23:59:59 we add one millisecond
+        // so end = Aug 6 00:00:00 so that Aug 5 counts
+        end.add(Calendar.MILLISECOND, 1);
+
 
         // At this point, each calendar is set to midnight on
         // their respective days. Now use TimeUnit.MILLISECONDS to
         // compute the number of full days between the two of them.
-
-
         int days = (int)TimeUnit.MILLISECONDS.toDays(Math.abs(end.getTimeInMillis() - start.getTimeInMillis()));
         return days;
     }
