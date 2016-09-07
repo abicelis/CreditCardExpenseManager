@@ -17,11 +17,8 @@ import java.io.ByteArrayOutputStream;
 public class ImageUtils {
 
     /**
-     * Return a rounded bitmap version of the image contained in the drawable resource
-     *
-     * @param res        the context resources
-     * @param drawableId the id of the drawable resource
-     * @return the RoundedBitmapDrawable with the rounded bitmap
+     * Return a bitmap of the image contained in the byte array
+     * @param imgInBytes The image in a byte[]
      */
     public static Bitmap getBitmap(byte[] imgInBytes) {
             return BitmapFactory.decodeByteArray(imgInBytes, 0, imgInBytes.length);

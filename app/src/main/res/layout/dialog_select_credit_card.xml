@@ -8,14 +8,14 @@
     >
 
     <LinearLayout
-        android:id="@+id/dialog_expense_content"
+        android:id="@+id/dialog_create_expense_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="24dp">
 
         <TextView
-            android:id="@+id/dialog_expense_txt_title"
+            android:id="@+id/dialog_create_expense_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"

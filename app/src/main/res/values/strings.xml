@@ -59,9 +59,15 @@
     /*Dialog create expense*/
     <string name="dialog_capture_ocr_text_title">Capture text</string>
     <string name="dialog_create_expense_title">Create new Expense</string>
+    <string name="dialog_create_edit_expense_title">Edit an Expense</string>
     <string name="dialog_create_expense_amount">Amount</string>
     <string name="dialog_create_expense_image">Image</string>
     <string name="dialog_create_expense_description">Description</string>
+    <string name="dialog_create_expense_category">Category</string>
+    <string name="dialog_create_expense_type">Type</string>
+    <string name="dialog_create_expense_button_create">Create</string>
+    <string name="dialog_create_expense_button_edit">Edit</string>
+    <string name="dialog_create_expense_button_cancel">Cancel</string>
     <string name="dialog_create_expense_error_bad_amount">Please enter a valid amount</string>
 
 

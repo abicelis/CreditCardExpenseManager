@@ -2,6 +2,8 @@ package ve.com.abicelis.creditcardexpensemanager.model;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.FileNotFoundException;
 import java.io.Serializable;
@@ -28,14 +30,17 @@ public class Expense implements Serializable {
     ExpenseType expenseType;
 
 
-    public Expense (String description, byte[] thumbnail, String fullImagePath, BigDecimal amount, Currency currency, Calendar date, ExpenseCategory expenseCategory, ExpenseType expenseType) {
+    public Expense (@NonNull String description, @Nullable byte[] thumbnail, @Nullable String fullImagePath, @NonNull BigDecimal amount, @NonNull Currency currency, @NonNull Calendar date, @NonNull ExpenseCategory expenseCategory, @NonNull ExpenseType expenseType) {
         this.description = description;
-        this.thumbnail = thumbnail;
         this.fullImagePath = fullImagePath;
         this.amount = amount;
         this.currency = currency;
         this.expenseCategory = expenseCategory;
         this.expenseType = expenseType;
+
+        this.thumbnail = thumbnail;
+        if(this.thumbnail != null && this.thumbnail.equals(new byte[0]) )   //if thumbnail is empty byte array -> null
+            this.thumbnail = null;
 
         this.date = Calendar.getInstance();
         this.date.setTimeZone(date.getTimeZone());

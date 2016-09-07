@@ -1,9 +1,11 @@
 package ve.com.abicelis.creditcardexpensemanager.enums;
 
+import java.io.Serializable;
+
 /**
  * Created by Alex on 6/8/2016.
  */
-public enum Currency {
+public enum Currency implements Serializable {
 
     USD("US Dollar"),
     VEF("Venezuelan Bolivar"),
