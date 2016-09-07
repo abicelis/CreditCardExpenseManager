@@ -20,13 +20,15 @@ import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesViewHolder> {
 
     private List<Expense> mExpenses;
+    private int mCreditPeriodId;
     private LayoutInflater mInflater;
     private Fragment mFragment;
     private ExpensesViewHolder.ExpenseDeletedListener mListener;
 
-    public ExpensesAdapter(Fragment fragment, List<Expense> expenses, ExpensesViewHolder.ExpenseDeletedListener listener) {
+    public ExpensesAdapter(Fragment fragment, List<Expense> expenses, int creditPeriodId, ExpensesViewHolder.ExpenseDeletedListener listener) {
         mFragment = fragment;
         mExpenses = expenses;
+        mCreditPeriodId = creditPeriodId;
         mInflater = LayoutInflater.from(mFragment.getContext());
         mListener = listener;
     }
@@ -41,7 +43,7 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesViewHolder> {
     @Override
     public void onBindViewHolder(ExpensesViewHolder holder, int position) {
         Expense current = mExpenses.get(position);
-        holder.setData(this, mFragment, current, position);
+        holder.setData(this, mFragment, current, mCreditPeriodId, position);
         holder.setListeners();
         holder.setOnExpenseDeletedListener(mListener);
     }

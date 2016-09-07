@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/edit_name"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
@@ -8,14 +7,14 @@
     >
 
     <LinearLayout
-        android:id="@+id/dialog_expense_content"
+        android:id="@+id/dialog_create_expense_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="24dp"
         >
         <TextView
-            android:id="@+id/dialog_expense_txt_title"
+            android:id="@+id/dialog_create_expense_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
@@ -35,17 +34,18 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/dialog_expense_txt_label_amount"
+                    android:id="@+id/dialog_create_expense_label_amount"
                     android:text="@string/dialog_create_expense_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <EditText
-                    android:id="@+id/dialog_expense_edit_amount"
+                    android:id="@+id/dialog_create_expense_amount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:imeOptions="actionNext"
+                    android:backgroundTint="@color/gray_700"
                     />
             </LinearLayout>
             <LinearLayout
@@ -54,7 +54,7 @@
                 android:gravity="center"
                 >
                 <ImageView
-                    android:id="@+id/dialog_expense_img_image"
+                    android:id="@+id/dialog_create_expense_image"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
                     android:src="@drawable/icon_camera"
@@ -67,19 +67,80 @@
 
 
         <TextView
-            android:id="@+id/dialog_expense_txt_label_description"
+            android:id="@+id/dialog_create_expense_label_description"
             android:text="@string/dialog_create_expense_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <EditText
-            android:id="@+id/dialog_expense_edit_description"
+            android:id="@+id/dialog_create_expense_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
             android:singleLine="false"
             android:text=""
-            android:imeOptions="actionDone" />
+            android:imeOptions="actionDone"
+            android:backgroundTint="@color/gray_700"
+            />
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/dialog_create_expense_category"/>
+
+                <Spinner
+                    android:id="@+id/dialog_create_expense_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:theme="@style/SpinnerStyle"/>
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/dialog_create_expense_type"/>
+
+                <Spinner
+                    android:id="@+id/dialog_create_expense_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:theme="@style/SpinnerStyle"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 <RelativeLayout
@@ -91,20 +152,20 @@
     >
 
     <Button
-        android:id="@+id/dialog_expense_button_create"
+        android:id="@+id/dialog_create_expense_button_create"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="CREATE"
+        android:text="@string/dialog_create_expense_button_create"
         android:layout_alignParentRight="true"
         style="?attr/borderlessButtonStyle"/>
 
     <Button
-        android:id="@+id/dialog_expense_button_cancel"
+        android:id="@+id/dialog_create_expense_button_cancel"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_toStartOf="@id/dialog_expense_button_create"
-        android:layout_toLeftOf="@id/dialog_expense_button_create"
-        android:text="CANCEL"
+        android:layout_toStartOf="@id/dialog_create_expense_button_create"
+        android:layout_toLeftOf="@id/dialog_create_expense_button_create"
+        android:text="@string/dialog_create_expense_button_cancel"
         style="?attr/borderlessButtonStyle"/>
 
 </RelativeLayout>

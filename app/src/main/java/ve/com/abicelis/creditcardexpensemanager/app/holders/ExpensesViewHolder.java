@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -45,6 +46,7 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
 
     //DATA
     private Expense mCurrent;
+    private int mCreditPeriodId;
     private int mExpensePosition;
 
     public ExpensesViewHolder(View itemView) {
@@ -61,10 +63,11 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
         //mEditIcon = (ImageView) itemView.findViewById(R.id.list_item_expenses_img_edit);
     }
 
-    public void setData(ExpensesAdapter adapter, Fragment fragment, Expense current, int position) {
+    public void setData(ExpensesAdapter adapter, Fragment fragment, Expense current, int creditPeriodId, int position) {
         mAdapter = adapter;
         mFragment = fragment;
         this.mCurrent = current;
+        mCreditPeriodId = creditPeriodId;
         this.mExpensePosition = position;
 
         this.mAmount.setText(current.getAmount().toPlainString() + " " + current.getCurrency().getCode());
@@ -109,7 +112,8 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
 
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mFragment.getActivity(), pairs);
                 Intent expenseDetailIntent = new Intent(mFragment.getActivity(), ExpenseDetailActivity.class);
-                expenseDetailIntent.putExtra("expense", mCurrent);
+                expenseDetailIntent.putExtra(ExpenseDetailActivity.INTENT_EXTRAS_EXPENSE, mCurrent);
+                expenseDetailIntent.putExtra(ExpenseDetailActivity.INTENT_EXTRAS_CREDIT_PERIOD_ID, mCreditPeriodId);
                 mFragment.startActivityForResult(expenseDetailIntent, Constants.EXPENSE_DETAIL_ACTIVITY_REQUEST_CODE, options.toBundle());
 
                 break;

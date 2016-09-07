@@ -20,6 +20,7 @@ import ve.com.abicelis.creditcardexpensemanager.enums.Currency;
 import ve.com.abicelis.creditcardexpensemanager.enums.ExpenseCategory;
 import ve.com.abicelis.creditcardexpensemanager.enums.ExpenseType;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotDeleteDataException;
+import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotUpdateDataException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditCardNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditPeriodNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotGetDataException;
@@ -284,6 +285,29 @@ public class ExpenseManagerDAO {
     }
 
 
+    /**
+     * Returns an Expenses, given an Expense ID
+     * @param expenseId the Id of the Expense
+     */
+    public Expense getExpense(int expenseId) throws CouldNotGetDataException {
+        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
+        String[] selectionArgs = new String[]{String.valueOf(expenseId)};
+
+
+        Cursor cursor =  db.query(ExpenseManagerContract.ExpenseTable.TABLE_NAME, null,
+                ExpenseManagerContract.ExpenseTable._ID + " =? ",
+                selectionArgs, null, null, null);
+
+
+        if(cursor.getCount() == 0)
+            throw new CouldNotGetDataException("Expense not found for ID = " + expenseId);
+
+
+        cursor.moveToNext();
+        return getExpenseFromCursor(cursor);
+    }
+
+
 
     /* Delete data from database */
 
@@ -298,6 +322,25 @@ public class ExpenseManagerDAO {
     }
 
 
+    /* Update data on database */
+    public long updateExpense(Expense expense) throws CouldNotUpdateDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        //Set values
+        ContentValues values = getValuesFromExpense(expense);
+
+        //Which row to update
+        String selection = ExpenseManagerContract.ExpenseTable._ID + " =? ";
+        String[] selectionArgs = { String.valueOf(expense.getId()) };
+
+        int count = db.update(
+                ExpenseManagerContract.ExpenseTable.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
+        return count;
+    }
 
 
 
@@ -382,17 +425,8 @@ public class ExpenseManagerDAO {
     public long insertExpense(int creditPeriodId, Expense expense) throws CouldNotInsertDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName(), new Integer(creditPeriodId));
-        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DESCRIPTION.getName(), expense.getDescription());
-        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_THUMBNAIL.getName(), expense.getThumbnail());
-        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FULL_IMAGE_PATH.getName(), expense.getFullImagePath());
-        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_AMOUNT.getName(), expense.getAmount().toPlainString());
-        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_CURRENCY.getName(), expense.getCurrency().getCode());
-        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getName(), expense.getDate().getTimeInMillis());
-        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getName(), expense.getExpenseCategory().getCode());
-        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getName(), expense.getExpenseType().getCode());
-
+        ContentValues values = getValuesFromExpense(expense);
+        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName(), creditPeriodId);
 
         long newRowId;
         newRowId = db.insert(ExpenseManagerContract.ExpenseTable.TABLE_NAME, null, values);
@@ -408,7 +442,7 @@ public class ExpenseManagerDAO {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(ExpenseManagerContract.PaymentTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName(), new Integer(creditPeriodId));
+        values.put(ExpenseManagerContract.PaymentTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName(), creditPeriodId);
         values.put(ExpenseManagerContract.PaymentTable.COLUMN_NAME_DESCRIPTION.getName(), payment.getDescription());
         values.put(ExpenseManagerContract.PaymentTable.COLUMN_NAME_AMOUNT.getName(), payment.getAmount().toPlainString());
         values.put(ExpenseManagerContract.PaymentTable.COLUMN_NAME_CURRENCY.getName(), payment.getCurrency().getCode());
@@ -425,6 +459,20 @@ public class ExpenseManagerDAO {
     }
 
 
+
+    /* Model to ContentValues */
+    private ContentValues getValuesFromExpense(Expense expense) {
+        ContentValues values = new ContentValues();
+        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DESCRIPTION.getName(), expense.getDescription());
+        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_THUMBNAIL.getName(), expense.getThumbnail());
+        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FULL_IMAGE_PATH.getName(), expense.getFullImagePath());
+        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_AMOUNT.getName(), expense.getAmount().toPlainString());
+        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_CURRENCY.getName(), expense.getCurrency().getCode());
+        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getName(), expense.getDate().getTimeInMillis());
+        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getName(), expense.getExpenseCategory().getCode());
+        values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getName(), expense.getExpenseType().getCode());
+        return values;
+    }
 
 
     /* Cursor to Model */

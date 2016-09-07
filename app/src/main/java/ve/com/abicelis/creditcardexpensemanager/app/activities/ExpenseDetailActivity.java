@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,16 +25,21 @@ import android.widget.Toast;
 import java.io.FileNotFoundException;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
+import ve.com.abicelis.creditcardexpensemanager.app.dialogs.CreateOrEditExpenseDialogFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.ImageUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotDeleteDataException;
+import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotGetDataException;
 import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 
 /**
  * Created by Alex on 19/8/2016.
  */
 public class ExpenseDetailActivity extends AppCompatActivity implements  View.OnClickListener {
+
+    public static final String INTENT_EXTRAS_EXPENSE = "INTENT_EXTRAS_EXPENSE";
+    public static final String INTENT_EXTRAS_CREDIT_PERIOD_ID = "INTENT_EXTRAS_CREDIT_PERIOD_ID";
 
     //UI
     private Toolbar mToolbar;
@@ -48,6 +54,8 @@ public class ExpenseDetailActivity extends AppCompatActivity implements  View.On
 
     //DATA
     private Expense mExpense;
+    private int mCreditPeriodId;
+    private boolean expenseEdited = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,19 +66,18 @@ public class ExpenseDetailActivity extends AppCompatActivity implements  View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expense_detail);
 
-        //Try to get the expense, sent from the caller activity
+
+        //Try to get the expense and the periodId, sent from the caller activity
         try {
-            mExpense = (Expense) getIntent().getExtras().get("expense");
+            mExpense = (Expense) getIntent().getSerializableExtra(INTENT_EXTRAS_EXPENSE);
+            mCreditPeriodId = getIntent().getIntExtra(INTENT_EXTRAS_CREDIT_PERIOD_ID, -1);
         } catch (Exception e) {
-            Toast.makeText(this, "Error: missing Expense", Toast.LENGTH_SHORT).show();
-            Handler h = new Handler();
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                       onBackPressed();
-                }
-            };
-            h.postDelayed(r, 1000);
+            mExpense = null;
+        }
+        if(mExpense == null || mCreditPeriodId == -1) {
+            Toast.makeText(this, "Error: missing extras", Toast.LENGTH_SHORT).show();
+            onBackPressed();
+            return;
         }
 
         mToolbar = (Toolbar) findViewById(R.id.expense_detail_toolbar);
@@ -112,8 +119,39 @@ public class ExpenseDetailActivity extends AppCompatActivity implements  View.On
             }
         });
 
+
+        mEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handleOnEdit();
+            }
+        });
+
         setUpToolbar();
         setUpExpenseDetails();
+    }
+
+    private void handleOnEdit() {
+        FragmentManager fm = getSupportFragmentManager();
+        CreateOrEditExpenseDialogFragment dialog = CreateOrEditExpenseDialogFragment.newInstance(
+                new ExpenseManagerDAO(ExpenseDetailActivity.this),
+                mCreditPeriodId,
+                mExpense.getCurrency(),
+                mExpense);
+
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                try {
+                    mExpense = new ExpenseManagerDAO(getApplicationContext()).getExpense(mExpense.getId());
+                    expenseEdited = true;
+                }catch (Exception e) {
+                    Toast.makeText(ExpenseDetailActivity.this, "Error when updating data", Toast.LENGTH_SHORT).show();
+                }
+                setUpExpenseDetails();
+            }
+        });
+        dialog.show(fm, "fragment_dialog_edit_expense");
     }
 
     private void setUpToolbar() {
@@ -169,6 +207,9 @@ public class ExpenseDetailActivity extends AppCompatActivity implements  View.On
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if(expenseEdited)
+            setResult(Constants.RESULT_REFRESH_DATA);
+
         supportFinishAfterTransition();     //When user backs out, transition back!
     }
 
@@ -185,7 +226,7 @@ public class ExpenseDetailActivity extends AppCompatActivity implements  View.On
 
         switch (id) {
             case R.id.expense_detail_menu_edit_image:
-                Toast.makeText(this, "Under construction :)", Toast.LENGTH_SHORT).show();
+                handleOnEdit();
                 break;
         }
         return true;
