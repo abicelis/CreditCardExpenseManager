@@ -21,6 +21,7 @@ import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.activities.ExpenseDetailActivity;
 import ve.com.abicelis.creditcardexpensemanager.app.adapters.ExpensesAdapter;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
+import ve.com.abicelis.creditcardexpensemanager.app.utils.DateUtils;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.ImageUtils;
 import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 
@@ -72,7 +73,7 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
 
         this.mAmount.setText(current.getAmount().toPlainString() + " " + current.getCurrency().getCode());
         this.mDescription.setText(current.getDescription());
-        this.mDate.setText(current.getShortDateString());
+        this.mDate.setText(DateUtils.getRelativeTimeSpanString(current.getDate()));
 
         this.mCategory.setText(current.getExpenseCategory().getFriendlyName());
         ((GradientDrawable)this.mCategory.getBackground()).setColor(ContextCompat.getColor(mFragment.getContext(), current.getExpenseCategory().getColor()));

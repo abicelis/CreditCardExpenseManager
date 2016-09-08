@@ -89,9 +89,6 @@ public class Expense implements Serializable {
         return date;
     }
 
-    public String getShortDateString() {
-        return (date.get(Calendar.MONTH)+1) + "/" +date.get(Calendar.DAY_OF_MONTH) + " " + date.get(Calendar.HOUR) + (date.get(Calendar.AM_PM) == 0 ? "am" : "pm");
-    }
 
     public ExpenseCategory getExpenseCategory() {
         return expenseCategory;

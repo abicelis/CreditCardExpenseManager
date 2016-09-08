@@ -27,6 +27,7 @@ import java.io.FileNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.dialogs.CreateOrEditExpenseDialogFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
+import ve.com.abicelis.creditcardexpensemanager.app.utils.DateUtils;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.ImageUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotDeleteDataException;
@@ -49,8 +50,8 @@ public class ExpenseDetailActivity extends AppCompatActivity implements  View.On
     private TextView mDate;
     private TextView mCategory;
     private TextView mType;
-    private Button mEdit;
-    private Button mDelete;
+    //private Button mEdit;
+    //private Button mDelete;
 
     //DATA
     private Expense mExpense;
@@ -87,72 +88,27 @@ public class ExpenseDetailActivity extends AppCompatActivity implements  View.On
         mDate = (TextView) findViewById(R.id.expense_detail_date);
         mCategory = (TextView) findViewById(R.id.expense_detail_category);
         mType = (TextView) findViewById(R.id.expense_detail_type);
-        mEdit = (Button) findViewById(R.id.expense_detail_btn_edit);
-        mDelete = (Button) findViewById(R.id.expense_detail_btn_delete);
-        mDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                AlertDialog dialog = new AlertDialog.Builder(ExpenseDetailActivity.this)
-                        .setTitle(R.string.dialog_delete_expense_title)
-                        .setMessage(R.string.dialog_delete_expense_message)
-                        .setPositiveButton(R.string.dialog_delete_expense_button_yes,  new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                try{
-                                    new ExpenseManagerDAO(ExpenseDetailActivity.this).deleteExpense(mExpense.getId());
-                                    setResult(Constants.RESULT_REFRESH_DATA);
-                                    onBackPressed();
-                                } catch(CouldNotDeleteDataException e) {
-                                    Toast.makeText(ExpenseDetailActivity.this, getResources().getString(R.string.activity_expense_detail_error_cant_delete_expense), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        })
-                        .setNegativeButton(getResources().getString(R.string.dialog_delete_expense_button_no), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .create();
-                dialog.show();
-            }
-        });
-
-
-        mEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handleOnEdit();
-            }
-        });
+        //mEdit = (Button) findViewById(R.id.expense_detail_btn_edit);
+        //mDelete = (Button) findViewById(R.id.expense_detail_btn_delete);
+//        mDelete.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                handleOnDelete();
+//            }
+//        });
+//
+//
+//        mEdit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                handleOnEdit();
+//            }
+//        });
 
         setUpToolbar();
         setUpExpenseDetails();
     }
 
-    private void handleOnEdit() {
-        FragmentManager fm = getSupportFragmentManager();
-        CreateOrEditExpenseDialogFragment dialog = CreateOrEditExpenseDialogFragment.newInstance(
-                new ExpenseManagerDAO(ExpenseDetailActivity.this),
-                mCreditPeriodId,
-                mExpense.getCurrency(),
-                mExpense);
-
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                try {
-                    mExpense = new ExpenseManagerDAO(getApplicationContext()).getExpense(mExpense.getId());
-                    expenseEdited = true;
-                }catch (Exception e) {
-                    Toast.makeText(ExpenseDetailActivity.this, "Error when updating data", Toast.LENGTH_SHORT).show();
-                }
-                setUpExpenseDetails();
-            }
-        });
-        dialog.show(fm, "fragment_dialog_edit_expense");
-    }
 
     private void setUpToolbar() {
         setSupportActionBar(mToolbar);
@@ -169,12 +125,12 @@ public class ExpenseDetailActivity extends AppCompatActivity implements  View.On
     private void setUpExpenseDetails() {
         mAmount.setText(mExpense.getAmount().toPlainString());
         mDescription.setText(mExpense.getDescription());
-        mDate.setText(mExpense.getDate().getTime().toString());
+        mDate.setText(DateUtils.getShortDateString(mExpense.getDate()) + "\r\n" + DateUtils.getRelativeTimeSpanString(mExpense.getDate()));
 
         this.mCategory.setText(mExpense.getExpenseCategory().getFriendlyName());
         ((GradientDrawable)this.mCategory.getBackground()).setColor(ContextCompat.getColor(this, mExpense.getExpenseCategory().getColor()));
 
-        this.mType.setText(mExpense.getExpenseType().getShortName());
+        this.mType.setText(mExpense.getExpenseType().getFriendlyName());
         ((GradientDrawable)this.mType.getBackground()).setColor(ContextCompat.getColor(this, mExpense.getExpenseType().getColor()));
 
         try {
@@ -225,8 +181,11 @@ public class ExpenseDetailActivity extends AppCompatActivity implements  View.On
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.expense_detail_menu_edit_image:
+            case R.id.expense_detail_menu_edit:
                 handleOnEdit();
+                break;
+            case R.id.expense_detail_menu_delete:
+                handleOnDelete();
                 break;
         }
         return true;
@@ -242,5 +201,55 @@ public class ExpenseDetailActivity extends AppCompatActivity implements  View.On
             imageViewerIntent.putExtra("imagePath", mExpense.getFullImagePath());
             startActivity(imageViewerIntent, options.toBundle());
         }
+    }
+
+
+    private void handleOnDelete() {
+        AlertDialog dialog = new AlertDialog.Builder(ExpenseDetailActivity.this)
+                .setTitle(R.string.dialog_delete_expense_title)
+                .setMessage(R.string.dialog_delete_expense_message)
+                .setPositiveButton(R.string.dialog_delete_expense_button_yes,  new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try{
+                            new ExpenseManagerDAO(ExpenseDetailActivity.this).deleteExpense(mExpense.getId());
+                            setResult(Constants.RESULT_REFRESH_DATA);
+                            onBackPressed();
+                        } catch(CouldNotDeleteDataException e) {
+                            Toast.makeText(ExpenseDetailActivity.this, getResources().getString(R.string.activity_expense_detail_error_cant_delete_expense), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.dialog_delete_expense_button_no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
+    }
+
+    private void handleOnEdit() {
+        FragmentManager fm = getSupportFragmentManager();
+        CreateOrEditExpenseDialogFragment dialog = CreateOrEditExpenseDialogFragment.newInstance(
+                new ExpenseManagerDAO(ExpenseDetailActivity.this),
+                mCreditPeriodId,
+                mExpense.getCurrency(),
+                mExpense);
+
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                try {
+                    mExpense = new ExpenseManagerDAO(getApplicationContext()).getExpense(mExpense.getId());
+                    expenseEdited = true;
+                }catch (Exception e) {
+                    Toast.makeText(ExpenseDetailActivity.this, "Error when updating data", Toast.LENGTH_SHORT).show();
+                }
+                setUpExpenseDetails();
+            }
+        });
+        dialog.show(fm, "fragment_dialog_edit_expense");
     }
 }

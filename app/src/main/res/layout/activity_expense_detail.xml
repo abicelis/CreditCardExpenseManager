@@ -70,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:textSize="28sp"
+                android:textSize="22sp"
                 android:text="This is a date"/>
             <View
                 android:layout_width="match_parent"
@@ -95,106 +95,154 @@
                 android:background="@color/gray_600"/>
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_margin="8dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
-                        android:text="@string/activity_expense_detail_label_category" />
-                    <TextView
-                        android:id="@+id/expense_detail_category"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="2dp"
-                        android:paddingBottom="2dp"
-                        android:paddingRight="8dp"
-                        android:paddingLeft="8dp"
-                        android:layout_marginTop="6dp"
-                        android:layout_gravity="center"
-                        android:textColor="@android:color/white"
-                        android:background="@drawable/shape_round_corner"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="Category" />
-
-                </LinearLayout>
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_600"/>
+                android:text="@string/activity_expense_detail_label_category" />
+            <TextView
+                android:id="@+id/expense_detail_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:paddingRight="8dp"
+                android:paddingLeft="8dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginLeft="20dp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/shape_round_corner"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Category" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="@color/gray_600"/>
 
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_margin="8dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
-                        android:text="@string/activity_expense_detail_label_type" />
-                    <TextView
-                        android:id="@+id/expense_detail_type"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="2dp"
-                        android:paddingBottom="2dp"
-                        android:paddingRight="8dp"
-                        android:paddingLeft="8dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_gravity="center"
-                        android:textColor="@android:color/white"
-                        android:background="@drawable/shape_round_corner"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="Type" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_expense_detail_label_type" />
+            <TextView
+                android:id="@+id/expense_detail_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:paddingRight="8dp"
+                android:paddingLeft="8dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="20dp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/shape_round_corner"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Type" />
 
-                    </LinearLayout>
 
-            </LinearLayout>
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:layout_margin="8dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="vertical">-->
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginRight="10dp"-->
+                        <!--android:text="@string/activity_expense_detail_label_category" />-->
+                    <!--<TextView-->
+                        <!--android:id="@+id/expense_detail_category"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:paddingTop="2dp"-->
+                        <!--android:paddingBottom="2dp"-->
+                        <!--android:paddingRight="8dp"-->
+                        <!--android:paddingLeft="8dp"-->
+                        <!--android:layout_marginTop="6dp"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:textColor="@android:color/white"-->
+                        <!--android:background="@drawable/shape_round_corner"-->
+                        <!--android:ellipsize="end"-->
+                        <!--android:maxLines="1"-->
+                        <!--android:text="Category" />-->
+
+                <!--</LinearLayout>-->
+                <!--<View-->
+                    <!--android:layout_width="1dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:background="@color/gray_600"/>-->
+
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:layout_margin="8dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="vertical">-->
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginRight="10dp"-->
+                        <!--android:text="@string/activity_expense_detail_label_type" />-->
+                    <!--<TextView-->
+                        <!--android:id="@+id/expense_detail_type"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:paddingTop="2dp"-->
+                        <!--android:paddingBottom="2dp"-->
+                        <!--android:paddingRight="8dp"-->
+                        <!--android:paddingLeft="8dp"-->
+                        <!--android:layout_marginTop="5dp"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:textColor="@android:color/white"-->
+                        <!--android:background="@drawable/shape_round_corner"-->
+                        <!--android:ellipsize="end"-->
+                        <!--android:maxLines="1"-->
+                        <!--android:text="Type" />-->
+
+                    <!--</LinearLayout>-->
+
+            <!--</LinearLayout>-->
 
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_margin="8dp"
-        android:orientation="horizontal">
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:layout_margin="8dp"-->
+        <!--android:orientation="horizontal">-->
 
-        <Button
-            android:id="@+id/expense_detail_btn_edit"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="40dp"
-            android:layout_marginRight="4dp"
-            android:text="@string/activity_expense_detail_button_edit"
-            android:background="@color/colorPrimary"
-            android:textColor="@android:color/white"
-            style="?attr/borderlessButtonStyle"/>
+        <!--<Button-->
+            <!--android:id="@+id/expense_detail_btn_edit"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_marginRight="4dp"-->
+            <!--android:text="@string/activity_expense_detail_button_edit"-->
+            <!--android:background="@color/colorPrimary"-->
+            <!--android:textColor="@android:color/white"-->
+            <!--style="?attr/borderlessButtonStyle"/>-->
 
-        <Button
-            android:id="@+id/expense_detail_btn_delete"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="40dp"
-            android:layout_marginLeft="4dp"
-            android:text="@string/activity_expense_detail_button_delete"
-            android:background="@color/colorPrimary"
-            android:textColor="@android:color/white"
-            style="?attr/borderlessButtonStyle"/>
-    </LinearLayout>
+        <!--<Button-->
+            <!--android:id="@+id/expense_detail_btn_delete"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_marginLeft="4dp"-->
+            <!--android:text="@string/activity_expense_detail_button_delete"-->
+            <!--android:background="@color/colorPrimary"-->
+            <!--android:textColor="@android:color/white"-->
+            <!--style="?attr/borderlessButtonStyle"/>-->
+    <!--</LinearLayout>-->
 
 </LinearLayout>
