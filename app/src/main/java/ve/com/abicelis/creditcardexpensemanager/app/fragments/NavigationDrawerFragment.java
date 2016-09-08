@@ -89,9 +89,9 @@ public class NavigationDrawerFragment extends Fragment {
                 dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
                         reloadData();
                         holder.setData(getContext(), mActiveCreditCard, 0);
+                        closeDrawer();
                     }
                 });
                 dialog.show(getFragmentManager(), "fragment_dialog_select_credit_card");
@@ -120,6 +120,11 @@ public class NavigationDrawerFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 
+    }
+
+    public void closeDrawer() {
+        if(mDrawerLayout != null)
+            mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
 

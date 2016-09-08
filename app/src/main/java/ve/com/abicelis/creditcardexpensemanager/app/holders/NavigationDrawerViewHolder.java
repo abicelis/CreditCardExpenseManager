@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
+import ve.com.abicelis.creditcardexpensemanager.app.fragments.NavigationDrawerFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.OverviewFragment;
 import ve.com.abicelis.creditcardexpensemanager.model.NavigationDrawerItem;
 
@@ -53,7 +54,6 @@ public class NavigationDrawerViewHolder extends RecyclerView.ViewHolder implemen
     public void onClick(View view) {
         int id = view.getId();
 
-
         switch(id) {
             case R.id.container_item_nav_drawer:
                 FragmentManager fm = fragment.getFragmentManager();
@@ -67,8 +67,12 @@ public class NavigationDrawerViewHolder extends RecyclerView.ViewHolder implemen
                         break;
                 }
 
-                if(f != null)
+                if(f != null) {
                     fm.beginTransaction().replace(R.id.home_content_frame, f).commit();
+
+                    //TODO: kind of a hack..
+                    ((NavigationDrawerFragment)fragment).closeDrawer();
+                }
                 break;
         }
     }
