@@ -1,9 +1,10 @@
 package ve.com.abicelis.creditcardexpensemanager.app.fragments;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,7 +35,7 @@ import ve.com.abicelis.creditcardexpensemanager.model.NavigationDrawerItem;
 /**
  * Created by Alex on 5/8/2016.
  */
-public class NavigationDrawerFragment extends Fragment{
+public class NavigationDrawerFragment extends Fragment {
 
     public static final String ACTIVE_CREDIT_CARD = "active_cc";
 
@@ -55,8 +56,18 @@ public class NavigationDrawerFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_navigation_drawer, container);
 
+        reloadData();
+        setUpRecyclerView(rootView);
+        setUpDrawerHeader(rootView);
+
+        return rootView;
+    }
+
+    private void reloadData() {
         //Load dao and data
-        mDao = new ExpenseManagerDAO(getActivity().getApplicationContext());
+        if(mDao == null)
+            mDao = new ExpenseManagerDAO(getActivity().getApplicationContext());
+
         try {
             mActiveCreditCardID = SharedPreferencesUtils.getInt(getContext(), Constants.ACTIVE_CC_ID);
             mActiveCreditCard = mDao.getCreditCard(mActiveCreditCardID);
@@ -64,12 +75,6 @@ public class NavigationDrawerFragment extends Fragment{
             //This should never happen!
             Toast.makeText(getActivity(), "Error on navigation drawer header", Toast.LENGTH_SHORT).show();
         }
-
-
-        setUpRecyclerView(rootView);
-        setUpDrawerHeader(rootView);
-
-        return rootView;
     }
 
 
@@ -81,6 +86,14 @@ public class NavigationDrawerFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 SelectCreditCardDialogFragment dialog = SelectCreditCardDialogFragment.newInstance(mDao.getCreditCardList());
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        reloadData();
+                        holder.setData(getContext(), mActiveCreditCard, 0);
+                    }
+                });
                 dialog.show(getFragmentManager(), "fragment_dialog_select_credit_card");
             }
         });
@@ -94,16 +107,15 @@ public class NavigationDrawerFragment extends Fragment{
     private void setUpRecyclerView(View view) {
 
         List<NavigationDrawerItem> data = new ArrayList<>();
-        data.add(new NavigationDrawerItem("Home", android.R.drawable.ic_dialog_alert));
-        data.add(new NavigationDrawerItem("Map", android.R.drawable.ic_dialog_map));
-        data.add(new NavigationDrawerItem("Info", android.R.drawable.ic_dialog_info));
-        data.add(new NavigationDrawerItem("Dialer", android.R.drawable.ic_dialog_dialer));
-        data.add(new NavigationDrawerItem("Email", android.R.drawable.ic_dialog_email));
+        data.add(new NavigationDrawerItem("Overview", android.R.drawable.ic_dialog_alert));
+        data.add(new NavigationDrawerItem("Fragment 2", android.R.drawable.ic_dialog_map));
+        data.add(new NavigationDrawerItem("Fragment 3", android.R.drawable.ic_dialog_info));
+        data.add(new NavigationDrawerItem("Fragment 4", android.R.drawable.ic_dialog_dialer));
 
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.nad_drawer_recyclerview_list);
 
-        NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(getActivity(), data);
+        NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(this, data);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 

@@ -1,6 +1,7 @@
 package ve.com.abicelis.creditcardexpensemanager.app.adapters;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +22,11 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 
     private List<NavigationDrawerItem> mDataList = Collections.emptyList();
     private LayoutInflater inflater;
-    private Context context;
+    private Fragment fragment;
 
-    public NavigationDrawerAdapter(Context context, List<NavigationDrawerItem> data) {
-        this.context = context;
-        this.inflater = LayoutInflater.from(context);
+    public NavigationDrawerAdapter(Fragment fragment, List<NavigationDrawerItem> data) {
+        this.fragment = fragment;
+        this.inflater = LayoutInflater.from(fragment.getActivity());
         this.mDataList = data;
     }
 
@@ -40,7 +41,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     public void onBindViewHolder(NavigationDrawerViewHolder holder, int position) {
         NavigationDrawerItem current = mDataList.get(position);
 
-        holder.setData(context, current, position);
+        holder.setData(fragment, current, position);
         holder.setListeners();
     }
 

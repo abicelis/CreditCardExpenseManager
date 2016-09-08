@@ -1,8 +1,7 @@
 package ve.com.abicelis.creditcardexpensemanager.app.dialogs;
 
-import android.app.Fragment;
-import android.content.Context;
-import android.content.SharedPreferences;
+
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
@@ -16,6 +15,7 @@ import java.util.List;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.adapters.CreditCardAdapter;
+import ve.com.abicelis.creditcardexpensemanager.app.fragments.OverviewFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.holders.CreditCardViewHolder;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
@@ -30,6 +30,7 @@ public class SelectCreditCardDialogFragment extends AppCompatDialogFragment {
     private static final String TAG = "SelectCCDialogFrag";
 
     //UI
+    private DialogInterface.OnDismissListener mOnDismissListener = null;
     private RecyclerView mRecyclerView;
     private CreditCardAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
@@ -85,6 +86,7 @@ public class SelectCreditCardDialogFragment extends AppCompatDialogFragment {
             public void OnCreditCardSelected(CreditCard creditCard) {
 
                 SharedPreferencesUtils.setInt(getContext(), Constants.ACTIVE_CC_ID, creditCard.getId());
+                getFragmentManager().beginTransaction().replace(R.id.home_content_frame, new OverviewFragment()).commit();
                 dismiss();
             }
         };
@@ -94,6 +96,20 @@ public class SelectCreditCardDialogFragment extends AppCompatDialogFragment {
 
         mLayoutManager = new LinearLayoutManager(getContext().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
+    }
+
+
+    public void setOnDismissListener(DialogInterface.OnDismissListener listener) {
+        mOnDismissListener = listener;
+    }
+
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (mOnDismissListener != null) {
+            mOnDismissListener.onDismiss(dialog);
+        }
     }
 
 }

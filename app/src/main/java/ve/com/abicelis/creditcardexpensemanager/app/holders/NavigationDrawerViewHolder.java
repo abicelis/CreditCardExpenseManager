@@ -1,6 +1,8 @@
 package ve.com.abicelis.creditcardexpensemanager.app.holders;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
+import ve.com.abicelis.creditcardexpensemanager.app.fragments.OverviewFragment;
 import ve.com.abicelis.creditcardexpensemanager.model.NavigationDrawerItem;
 
 
@@ -22,7 +25,7 @@ public class NavigationDrawerViewHolder extends RecyclerView.ViewHolder implemen
     private LinearLayout container;
 
     private NavigationDrawerItem current;
-    private Context context;
+    private Fragment fragment;
     private int position;
 
     public NavigationDrawerViewHolder(View itemView) {
@@ -33,8 +36,8 @@ public class NavigationDrawerViewHolder extends RecyclerView.ViewHolder implemen
         container = (LinearLayout) itemView.findViewById(R.id.container_item_nav_drawer);
     }
 
-    public void setData(Context context, NavigationDrawerItem current, int position) {
-        this.context = context;
+    public void setData(Fragment fragment, NavigationDrawerItem current, int position) {
+        this.fragment = fragment;
         this.current = current;
         this.position = position;
 
@@ -50,9 +53,22 @@ public class NavigationDrawerViewHolder extends RecyclerView.ViewHolder implemen
     public void onClick(View view) {
         int id = view.getId();
 
+
         switch(id) {
             case R.id.container_item_nav_drawer:
-                Toast.makeText(context, title.getText().toString(), Toast.LENGTH_SHORT).show();
+                FragmentManager fm = fragment.getFragmentManager();
+                Fragment f = null;
+                switch (position) {
+                    case 0:
+                        f = new OverviewFragment();
+                        break;
+                    default:
+                        Toast.makeText(fragment.getActivity(), title.getText().toString() + " is under construction :)", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+
+                if(f != null)
+                    fm.beginTransaction().replace(R.id.home_content_frame, f).commit();
                 break;
         }
     }
