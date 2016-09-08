@@ -494,7 +494,7 @@ public class CreateOrEditExpenseDialogFragment extends AppCompatDialogFragment i
             try {
                 Expense expense = new Expense(mOriginalExpense.getId(), description, expenseImageThumbnailBytes, imagePath,
                         new BigDecimal(mAmountText.getText().toString()), mCurrency,
-                        Calendar.getInstance(), expenseCategory, expenseType);
+                        mOriginalExpense.getDate(), expenseCategory, expenseType);
                 mDao.updateExpense(expense);
             } catch (CouldNotUpdateDataException e) {
                 Toast.makeText(getActivity(), "There was a problem updating the Expense", Toast.LENGTH_SHORT).show();
