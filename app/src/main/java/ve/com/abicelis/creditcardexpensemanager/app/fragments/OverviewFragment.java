@@ -43,8 +43,6 @@ import ve.com.abicelis.creditcardexpensemanager.model.Expense;
  */
 public class OverviewFragment extends Fragment {
 
-
-
     //Data
     int activeCreditCardId = -1;
     CreditCard activeCreditCard = null;
@@ -74,7 +72,13 @@ public class OverviewFragment extends Fragment {
 
         try {
             activeCreditCardId = SharedPreferencesUtils.getInt(getContext(), Constants.ACTIVE_CC_ID);
-            refreshData();
+            try {
+                refreshData();
+            }catch (CreditCardNotFoundException e ) {
+                Toast.makeText(getActivity(), "Sorry, there was a problem loading the Credit Card", Toast.LENGTH_SHORT).show();
+            }catch (CreditPeriodNotFoundException e) {
+                Toast.makeText(getActivity(), "Sorry, there was a problem loading the Credit Period", Toast.LENGTH_SHORT).show();
+            }
         }catch(SharedPreferenceNotFoundException e) {
             //This shouldn't happen
             Toast.makeText(getActivity(), "Megapeo en oncreate, SharedPreferenceNotFoundException CreditCardNotFoundException", Toast.LENGTH_SHORT).show();
@@ -237,19 +241,16 @@ public class OverviewFragment extends Fragment {
     }
 
 
-    public void refreshData() {
-        try {
-            activeCreditCard = dao.getCreditCardWithCreditPeriod(activeCreditCardId, 0);
+    public void refreshData() throws CreditCardNotFoundException, CreditPeriodNotFoundException {
+        activeCreditCard = dao.getCreditCardWithCreditPeriod(activeCreditCardId, 0);
 
-            //Clear the list and refresh it with new data, this must be done so the adapter
-            // doesn't lose track of creditCardExpenses object when overwriting
-            // activeCreditCard.getCreditPeriods().get(0).getExpenses();
-            creditCardExpenses.clear();
-            creditCardExpenses.addAll(activeCreditCard.getCreditPeriods().get(0).getExpenses());
+        //Clear the list and refresh it with new data, this must be done so the adapter
+        // doesn't lose track of creditCardExpenses object when overwriting
+        // activeCreditCard.getCreditPeriods().get(0).getExpenses();
+        creditCardExpenses.clear();
+        creditCardExpenses.addAll(activeCreditCard.getCreditPeriods().get(0).getExpenses());
 
-        }catch (CreditCardNotFoundException | CreditPeriodNotFoundException e) {
-            Toast.makeText(getActivity(), "Sorry, there has been a problem refreshing the data", Toast.LENGTH_SHORT).show();
-        }
+
     }
 
 
@@ -257,9 +258,17 @@ public class OverviewFragment extends Fragment {
         loadDao();
 
         int oldExpensesCount = creditCardExpenses.size();
-        refreshData();
-        int newExpensesCount = creditCardExpenses.size();
+        try {
+            refreshData();
+        }catch (CreditCardNotFoundException e ) {
+            Toast.makeText(getActivity(), "Sorry, there was a problem loading the Credit Card", Toast.LENGTH_SHORT).show();
+            return;
+        }catch (CreditPeriodNotFoundException e) {
+            Toast.makeText(getActivity(), "Sorry, there was a problem loading the Credit Period", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        int newExpensesCount = creditCardExpenses.size();
 
         //TODO: in the future, expenses wont necessarily be added with date=now,
         //TODO: meaning they wont always be added on recyclerview position = 0
