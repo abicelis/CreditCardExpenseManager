@@ -4,6 +4,9 @@
     /*Nav Drawer*/
     <string name="drawer_open">Drawer opened!</string>
     <string name="drawer_closed">Drawer Closed!</string>
+    <string name="fragment_name_overview">Overview</string>
+    <string name="fragment_name_expense_list">Expense List</string>
+    <string name="fragment_name_graphs">Graphs</string>
 
     /*Welcome Activity*/
     <string name="activity_welcome_txt_title">Welcome to CC Manager</string>
@@ -99,4 +102,5 @@
     <string name="ocr_success">Text read successfully</string>
     <string name="ocr_failure">No text captured</string>
     <string name="ocr_error">"Error reading text: %1$s"</string>
+
 </resources>

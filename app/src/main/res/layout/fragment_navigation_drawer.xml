@@ -10,9 +10,10 @@
         android:id="@+id/nav_drawer_header_container"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginTop="24dp"
         android:orientation="vertical"
         android:background="@color/colorPrimary">
+        <!--android:layout_marginTop="24dp"-->
+        <!--&gt;-->
 
 
         <RelativeLayout

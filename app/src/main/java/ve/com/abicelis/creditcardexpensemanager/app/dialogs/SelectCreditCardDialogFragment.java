@@ -15,7 +15,7 @@ import java.util.List;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.adapters.CreditCardAdapter;
-import ve.com.abicelis.creditcardexpensemanager.app.fragments.OverviewFragment;
+import ve.com.abicelis.creditcardexpensemanager.app.fragments.ExpenseListFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.holders.CreditCardViewHolder;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
@@ -86,7 +86,7 @@ public class SelectCreditCardDialogFragment extends AppCompatDialogFragment {
             public void OnCreditCardSelected(CreditCard creditCard) {
 
                 SharedPreferencesUtils.setInt(getContext(), Constants.ACTIVE_CC_ID, creditCard.getId());
-                getFragmentManager().beginTransaction().replace(R.id.home_content_frame, new OverviewFragment()).commit();
+                getFragmentManager().beginTransaction().replace(R.id.home_content_frame, new ExpenseListFragment()).commit();
                 dismiss();
             }
         };

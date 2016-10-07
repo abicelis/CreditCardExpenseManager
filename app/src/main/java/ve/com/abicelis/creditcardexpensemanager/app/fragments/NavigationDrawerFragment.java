@@ -107,10 +107,9 @@ public class NavigationDrawerFragment extends Fragment {
     private void setUpRecyclerView(View view) {
 
         List<NavigationDrawerItem> data = new ArrayList<>();
-        data.add(new NavigationDrawerItem("Overview", android.R.drawable.ic_dialog_alert));
-        data.add(new NavigationDrawerItem("Fragment 2", android.R.drawable.ic_dialog_map));
-        data.add(new NavigationDrawerItem("Fragment 3", android.R.drawable.ic_dialog_info));
-        data.add(new NavigationDrawerItem("Fragment 4", android.R.drawable.ic_dialog_dialer));
+        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_overview), android.R.drawable.ic_dialog_alert));
+        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_expense_list), android.R.drawable.ic_dialog_dialer));
+        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_graphs), android.R.drawable.ic_dialog_map));
 
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.nad_drawer_recyclerview_list);
@@ -122,42 +121,46 @@ public class NavigationDrawerFragment extends Fragment {
 
     }
 
+    public void setDrawerLayout(DrawerLayout drawerLayout) {
+        mDrawerLayout = drawerLayout;
+    }
+
     public void closeDrawer() {
         if(mDrawerLayout != null)
             mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
-
-    public void setUpDrawer(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar) {
-
-        mDrawerLayout = drawerLayout;
-
-        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout,toolbar, R.string.drawer_open, R.string.drawer_closed) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                super.onDrawerSlide(drawerView, slideOffset);
-            }
-        };
-
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-        mDrawerLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mDrawerToggle.syncState();
-
-            }
-        });
-    }
+//
+//    public void setUpDrawer(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar) {
+//
+//        mDrawerLayout = drawerLayout;
+//
+//        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout,toolbar, R.string.drawer_open, R.string.drawer_closed) {
+//            @Override
+//            public void onDrawerOpened(View drawerView) {
+//                super.onDrawerOpened(drawerView);
+//            }
+//
+//            @Override
+//            public void onDrawerClosed(View drawerView) {
+//                super.onDrawerClosed(drawerView);
+//            }
+//
+//            @Override
+//            public void onDrawerSlide(View drawerView, float slideOffset) {
+//                super.onDrawerSlide(drawerView, slideOffset);
+//            }
+//        };
+//
+//        mDrawerLayout.setDrawerListener(mDrawerToggle);
+//
+//        mDrawerLayout.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                mDrawerToggle.syncState();
+//
+//            }
+//        });
+//    }
 
 }
