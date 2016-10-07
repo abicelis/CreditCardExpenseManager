@@ -150,11 +150,11 @@ public class CreditPeriod {
         BigDecimal balance = new BigDecimal(0);
 
         for (Expense e: expenses) {
-            balance.add(e.getAmount());
+            balance = balance.add(e.getAmount());
         }
 
         for (Payment p : payments) {
-            balance.subtract(p.getAmount());
+            balance = balance.subtract(p.getAmount());
         }
 
         return balance;

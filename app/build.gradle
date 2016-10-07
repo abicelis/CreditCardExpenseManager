@@ -8,8 +8,8 @@ android {
         applicationId "ve.com.abicelis.creditcardexpensemanager"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 14
-        versionName "1.8.04"
+        versionCode 15
+        versionName "1.9.0"
     }
     buildTypes {
         release {
@@ -31,6 +31,4 @@ dependencies {
     compile 'com.github.lecho:hellocharts-library:1.5.8@aar'
     compile 'com.githang:com.edmodo.cropper:1.0.2'
     compile 'com.code-troopers.betterpickers:library:3.0.0'
-
-
 }

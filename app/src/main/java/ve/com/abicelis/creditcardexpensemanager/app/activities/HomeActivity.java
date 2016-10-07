@@ -22,19 +22,12 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-
         setUpToolbar();
-
-
 
         //Load the default fragment (overview_fragment.java)
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.home_content_frame, new OverviewFragment()).commit();
         }
-
-
-//        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        drawerFragment.setUpDrawer(R.id.nav_drawer_fragment, drawerLayout, toolbar);
 
     }
 
