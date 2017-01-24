@@ -4,12 +4,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -53,8 +53,8 @@ public class ExpenseListFragment extends Fragment {
     //UI
     LineChartFragment chartFragment;
     RecyclerView recyclerViewExpenses;
-    LinearLayoutManager layoutManager;
-    ExpensesAdapter adapter;
+    LinearLayoutManager mLayoutManager;
+    ExpensesAdapter mAdapter;
     Toolbar toolbar;
     FloatingActionMenu fabMenu;
     FloatingActionButton fabNewExpense;
@@ -99,7 +99,7 @@ public class ExpenseListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_expense_list, container, false);
 
-        setUpExpensesRecyclerView(rootView);
+        setUpRecyclerView(rootView);
         setUpSwipeRefresh(rootView);
         //setUpToolbar(rootView);
         setUpFab(rootView);
@@ -158,7 +158,7 @@ public class ExpenseListFragment extends Fragment {
 
 
 
-    private void setUpExpensesRecyclerView(View rootView) {
+    private void setUpRecyclerView(View rootView) {
 
         recyclerViewExpenses = (RecyclerView) rootView.findViewById(R.id.home_recycler_expenses);
 
@@ -169,8 +169,8 @@ public class ExpenseListFragment extends Fragment {
 
                     dao.deleteExpense(creditCardExpenses.get(position).getId());
                     creditCardExpenses.remove(position);
-                    adapter.notifyItemRemoved(position);
-                    adapter.notifyItemRangeChanged(position, adapter.getItemCount());
+                    mAdapter.notifyItemRemoved(position);
+                    mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
                     //refreshChart();
                 }catch (CouldNotDeleteDataException e) {
                     Toast.makeText(getActivity(), "There was an error deleting the expense!", Toast.LENGTH_SHORT).show();
@@ -178,13 +178,17 @@ public class ExpenseListFragment extends Fragment {
 
             }
         };
+        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mAdapter = new ExpensesAdapter(this, creditCardExpenses, activeCreditCard.getCreditPeriods().get(0).getId(), listener);
+
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(recyclerViewExpenses.getContext(), mLayoutManager.getOrientation());
+        itemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.item_decoration_half_line));
 
 
-        adapter = new ExpensesAdapter(this, creditCardExpenses, activeCreditCard.getCreditPeriods().get(0).getId(), listener);
-        recyclerViewExpenses.setAdapter(adapter);
+        recyclerViewExpenses.addItemDecoration(itemDecoration);
+        recyclerViewExpenses.setLayoutManager(mLayoutManager);
 
-        layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        recyclerViewExpenses.setLayoutManager(layoutManager);
+        recyclerViewExpenses.setAdapter(mAdapter);
     }
 
     private void setUpSwipeRefresh(View rootView) {
@@ -252,7 +256,7 @@ public class ExpenseListFragment extends Fragment {
     public void refreshData() throws CreditCardNotFoundException, CreditPeriodNotFoundException {
         activeCreditCard = dao.getCreditCardWithCreditPeriod(activeCreditCardId, 0);
 
-        //Clear the list and refresh it with new data, this must be done so the adapter
+        //Clear the list and refresh it with new data, this must be done so the mAdapter
         // doesn't lose track of creditCardExpenses object when overwriting
         // activeCreditCard.getCreditPeriods().get(0).getExpenses();
         creditCardExpenses.clear();
@@ -282,11 +286,11 @@ public class ExpenseListFragment extends Fragment {
         //TODO: meaning they wont always be added on recyclerview position = 0
         //If a new expense was added
         if(newExpensesCount == oldExpensesCount+1) {
-            adapter.notifyItemInserted(0);
-            adapter.notifyItemRangeChanged(1, activeCreditCard.getCreditPeriods().get(0).getExpenses().size()-1);
-            layoutManager.scrollToPosition(0);
+            mAdapter.notifyItemInserted(0);
+            mAdapter.notifyItemRangeChanged(1, activeCreditCard.getCreditPeriods().get(0).getExpenses().size()-1);
+            mLayoutManager.scrollToPosition(0);
         } else {
-            adapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
         }
 
     }
