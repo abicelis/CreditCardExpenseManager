@@ -23,13 +23,12 @@
         android:id="@+id/home_fab_menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginRight="24dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
         fab:menu_fab_size="normal"
         app:menu_showShadow="false"
-        fab:menu_colorNormal="#DA4336"
-        fab:menu_colorPressed="#E75043"
-        fab:menu_colorRipple="#99FFFFFF"
+        fab:menu_colorNormal="@color/colorPrimary"
+        fab:menu_colorPressed="@color/colorPrimary"
         fab:menu_animationDelayPerItem="50"
         fab:menu_icon="@drawable/fab_add"
         fab:menu_buttonSpacing="0dp"
@@ -48,6 +47,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@android:drawable/ic_menu_camera"
+            fab:fab_colorNormal="@color/colorPrimary"
+            fab:fab_colorPressed="@color/colorPrimary"
             fab:fab_size="mini"
             fab:fab_label="New expense (Camera)" />
 
@@ -57,7 +58,9 @@
             fab:fab_hideAnimation="@anim/fab_slide_out_to_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_dialog_info"
+            android:src="@android:drawable/ic_dialog_alert"
+            fab:fab_colorNormal="@color/colorPrimary"
+            fab:fab_colorPressed="@color/colorPrimary"
             fab:fab_size="mini"
             fab:fab_label="New expense" />
     </com.github.clans.fab.FloatingActionMenu>

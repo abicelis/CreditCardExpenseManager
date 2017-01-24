@@ -7,6 +7,7 @@
     <string name="fragment_name_overview">Overview</string>
     <string name="fragment_name_expense_list">Expense List</string>
     <string name="fragment_name_graphs">Graphs</string>
+    <string name="fragment_name_credit_cards">Credit Cards</string>
 
     /*Welcome Activity*/
     <string name="activity_welcome_txt_title">Welcome to CC Manager</string>

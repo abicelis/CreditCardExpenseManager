@@ -110,6 +110,7 @@ public class NavigationDrawerFragment extends Fragment {
         data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_overview), android.R.drawable.ic_dialog_alert));
         data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_expense_list), android.R.drawable.ic_dialog_dialer));
         data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_graphs), android.R.drawable.ic_dialog_map));
+        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_credit_cards), android.R.drawable.ic_dialog_info));
 
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.nad_drawer_recyclerview_list);

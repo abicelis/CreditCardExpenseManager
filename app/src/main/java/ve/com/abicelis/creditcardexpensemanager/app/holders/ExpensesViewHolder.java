@@ -28,7 +28,7 @@ import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 /**
  * Created by Alex on 7/8/2016.
  */
-public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
     public ExpensesAdapter mAdapter;
     private Fragment mFragment;
@@ -138,6 +138,11 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
             //case R.id.list_item_expenses_img_edit:
             //    break;
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        return false;
     }
 
     public interface ExpenseDeletedListener {
