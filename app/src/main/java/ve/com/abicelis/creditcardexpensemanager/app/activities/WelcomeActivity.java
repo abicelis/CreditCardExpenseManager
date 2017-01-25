@@ -1,10 +1,8 @@
 package ve.com.abicelis.creditcardexpensemanager.app.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -50,6 +48,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         switch(id) {
             case R.id.activity_welcome_add_credit_card:
                 Intent addCCIntent = new Intent(WelcomeActivity.this, AddCreditCardActivity.class);
+                addCCIntent.putExtra(AddCreditCardActivity.CAME_FROM_WELCOME_ACTIVITY_INTENT, true);
                 startActivity(addCCIntent);
                 finish();
                 break;

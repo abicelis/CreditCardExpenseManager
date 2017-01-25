@@ -12,14 +12,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
@@ -37,6 +35,7 @@ import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
 import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardBackground;
+import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardLayoutRes;
 import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardType;
 import ve.com.abicelis.creditcardexpensemanager.enums.Currency;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotInsertDataException;
@@ -47,11 +46,14 @@ import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
  */
 public class AddCreditCardActivity extends AppCompatActivity {
 
+    // Constants used to pass extra data in the intent
+    public static final String CAME_FROM_WELCOME_ACTIVITY_INTENT = "CAME_FROM_WELCOME_ACTIVITY_INTENT";
+
     //TAGS
     private static final String CALENDAR_EXPIRATION_TAG = "1";
 
     //DATA
-    boolean cameFromWelcomeScreen = false;
+    boolean mCameFromWelcomeScreen = false;
     Calendar cardExpirationCal = null;
     List<Currency> currencies;
     List<CreditCardType> cardTypes;
@@ -106,8 +108,8 @@ public class AddCreditCardActivity extends AppCompatActivity {
         setUpCCRecyclerView();
         setUpRecyclerUpdater();
 
-        //Check if intent comes with cameFromWelcomeScreen = true;
-        cameFromWelcomeScreen = true;
+        //Check if intent comes with mCameFromWelcomeScreen = true;
+        mCameFromWelcomeScreen = getIntent().getBooleanExtra(CAME_FROM_WELCOME_ACTIVITY_INTENT, false);
     }
 
 
@@ -190,7 +192,8 @@ public class AddCreditCardActivity extends AppCompatActivity {
             }
         };
 
-        mAdapter = new CreditCardAdapter(getApplicationContext(), mCreditCardList, ccSelectedListener);
+        mAdapter = new CreditCardAdapter(getApplicationContext(), mCreditCardList, CreditCardLayoutRes.LAYOUT_BIG);
+        mAdapter.setCreditCardSelectedListener(ccSelectedListener);
         mRecyclerView.setAdapter(mAdapter);
 
         mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -298,7 +301,7 @@ public class AddCreditCardActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(cameFromWelcomeScreen) {
+        if(mCameFromWelcomeScreen) {
             AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle(getResources().getString(R.string.activity_add_new_cc_exit_dialog_title))
                 .setMessage(getResources().getString(R.string.activity_add_new_cc_exit_dialog_message))
@@ -317,6 +320,8 @@ public class AddCreditCardActivity extends AppCompatActivity {
                 .create();
             dialog.show();
         }
+        else
+            super.onBackPressed();
     }
 
     private void handleNewCardCreation() {
