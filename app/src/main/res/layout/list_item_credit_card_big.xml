@@ -34,12 +34,14 @@
             android:id="@+id/list_item_credit_card_bank_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:textColor="@color/gray_300"
             android:textSize="22sp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Wells Fargo" />
+            android:text="Wells Fargo"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
         <TextView
             android:id="@+id/list_item_credit_card_alias"
@@ -122,7 +124,6 @@
             android:textSize="8dp"
             android:textColor="@color/gray_300"
             android:text="VALID\nTHRU" />
-
 
 
 

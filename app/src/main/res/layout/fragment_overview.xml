@@ -22,7 +22,7 @@
 
             <include
                 android:id="@+id/nav_drawer_credit_card"
-                layout="@layout/list_item_credit_card"/>
+                layout="@layout/list_item_credit_card_big"/>
 
         </RelativeLayout>
 
