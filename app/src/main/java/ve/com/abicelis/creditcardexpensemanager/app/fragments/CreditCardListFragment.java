@@ -26,12 +26,14 @@ import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.activities.AddCreditCardActivity;
 import ve.com.abicelis.creditcardexpensemanager.app.activities.OcrCreateExpenseActivity;
 import ve.com.abicelis.creditcardexpensemanager.app.activities.WelcomeActivity;
+import ve.com.abicelis.creditcardexpensemanager.app.adapters.CreditCardAdapter;
 import ve.com.abicelis.creditcardexpensemanager.app.adapters.ExpensesAdapter;
 import ve.com.abicelis.creditcardexpensemanager.app.dialogs.CreateOrEditExpenseDialogFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.holders.ExpensesViewHolder;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
+import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardLayoutRes;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotDeleteDataException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditCardNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditPeriodNotFoundException;
@@ -45,15 +47,13 @@ import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 public class CreditCardListFragment extends Fragment {
 
     //Data
-    int activeCreditCardId = -1;
-    CreditCard activeCreditCard = null;
-    List<Expense> creditCardExpenses = new ArrayList<>();
+    List<CreditCard> creditCards = new ArrayList<>();
     ExpenseManagerDAO dao;
 
     //UI
     RecyclerView recycler;
     LinearLayoutManager layoutManager;
-    ExpensesAdapter adapter;
+    CreditCardAdapter adapter;
     FloatingActionButton fabNewCreditCard;
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -69,21 +69,7 @@ public class CreditCardListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         loadDao();
-
-        try {
-            activeCreditCardId = SharedPreferencesUtils.getInt(getContext(), Constants.ACTIVE_CC_ID);
-            try {
-                refreshData();
-            }catch (CreditCardNotFoundException e ) {
-                Toast.makeText(getActivity(), "Sorry, there was a problem loading the Credit Card", Toast.LENGTH_SHORT).show();
-            }catch (CreditPeriodNotFoundException e) {
-                Toast.makeText(getActivity(), "Sorry, there was a problem loading the Credit Period", Toast.LENGTH_SHORT).show();
-            }
-        }catch(SharedPreferenceNotFoundException e) {
-            //This shouldn't happen
-            Toast.makeText(getActivity(), "Megapeo en oncreate, SharedPreferenceNotFoundException CreditCardNotFoundException", Toast.LENGTH_SHORT).show();
-        }
-
+        creditCards.addAll(dao.getCreditCardList());
     }
 
     @Nullable
@@ -142,7 +128,7 @@ public class CreditCardListFragment extends Fragment {
         recycler.addItemDecoration(new DividerItemDecoration(recycler.getContext(), layoutManager.getOrientation()));
         recycler.setLayoutManager(layoutManager);
 
-        adapter = new ExpensesAdapter(this, creditCardExpenses, activeCreditCard.getCreditPeriods().get(0).getId(), listener);
+        adapter = new CreditCardAdapter(getActivity(), creditCards, CreditCardLayoutRes.LAYOUT_DETAILED);
         recycler.setAdapter(adapter);
 
     }
@@ -154,7 +140,6 @@ public class CreditCardListFragment extends Fragment {
                                                     @Override
                                                     public void onRefresh() {
                                                         refreshRecyclerView();
-                                                        //refreshChart();
                                                         swipeRefreshLayout.setRefreshing(false);
                                                     }
                                                 }
@@ -201,22 +186,17 @@ public class CreditCardListFragment extends Fragment {
 
 
     public void refreshData() throws CreditCardNotFoundException, CreditPeriodNotFoundException {
-        activeCreditCard = dao.getCreditCardWithCreditPeriod(activeCreditCardId, 0);
-
         //Clear the list and refresh it with new data, this must be done so the mAdapter
-        // doesn't lose track of creditCardExpenses object when overwriting
-        // activeCreditCard.getCreditPeriods().get(0).getExpenses();
-        creditCardExpenses.clear();
-        creditCardExpenses.addAll(activeCreditCard.getCreditPeriods().get(0).getExpenses());
-
-
+        // doesn't lose track of creditCards list
+        creditCards.clear();
+        creditCards.addAll(dao.getCreditCardList());
     }
 
 
     public void refreshRecyclerView() {
         loadDao();
 
-        int oldExpensesCount = creditCardExpenses.size();
+        int oldCount = creditCards.size();
         try {
             refreshData();
         }catch (CreditCardNotFoundException e ) {
@@ -227,14 +207,13 @@ public class CreditCardListFragment extends Fragment {
             return;
         }
 
-        int newExpensesCount = creditCardExpenses.size();
+        int newCount = creditCards.size();
 
-        //TODO: in the future, expenses wont necessarily be added with date=now,
-        //TODO: meaning they wont always be added on recyclerview position = 0
+
         //If a new expense was added
-        if(newExpensesCount == oldExpensesCount+1) {
+        if(newCount == oldCount+1) {
             adapter.notifyItemInserted(0);
-            adapter.notifyItemRangeChanged(1, activeCreditCard.getCreditPeriods().get(0).getExpenses().size()-1);
+            adapter.notifyItemRangeChanged(1, creditCards.size()-1);
             layoutManager.scrollToPosition(0);
         } else {
             adapter.notifyDataSetChanged();
@@ -242,32 +221,24 @@ public class CreditCardListFragment extends Fragment {
 
     }
 
-//    private void refreshChart(){
-//        //TODO: this is probably a hack.. maybe a listener is needed here?
-//        //Refresh chartFragment
-//        if(chartFragment != null)
-//            chartFragment.refreshData();
-//        else
-//            Toast.makeText(getActivity(), "Error on onDismiss, chartFragment == null!", Toast.LENGTH_SHORT).show();
+
+//    private void showCreateExpenseDialog() {
+//        FragmentManager fm = getFragmentManager();
+//        CreateOrEditExpenseDialogFragment dialog = CreateOrEditExpenseDialogFragment.newInstance(
+//                dao,
+//                activeCreditCard.getCreditPeriods().get(0).getId(),
+//                activeCreditCard.getCurrency(),
+//                null);
+//
+//        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//            @Override
+//            public void onDismiss(DialogInterface dialogInterface) {
+//                refreshRecyclerView();
+//                //refreshChart();
+//            }
+//        });
+//        dialog.show(fm, "fragment_dialog_create_expense");
 //    }
-
-    private void showCreateExpenseDialog() {
-        FragmentManager fm = getFragmentManager();
-        CreateOrEditExpenseDialogFragment dialog = CreateOrEditExpenseDialogFragment.newInstance(
-                dao,
-                activeCreditCard.getCreditPeriods().get(0).getId(),
-                activeCreditCard.getCurrency(),
-                null);
-
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                refreshRecyclerView();
-                //refreshChart();
-            }
-        });
-        dialog.show(fm, "fragment_dialog_create_expense");
-    }
 
 
 }
