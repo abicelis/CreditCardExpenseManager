@@ -20,6 +20,7 @@ import ve.com.abicelis.creditcardexpensemanager.app.fragments.OverviewFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.holders.CreditCardViewHolder;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
+import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardLayoutRes;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
 
 /**
@@ -92,7 +93,9 @@ public class SelectCreditCardDialogFragment extends AppCompatDialogFragment {
             }
         };
 
-        mAdapter = new CreditCardAdapter(getContext().getApplicationContext(), mCreditCardList, ccSelectedListener);
+        mAdapter = new CreditCardAdapter(getContext().getApplicationContext(), mCreditCardList, CreditCardLayoutRes.LAYOUT_BIG);
+        mAdapter.setCreditCardSelectedListener(ccSelectedListener);
+
         mRecyclerView.setAdapter(mAdapter);
 
         mLayoutManager = new LinearLayoutManager(getContext().getApplicationContext(), LinearLayoutManager.VERTICAL, false);

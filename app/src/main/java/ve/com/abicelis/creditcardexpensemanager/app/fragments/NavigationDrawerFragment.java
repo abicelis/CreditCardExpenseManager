@@ -26,6 +26,7 @@ import ve.com.abicelis.creditcardexpensemanager.app.holders.CreditCardViewHolder
 import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
+import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardLayoutRes;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditCardNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.SharedPreferenceNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
@@ -90,7 +91,7 @@ public class NavigationDrawerFragment extends Fragment {
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
                         reloadData();
-                        holder.setData(getContext(), mActiveCreditCard, 0);
+                        holder.setData(getContext(), CreditCardLayoutRes.LAYOUT_BIG, mActiveCreditCard, 0);
                         closeDrawer();
                     }
                 });
@@ -101,7 +102,7 @@ public class NavigationDrawerFragment extends Fragment {
         //Setup cc holder data
         View headerCreditCardContainer = rootView.findViewById(R.id.list_item_credit_card_container);
         holder = new CreditCardViewHolder(headerCreditCardContainer);
-        holder.setData(getContext(), mActiveCreditCard, 0);
+        holder.setData(getContext(), CreditCardLayoutRes.LAYOUT_BIG, mActiveCreditCard, 0);
     }
 
     private void setUpRecyclerView(View view) {

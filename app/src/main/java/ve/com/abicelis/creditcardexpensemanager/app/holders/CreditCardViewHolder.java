@@ -1,17 +1,14 @@
 package ve.com.abicelis.creditcardexpensemanager.app.holders;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
+import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardLayoutRes;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
 
 /**
@@ -23,6 +20,7 @@ public class CreditCardViewHolder extends RecyclerView.ViewHolder implements Vie
     CreditCardSelectedListener mListener = null;
 
     //DATA
+    private CreditCardLayoutRes mLayoutRes;
     private CreditCard mCurrent;
     private int mPosition;
 
@@ -43,7 +41,7 @@ public class CreditCardViewHolder extends RecyclerView.ViewHolder implements Vie
         super(itemView);
 
         container = (RelativeLayout) itemView.findViewById(R.id.list_item_credit_card_container);
-        bankName = (TextView) itemView.findViewById(R.id.list_item_credit_card_bank_name);
+        bankName = (TextView) itemView.findViewById(R.id.list_item_credit_card_alias);
         alias = (TextView) itemView.findViewById(R.id.list_item_credit_card_alias);
         currency = (TextView) itemView.findViewById(R.id.list_item_credit_card_currency);
         cardNumber = (TextView) itemView.findViewById(R.id.list_item_credit_card_number);
@@ -56,40 +54,47 @@ public class CreditCardViewHolder extends RecyclerView.ViewHolder implements Vie
     }
 
 
-    public void setData(Context context, CreditCard current, int position) {
+    public void setData(Context context, CreditCardLayoutRes layoutRes, CreditCard current, int position) {
         mContext = context;
+        mLayoutRes = layoutRes;
         mCurrent = current;
         mPosition = position;
 
-
-        container.setBackground(current.getCreditCardBackground().getBackgroundDrawable(context));
+        //Set these always, doesn't matter which CreditCardLayoutRes is being used
         bankName.setText(current.getBankName());
         alias.setText(current.getCardAlias());
-        currency.setText(current.getCurrency().getCode());
         cardNumber.setText(current.getCardNumber());
-        cardExpiration.setText(current.getShortCardExpirationString());
+        cardExpiration.setText("EXP " + current.getShortCardExpirationString());
 
-        bankName.setTextColor(current.getCreditCardBackground().getTextColor(context));
-        alias.setTextColor(current.getCreditCardBackground().getTextColor(context));
-        currency.setTextColor(current.getCreditCardBackground().getTextColor(context));
-        cardNumber.setTextColor(current.getCreditCardBackground().getTextColor(context));
-        cardExpiration.setTextColor(current.getCreditCardBackground().getTextColor(context));
-        creditCardLabel.setTextColor(current.getCreditCardBackground().getTextColor(context));
-        cardExpirationLabel.setTextColor(current.getCreditCardBackground().getTextColor(context));
+        //If CreditCardLayoutRes is LAYOUT_BIG, set these things as well
+        if(mLayoutRes == CreditCardLayoutRes.LAYOUT_BIG) {
 
-        switch(current.getCardType()) {
-            case AMEX:
-                cardType.setImageResource(R.drawable.logo_amex);
-                break;
-            case DISCOVER:
-                cardType.setImageResource(R.drawable.logo_discover);
-                break;
-            case MASTERCARD:
-                cardType.setImageResource(R.drawable.logo_mastercard);
-                break;
-            case VISA:
-                cardType.setImageResource(R.drawable.logo_visa);
-                break;
+            container.setBackground(current.getCreditCardBackground().getBackgroundDrawable(context));
+            currency.setText(current.getCurrency().getCode());
+            cardExpiration.setText(current.getShortCardExpirationString());
+
+            bankName.setTextColor(current.getCreditCardBackground().getTextColor(context));
+            alias.setTextColor(current.getCreditCardBackground().getTextColor(context));
+            currency.setTextColor(current.getCreditCardBackground().getTextColor(context));
+            cardNumber.setTextColor(current.getCreditCardBackground().getTextColor(context));
+            cardExpiration.setTextColor(current.getCreditCardBackground().getTextColor(context));
+            creditCardLabel.setTextColor(current.getCreditCardBackground().getTextColor(context));
+            cardExpirationLabel.setTextColor(current.getCreditCardBackground().getTextColor(context));
+
+            switch(current.getCardType()) {
+                case AMEX:
+                    cardType.setImageResource(R.drawable.logo_amex);
+                    break;
+                case DISCOVER:
+                    cardType.setImageResource(R.drawable.logo_discover);
+                    break;
+                case MASTERCARD:
+                    cardType.setImageResource(R.drawable.logo_mastercard);
+                    break;
+                case VISA:
+                    cardType.setImageResource(R.drawable.logo_visa);
+                    break;
+            }
         }
 
     }
