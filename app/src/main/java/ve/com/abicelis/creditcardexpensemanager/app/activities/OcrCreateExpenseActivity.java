@@ -17,34 +17,48 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.text.TextRecognizer;
 
+import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
-import ve.com.abicelis.creditcardexpensemanager.app.anims.FadeAnimator;
 import ve.com.abicelis.creditcardexpensemanager.app.dialogs.CaptureOcrTextDialogFragment;
+import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
+import ve.com.abicelis.creditcardexpensemanager.enums.Currency;
+import ve.com.abicelis.creditcardexpensemanager.enums.ExpenseCategory;
+import ve.com.abicelis.creditcardexpensemanager.enums.ExpenseType;
+import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotInsertDataException;
+import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotUpdateDataException;
+import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 import ve.com.abicelis.creditcardexpensemanager.ocr.OcrDetectorProcessor;
 import ve.com.abicelis.creditcardexpensemanager.ocr.OcrGraphic;
 import ve.com.abicelis.creditcardexpensemanager.ocr.camera.CameraSource;
@@ -58,6 +72,9 @@ import ve.com.abicelis.creditcardexpensemanager.ocr.camera.GraphicOverlay;
  */
 public final class OcrCreateExpenseActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener, CaptureOcrTextDialogFragment.CaptureOcrTextDialogListener {
     private static final String TAG = "OcrCreateExpenseAct";
+
+    public static final String TAG_EXTRA_PERIOD_ID = "tagExtraPeriodId";
+    public static final String TAG_EXTRA_CURRENCY = "tagExtraCurrency";
 
     // Intent request code to handle updating play services if needed.
     private static final int RC_HANDLE_GMS = 9001;
@@ -74,8 +91,8 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
     public static final String TextBlockObject = "String";
 
     private CameraSource mCameraSource;
-    private CameraSourcePreview mPreview;
-    private GraphicOverlay<OcrGraphic> mGraphicOverlay;
+    private CameraSourcePreview mOcrCameraPreview;
+    private GraphicOverlay<OcrGraphic> mOcrGraphicOverlay;
     private OcrDetectorProcessor mDetectorProcessor;
 
     // Helper objects for detecting taps and pinches.
@@ -84,29 +101,33 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
 
 
     //UI
-    TextView txtDetectedText;
-    TextView txtDate;
-    TextView txtDescription;
-    TextView txtTotal;
-    TextView txtDescriptionLabel;
-    TextView txtTotalLabel;
-    FrameLayout mContainer;
-    LinearLayout mOcrWindowContainer;
-    View mOcrWindow;
-    ImageView mOcrWindowResizer;
-    Point resizerCenterOffset;
-    Point resizerMinPosition;
-    Point resizerMaxPosition;
-    Point containerCenter;
+    private Toolbar mToolbar;
+    private TextView mTxtDetectedText;
+    private ImageView mBtnCapture;
+    private EditText mTxtAmount;
+    private EditText mTxtDescription;
+    private Spinner mExpenseCategory;
+    private Spinner mExpenseType;
+    private Button mCreate;
+    private Button mCancel;
 
-    FloatingActionButton fabNext;
-    FloatingActionButton fabPrev;
+    private FrameLayout mOcrContainer;
+    private LinearLayout mOcrWindowContainer;
+    private View mOcrWindow;
+    private ImageView mOcrWindowResizer;
+    private Point resizerCenterOffset;
+    private Point resizerMinPosition;
+    private Point resizerMaxPosition;
+    private Point containerCenter;
+
 
     //DATA
-    List<TextView> fieldsToAnimate = new ArrayList<>();
-    List<TextView> fieldsToFill = new ArrayList<>();
-    List<String> nameFieldsToFill = new ArrayList<>();
-    int currentField = -1;
+    ExpenseManagerDAO mDao;
+    List<ExpenseCategory> expenseCategories;
+    List<ExpenseType> expenseTypes;
+    Currency mCurrency = null;
+    int mCreditPeriodId = -1;
+
 
     /**
      * Initializes the UI and creates the detector pipeline.
@@ -116,22 +137,34 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         super.onCreate(bundle);
         setContentView(R.layout.activity_ocr_create_expense);
 
+        //Load the Dao
+        loadDao();
+
+        // Fetch arguments from bundle and set title
+        mCurrency = (Currency) getIntent().getSerializableExtra(TAG_EXTRA_CURRENCY);
+        mCreditPeriodId =  getIntent().getIntExtra(TAG_EXTRA_PERIOD_ID, -1);
+
+        if(mCreditPeriodId == -1 || mCurrency == null) {
+            Toast.makeText(this, "Error, wrong arguments passed. Finishing activity", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         //Capture Views
-        txtDetectedText = (TextView) findViewById(R.id.create_expense_txt_detected_text);
-        txtDate = (TextView) findViewById(R.id.create_expense_txt_receipt_date);
-        txtDescription = (TextView) findViewById(R.id.create_expense_txt_receipt_description);
-        txtTotal = (TextView) findViewById(R.id.create_expense_txt_receipt_total);
-        txtDescriptionLabel = (TextView) findViewById(R.id.create_expense_txt_receipt_description_label);
-        txtTotalLabel = (TextView) findViewById(R.id.create_expense_txt_receipt_total_label);
-        mContainer = (FrameLayout) findViewById(R.id.create_expense_container);
+        mToolbar = (Toolbar) findViewById(R.id.create_expense_ocr_toolbar);
+        mTxtDetectedText = (TextView) findViewById(R.id.create_expense_ocr_txt_detected);
+        mBtnCapture = (ImageView) findViewById(R.id.create_expense_ocr_btn_capture);
+        mTxtAmount = (EditText) findViewById(R.id.create_expense_ocr_amount);
+        mTxtDescription = (EditText) findViewById(R.id.create_expense_ocr_description);
+        mExpenseCategory = (Spinner) findViewById(R.id.create_expense_ocr_category);
+        mExpenseType = (Spinner) findViewById(R.id.create_expense_ocr_type);
+        mCreate = (Button) findViewById(R.id.create_expense_ocr_btn_create);
+        mCancel = (Button) findViewById(R.id.create_expense_ocr_btn_cancel);
+        mOcrContainer = (FrameLayout) findViewById(R.id.create_expense_ocr_container);
         mOcrWindowContainer = (LinearLayout) findViewById(R.id.create_expense_ocr_window_container);
         mOcrWindow = findViewById(R.id.create_expense_ocr_window);
+        mOcrCameraPreview = (CameraSourcePreview) findViewById(R.id.create_expense_ocr_camera_preview);
+        mOcrGraphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.create_expense_ocr_graphic_overlay);
         mOcrWindowResizer = (ImageView) findViewById(R.id.create_expense_ocr_window_resizer);
-        fabNext = (FloatingActionButton) findViewById(R.id.create_expense_fab_next);
-        fabPrev = (FloatingActionButton) findViewById(R.id.create_expense_fab_prev);
-        mPreview = (CameraSourcePreview) findViewById(R.id.preview);
-        mGraphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.graphicOverlay);
 
 
         // Set good defaults for capturing text.
@@ -150,27 +183,24 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         //gestureDetector = new GestureDetector(this, new CaptureGestureListener());
         //scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
-        Snackbar.make(mGraphicOverlay, "Capture the Receipt's data using your camera!", Snackbar.LENGTH_LONG).show();
+        setUpToolbar();
+        setUpSpinners();
+
+        //Snackbar.make(mOcrGraphicOverlay, "Capture the Receipt's data using your camera!", Snackbar.LENGTH_LONG).show();
 
 
 
         //Set receipt's date
-        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-        txtDate.setText("Date: " + df.format(new Date()));
+        //SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+        //txtDate.setText("Date: " + df.format(new Date()));
 
-        //Set up fields to fill
-        fieldsToFill.add(txtDescription);
-        fieldsToFill.add(txtTotal);
-        fieldsToAnimate.add(txtDescriptionLabel);
-        fieldsToAnimate.add(txtTotalLabel);
-        nameFieldsToFill.add(getResources().getString(R.string.activity_ocr_create_expense_label_description));
-        nameFieldsToFill.add(getResources().getString(R.string.activity_ocr_create_expense_label_total));
-        activateNextField();
+
 
         //Set up click listeners
-        mOcrWindowContainer.setOnClickListener(this);
-        fabNext.setOnClickListener(this);
-        fabPrev.setOnClickListener(this);
+        mBtnCapture.setOnClickListener(this);
+        mCreate.setOnClickListener(this);
+        mCancel.setOnClickListener(this);
+
 
     }
 
@@ -186,11 +216,48 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
 
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            // Respond to the mToolbar's back/home button
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void loadDao() {
+        if(mDao == null)
+            mDao = new ExpenseManagerDAO(getApplicationContext());
+    }
+
+    private void setUpToolbar() {
+        mToolbar.setTitle(getResources().getString(R.string.activity_create_expense_ocr_title));
+        mToolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.icon_back_material));
+        setSupportActionBar(mToolbar);
+    }
+
+    private void setUpSpinners() {
+        //Set spinners
+        expenseCategories = new ArrayList<>(Arrays.asList(ExpenseCategory.values()));
+        ArrayAdapter expenseCategoryAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, expenseCategories);
+        expenseCategoryAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        mExpenseCategory.setAdapter(expenseCategoryAdapter);
+
+        expenseTypes = new ArrayList<>(Arrays.asList(ExpenseType.values()));
+        ArrayAdapter expenseTypeAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, expenseTypes);
+        expenseTypeAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        mExpenseType.setAdapter(expenseTypeAdapter);
+    }
+
     private void calculateStatusBarHeightOffset() {
         //Calculate statusbar height offset
         DisplayMetrics dm = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(dm);
-        STATUS_BAR_HEIGHT_OFFSET = (dm.heightPixels - mContainer.getMeasuredHeight());
+        STATUS_BAR_HEIGHT_OFFSET = (dm.heightPixels - mOcrContainer.getMeasuredHeight());
         Log.d (TAG, "STATUSBAR OFFSET = " + STATUS_BAR_HEIGHT_OFFSET);
     }
 
@@ -227,34 +294,34 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
 
 
 
-    private void setCurrentFieldValue(String value) {
-        fieldsToFill.get(currentField).setText(value);
-    }
-
-    private void activateNextField() {
-        if(currentField == -1) { //Starting
-            currentField++;
-            FadeAnimator.startAnimation(fieldsToAnimate.get(currentField));
-        } else if(currentField < (fieldsToFill.size()-1)) {
-            FadeAnimator.stopAnimation(fieldsToAnimate.get(currentField));
-            currentField++;
-            FadeAnimator.startAnimation(fieldsToAnimate.get(currentField));
-        }
-        else {
-            Toast.makeText(this, "No more fields!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void activatePreviousField() {
-        if(currentField > 0) {
-            FadeAnimator.stopAnimation(fieldsToAnimate.get(currentField));
-            --currentField;
-            FadeAnimator.startAnimation(fieldsToAnimate.get(currentField));
-        }
-        else {
-            Toast.makeText(this, "No more fields!", Toast.LENGTH_SHORT).show();
-        }
-    }
+//    private void setCurrentFieldValue(String value) {
+//        fieldsToFill.get(currentField).setText(value);
+//    }
+//
+//    private void activateNextField() {
+//        if(currentField == -1) { //Starting
+//            currentField++;
+//            FadeAnimator.startAnimation(fieldsToAnimate.get(currentField));
+//        } else if(currentField < (fieldsToFill.size()-1)) {
+//            FadeAnimator.stopAnimation(fieldsToAnimate.get(currentField));
+//            currentField++;
+//            FadeAnimator.startAnimation(fieldsToAnimate.get(currentField));
+//        }
+//        else {
+//            Toast.makeText(this, "No more fields!", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    private void activatePreviousField() {
+//        if(currentField > 0) {
+//            FadeAnimator.stopAnimation(fieldsToAnimate.get(currentField));
+//            --currentField;
+//            FadeAnimator.startAnimation(fieldsToAnimate.get(currentField));
+//        }
+//        else {
+//            Toast.makeText(this, "No more fields!", Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
 
 
@@ -286,7 +353,7 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
             }
         };
 
-        Snackbar.make(mGraphicOverlay, R.string.permission_camera_rationale,
+        Snackbar.make(mOcrGraphicOverlay, R.string.permission_camera_rationale,
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.ok, listener)
                 .show();
@@ -316,7 +383,7 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         // Create the TextRecognizer
         TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
         // Set the TextRecognizer's Processor.
-        mDetectorProcessor = new OcrDetectorProcessor(mGraphicOverlay, this);
+        mDetectorProcessor = new OcrDetectorProcessor(mOcrGraphicOverlay, this);
         textRecognizer.setProcessor(mDetectorProcessor);
 
         // Check if the TextRecognizer is operational.
@@ -360,8 +427,8 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        if (mPreview != null) {
-            mPreview.stop();
+        if (mOcrCameraPreview != null) {
+            mOcrCameraPreview.stop();
         }
     }
 
@@ -372,8 +439,8 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPreview != null) {
-            mPreview.release();
+        if (mOcrCameraPreview != null) {
+            mOcrCameraPreview.release();
         }
     }
 
@@ -445,7 +512,7 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
 
         if (mCameraSource != null) {
             try {
-                mPreview.start(mCameraSource, mGraphicOverlay);
+                mOcrCameraPreview.start(mCameraSource, mOcrGraphicOverlay);
             } catch (IOException e) {
                 Log.e(TAG, "Unable to start camera source.", e);
                 mCameraSource.release();
@@ -463,7 +530,7 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
 //     */
 //    private boolean onTap(float rawX, float rawY) {
 //        // Speak the text when the user taps on screen.
-//        OcrGraphic graphic = mGraphicOverlay.getGraphicAtLocation(rawX, rawY);
+//        OcrGraphic graphic = mOcrGraphicOverlay.getGraphicAtLocation(rawX, rawY);
 //        TextBlock text = null;
 //        if(graphic != null) {
 //            text = graphic.getTextBlock();
@@ -491,19 +558,126 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
     public void onClick(View view) {
         int id = view.getId();
         switch (id) {
-            case R.id.create_expense_fab_next:
-                setCurrentFieldValue(txtDetectedText.getText().toString());
-                activateNextField();
+            case R.id.create_expense_ocr_btn_capture:
+                handleTextCapture();
                 break;
-            case R.id.create_expense_fab_prev:
-                activatePreviousField();
+            case R.id.create_expense_ocr_btn_create:
+                handleNewExpenseCreation();
                 break;
-
-            case R.id.create_expense_ocr_window_container:
-                showCaptureOcrTextDialog();
+            case R.id.create_expense_ocr_btn_cancel:
+                finish();
                 break;
         }
     }
+
+    private void handleTextCapture() {
+        //Get text
+        String text = mTxtDetectedText.getText().toString();
+        if(text.isEmpty()) {
+            Toast.makeText(this, "No text has been detected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //Get currently focused field
+        View v = getCurrentFocus();
+        Object asd = v.getClass();
+        if(v == null || v.getClass() != AppCompatEditText.class ) {
+            Toast.makeText(this, "Tap a text field to set its text", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+            //id != R.id.create_expense_ocr_amount ||  id != R.id.create_expense_ocr_description
+        try {
+            TextView tv = (TextView) v;
+
+            switch (tv.getId()) {
+                case R.id.create_expense_ocr_amount:
+                    //Convert text to number
+                    text = text.replaceAll("[^\\d.]", "");      //remove alphanumeric
+                    tv.setText(text);
+                    mTxtDescription.requestFocus();              //change focus to description field
+                    break;
+                case R.id.create_expense_ocr_description:
+                    tv.setText(text);
+                    break;
+
+            }
+
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Problem Capturing text!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void handleNewExpenseCreation() {
+
+        String amount = mTxtAmount.getText().toString();
+        String description = mTxtDescription.getText().toString();
+        if(amount.equals("") || new BigDecimal(amount).compareTo(new BigDecimal(0)) == 0) {
+            Toast.makeText(this, getResources().getString(R.string.dialog_create_expense_error_bad_amount), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ExpenseCategory expenseCategory = expenseCategories.get(mExpenseCategory.getSelectedItemPosition());
+        ExpenseType expenseType = expenseTypes.get(mExpenseType.getSelectedItemPosition());
+
+//        //If a temp photo was ever taken, copy tempFile to photoFile, then delete tempFile!
+//        if(tempImagePath != null) {
+//            File expensesDir = getExpensesDir();
+//
+//            // Create the File where the photo should go
+//            File photoFile;
+//
+//            //If we're editing an expense, and the expense had an image, load photoFile using its path
+//            if(mOriginalExpense != null && mOriginalExpense.getFullImagePath() != null && !mOriginalExpense.getFullImagePath().isEmpty()) {
+//                photoFile = new File(mOriginalExpense.getFullImagePath());
+//            } else {  //If we're not editing, or edited expense didn't have an image
+//                try {
+//                    photoFile = createImageFileInDir(expensesDir);
+//                    imagePath = photoFile.getPath();
+//                } catch (IOException ex) {
+//                    Toast.makeText(getActivity(), "Sorry! There was a problem while creating the image", Toast.LENGTH_SHORT).show();
+//                    photoFile = null;
+//                }
+//            }
+//
+//            if(photoFile != null) {
+//                File temp = new File(tempImagePath);
+//                try {
+//                    copy(temp, photoFile);
+//                } catch (IOException e) {
+//                    Toast.makeText(getActivity(), "There was a problem saving the image", Toast.LENGTH_SHORT).show();
+//                } finally {
+//                    temp.delete();
+//                }
+//            }
+//        }
+
+
+//        //If editing an expense, update it
+//        if(mOriginalExpense != null) {
+//            try {
+//                Expense expense = new Expense(mOriginalExpense.getId(), description, expenseImageThumbnailBytes, imagePath,
+//                        new BigDecimal(mAmountText.getText().toString()), mCurrency,
+//                        mOriginalExpense.getDate(), expenseCategory, expenseType);
+//                mDao.updateExpense(expense);
+//            } catch (CouldNotUpdateDataException e) {
+//                Toast.makeText(getActivity(), "There was a problem updating the Expense", Toast.LENGTH_SHORT).show();
+//            }
+//        } else {
+            //Otherwise, insert a new expense
+            try {
+                Expense expense = new Expense(description, null, null, new BigDecimal(amount),
+                        mCurrency, Calendar.getInstance(), expenseCategory, expenseType);
+                mDao.insertExpense(mCreditPeriodId, expense);
+            } catch (CouldNotInsertDataException e) {
+                Toast.makeText(this, "There was a problem inserting the Expense", Toast.LENGTH_SHORT).show();
+            }
+//        }
+        finish();
+
+    }
+
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -542,7 +716,7 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                txtDetectedText.setText(newDetectedText);
+                mTxtDetectedText.setText(newDetectedText);
             }
         });
     }
@@ -550,20 +724,22 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
 
 
 
-    private void showCaptureOcrTextDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        CaptureOcrTextDialogFragment dialog = CaptureOcrTextDialogFragment.newInstance(
-                getResources().getString(R.string.dialog_create_expense_title),
-                nameFieldsToFill.get(currentField),
-                txtDetectedText.getText().toString());
-        dialog.show(fm, "fragment_dialog_create_expense");
-    }
+//    private void showCaptureOcrTextDialog() {
+//        FragmentManager fm = getSupportFragmentManager();
+//        CaptureOcrTextDialogFragment dialog = CaptureOcrTextDialogFragment.newInstance(
+//                getResources().getString(R.string.dialog_create_expense_title),
+//                nameFieldsToFill.get(currentField),
+//                mTxtDetectedText.getText().toString());
+//        dialog.show(fm, "fragment_dialog_create_expense");
+//    }
 
     @Override
     public void onFinishCaptureOcrTextDialog(String selectedText) {
+        Toast.makeText(this, "onFinishCaptureOcrTextDialog called", Toast.LENGTH_SHORT).show();
+
         //If this method was called, use the captured text
-        setCurrentFieldValue(selectedText);
-        activateNextField();
+        //setCurrentFieldValue(selectedText);
+        //activateNextField();
     }
 
 

@@ -48,14 +48,12 @@ public class ExpenseListFragment extends Fragment {
     int activeCreditCardId = -1;
     CreditCard activeCreditCard = null;
     List<Expense> creditCardExpenses = new ArrayList<>();
-    ExpenseManagerDAO dao;
+    ExpenseManagerDAO mDao;
 
     //UI
-    LineChartFragment chartFragment;
     RecyclerView recyclerViewExpenses;
     LinearLayoutManager mLayoutManager;
     ExpensesAdapter mAdapter;
-    Toolbar toolbar;
     FloatingActionMenu fabMenu;
     FloatingActionButton fabNewExpense;
     FloatingActionButton fabNewExpenseCamera;
@@ -92,6 +90,12 @@ public class ExpenseListFragment extends Fragment {
             Toast.makeText(getActivity(), "Megapeo en oncreate, SharedPreferenceNotFoundException CreditCardNotFoundException", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    @Override
+    public void onResume() {
+        refreshRecyclerView();
+        super.onResume();
     }
 
     @Nullable
@@ -152,8 +156,8 @@ public class ExpenseListFragment extends Fragment {
 //    }
 
     private void loadDao() {
-        if(dao == null)
-            dao = new ExpenseManagerDAO(getActivity().getApplicationContext());
+        if(mDao == null)
+            mDao = new ExpenseManagerDAO(getActivity().getApplicationContext());
     }
 
 
@@ -167,7 +171,7 @@ public class ExpenseListFragment extends Fragment {
             public void OnExpenseDeleted(int position) {
                 try {
 
-                    dao.deleteExpense(creditCardExpenses.get(position).getId());
+                    mDao.deleteExpense(creditCardExpenses.get(position).getId());
                     creditCardExpenses.remove(position);
                     mAdapter.notifyItemRemoved(position);
                     mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
@@ -233,6 +237,8 @@ public class ExpenseListFragment extends Fragment {
 
     private void setUpFab(View rootView) {
         fabMenu = (FloatingActionMenu) rootView.findViewById(R.id.home_fab_menu);
+        fabMenu.setClosedOnTouchOutside(true);
+
         fabNewExpense = (FloatingActionButton) rootView.findViewById(R.id.home_fab_new_expense);
         fabNewExpenseCamera = (FloatingActionButton) rootView.findViewById(R.id.home_fab_new_expense_camera);
 
@@ -246,15 +252,19 @@ public class ExpenseListFragment extends Fragment {
         fabNewExpenseCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fabMenu.close(true);
                 Intent intent = new Intent(getActivity(), OcrCreateExpenseActivity.class);
+                intent.putExtra(OcrCreateExpenseActivity.TAG_EXTRA_PERIOD_ID, activeCreditCard.getCreditPeriods().get(0).getId());
+                intent.putExtra(OcrCreateExpenseActivity.TAG_EXTRA_CURRENCY, activeCreditCard.getCurrency());
                 startActivity(intent);
             }
         });
+
     }
 
 
     public void refreshData() throws CreditCardNotFoundException, CreditPeriodNotFoundException {
-        activeCreditCard = dao.getCreditCardWithCreditPeriod(activeCreditCardId, 0);
+        activeCreditCard = mDao.getCreditCardWithCreditPeriod(activeCreditCardId, 0);
 
         //Clear the list and refresh it with new data, this must be done so the mAdapter
         // doesn't lose track of creditCardExpenses object when overwriting
@@ -307,7 +317,7 @@ public class ExpenseListFragment extends Fragment {
     private void showCreateExpenseDialog() {
         FragmentManager fm = getFragmentManager();
         CreateOrEditExpenseDialogFragment dialog = CreateOrEditExpenseDialogFragment.newInstance(
-                dao,
+                mDao,
                 activeCreditCard.getCreditPeriods().get(0).getId(),
                 activeCreditCard.getCurrency(),
                 null);
