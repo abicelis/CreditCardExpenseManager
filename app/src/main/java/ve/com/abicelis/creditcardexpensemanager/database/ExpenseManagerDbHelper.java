@@ -111,11 +111,11 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getName() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getName() + COMMA_SEP +
                         ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getName() +
-                        ") VALUES (0, 0, 'MockExpense 1', X'', 'mockpath', '5300', 'VEF', '" + expense1period1 + "', 'FOOD', 'ORDINARY'), " +
-                                 "(1, 0, 'MockExpense 2', X'', 'mockpath', '10000', 'VEF', '" + expense2period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY')," +
-                                 "(2, 0, 'MockExpense 3', X'', 'mockpath', '4500', 'VEF', '" + expense3period1 + "', 'LEISURE', 'EXTRAORDINARY')," +
-                                 "(3, 0, 'MockExpense 4', X'', 'mockpath', '2000', 'VEF', '" + expense4period1 + "', 'EDUCATION', 'ORDINARY')," +
-                                 "(4, 0, 'MockExpense 5', X'', 'mockpath', '12000', 'VEF', '" + expense5period1 + "', 'CLOTHING', 'ORDINARY');";
+                        ") VALUES (0, 0, 'MockExpense 1', X'', 'mockpath', '5300', 'USD', '" + expense1period1 + "', 'FOOD', 'ORDINARY'), " +
+                                 "(1, 0, 'MockExpense 2', X'', 'mockpath', '10000', 'USD', '" + expense2period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY')," +
+                                 "(2, 0, 'MockExpense 3', X'', 'mockpath', '4500', 'USD', '" + expense3period1 + "', 'LEISURE', 'EXTRAORDINARY')," +
+                                 "(3, 0, 'MockExpense 4', X'', 'mockpath', '2000', 'USD', '" + expense4period1 + "', 'EDUCATION', 'ORDINARY')," +
+                                 "(4, 0, 'MockExpense 5', X'', 'mockpath', '12000', 'USD', '" + expense5period1 + "', 'CLOTHING', 'ORDINARY');";
         sqLiteDatabase.execSQL(statement);
 
     }
