@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -116,14 +117,45 @@ public class AddCreditCardActivity extends AppCompatActivity {
     private void setUpToolbar() {
         toolbar.setTitle(getResources().getString(R.string.activity_add_new_cc_title));
         toolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.icon_back_material));
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
         setSupportActionBar(toolbar);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            // Respond to the mToolbar's back/home button
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mCameFromWelcomeScreen) {
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.activity_add_new_cc_exit_dialog_title))
+                    .setMessage(getResources().getString(R.string.activity_add_new_cc_exit_dialog_message))
+                    .setPositiveButton(getResources().getString(R.string.activity_add_new_cc_exit_dialog_button_exit),  new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton(getResources().getString(R.string.activity_add_new_cc_exit_dialog_button_cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            dialog.show();
+        }
+        else
+            super.onBackPressed();
     }
 
     private void setUpPickers() {
@@ -299,30 +331,6 @@ public class AddCreditCardActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
-        if(mCameFromWelcomeScreen) {
-            AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(getResources().getString(R.string.activity_add_new_cc_exit_dialog_title))
-                .setMessage(getResources().getString(R.string.activity_add_new_cc_exit_dialog_message))
-                .setPositiveButton(getResources().getString(R.string.activity_add_new_cc_exit_dialog_button_exit),  new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                })
-                .setNegativeButton(getResources().getString(R.string.activity_add_new_cc_exit_dialog_button_cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                      dialog.dismiss();
-                    }
-                })
-                .create();
-            dialog.show();
-        }
-        else
-            super.onBackPressed();
-    }
 
     private void handleNewCardCreation() {
         String alias = cardAlias.getText().toString();
