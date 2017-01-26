@@ -65,7 +65,7 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     private void reloadData() {
-        //Load dao and data
+        //Load mDao and data
         if(mDao == null)
             mDao = new ExpenseManagerDAO(getActivity().getApplicationContext());
 
