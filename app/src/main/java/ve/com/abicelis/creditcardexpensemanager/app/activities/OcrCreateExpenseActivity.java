@@ -42,7 +42,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.text.TextRecognizer;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -57,7 +56,6 @@ import ve.com.abicelis.creditcardexpensemanager.enums.Currency;
 import ve.com.abicelis.creditcardexpensemanager.enums.ExpenseCategory;
 import ve.com.abicelis.creditcardexpensemanager.enums.ExpenseType;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotInsertDataException;
-import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotUpdateDataException;
 import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 import ve.com.abicelis.creditcardexpensemanager.ocr.OcrDetectorProcessor;
 import ve.com.abicelis.creditcardexpensemanager.ocr.OcrGraphic;
@@ -65,11 +63,7 @@ import ve.com.abicelis.creditcardexpensemanager.ocr.camera.CameraSource;
 import ve.com.abicelis.creditcardexpensemanager.ocr.camera.CameraSourcePreview;
 import ve.com.abicelis.creditcardexpensemanager.ocr.camera.GraphicOverlay;
 
-/**
- * Activity for the Ocr Detecting app.  This app detects text and displays the value with the
- * rear facing camera. During detection overlay graphics are drawn to indicate the position,
- * size, and contents of each TextBlock.
- */
+
 public final class OcrCreateExpenseActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener, CaptureOcrTextDialogFragment.CaptureOcrTextDialogListener {
     private static final String TAG = "OcrCreateExpenseAct";
 
@@ -180,14 +174,8 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
             requestCameraPermission();
         }
 
-        //gestureDetector = new GestureDetector(this, new CaptureGestureListener());
-        //scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
-
         setUpToolbar();
         setUpSpinners();
-
-        //Snackbar.make(mOcrGraphicOverlay, "Capture the Receipt's data using your camera!", Snackbar.LENGTH_LONG).show();
-
 
 
         //Set receipt's date
@@ -257,6 +245,9 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         //Calculate statusbar height offset
         DisplayMetrics dm = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int a = dm.heightPixels;
+        int b =  mOcrContainer.getMeasuredHeight();
+
         STATUS_BAR_HEIGHT_OFFSET = (dm.heightPixels - mOcrContainer.getMeasuredHeight());
         Log.d (TAG, "STATUSBAR OFFSET = " + STATUS_BAR_HEIGHT_OFFSET);
     }

@@ -130,8 +130,8 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock>{
         mCallerActivity.setNewDetectedText(mDetectedText);
 
         //Draw the bounding box
-        //graphic = new OcrGraphic(mGraphicOverlay, mOcrWindowBoundingBox);
-        //mGraphicOverlay.add(graphic);
+        graphic = new OcrGraphic(mGraphicOverlay, mOcrWindowBoundingBox);
+        mGraphicOverlay.add(graphic);
 
     }
 
