@@ -55,7 +55,7 @@ public class HomeActivity extends AppCompatActivity {
 
 //        final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) rootView.findViewById(R.id.home_collapsing);
 //        AppBarLayout appBarLayout = (AppBarLayout) rootView.findViewById(R.id.home_appbar);
-//        toolbar = (Toolbar) rootView.findViewById(R.id.home_toolbar);
+//        mToolbar = (Toolbar) rootView.findViewById(R.id.home_toolbar);
 //        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
 //            boolean isShow = false;
 //            int scrollRange = -1;
