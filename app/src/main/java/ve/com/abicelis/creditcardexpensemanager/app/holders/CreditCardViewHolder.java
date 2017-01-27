@@ -41,7 +41,7 @@ public class CreditCardViewHolder extends RecyclerView.ViewHolder implements Vie
         super(itemView);
 
         container = (RelativeLayout) itemView.findViewById(R.id.list_item_credit_card_container);
-        bankName = (TextView) itemView.findViewById(R.id.list_item_credit_card_alias);
+        bankName = (TextView) itemView.findViewById(R.id.list_item_credit_card_bank_name);
         alias = (TextView) itemView.findViewById(R.id.list_item_credit_card_alias);
         currency = (TextView) itemView.findViewById(R.id.list_item_credit_card_currency);
         cardNumber = (TextView) itemView.findViewById(R.id.list_item_credit_card_number);
