@@ -65,12 +65,13 @@ public class CreditCardViewHolder extends RecyclerView.ViewHolder implements Vie
         alias.setText(current.getCardAlias());
         cardNumber.setText(current.getCardNumber());
         cardExpiration.setText("EXP " + current.getShortCardExpirationString());
+        currency.setText(current.getCurrency().getCode());
+
 
         //If CreditCardLayoutRes is LAYOUT_BIG, set these things as well
         if(mLayoutRes == CreditCardLayoutRes.LAYOUT_BIG) {
 
             container.setBackground(current.getCreditCardBackground().getBackgroundDrawable(context));
-            currency.setText(current.getCurrency().getCode());
             cardExpiration.setText(current.getShortCardExpirationString());
 
             bankName.setTextColor(current.getCreditCardBackground().getTextColor(context));
