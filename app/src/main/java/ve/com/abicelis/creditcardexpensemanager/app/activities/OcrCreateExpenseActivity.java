@@ -241,6 +241,51 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         mExpenseType.setAdapter(expenseTypeAdapter);
     }
 
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        int X = (int) motionEvent.getRawX();
+        int Y = (int) motionEvent.getRawY();
+
+
+        //Log.w(TAG, "TOUCH X="+X+" Y="+Y);
+
+        switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_MOVE:
+                X = (X < resizerMinPosition.x ? resizerMinPosition.x : X);
+                X = (X > resizerMaxPosition.x ? resizerMaxPosition.x : X);
+                Y = (Y < (resizerMinPosition.y + STATUS_BAR_HEIGHT_OFFSET) ? (resizerMinPosition.y + STATUS_BAR_HEIGHT_OFFSET) : Y);
+                Y = (Y > (resizerMaxPosition.y + STATUS_BAR_HEIGHT_OFFSET) ? (resizerMaxPosition.y + STATUS_BAR_HEIGHT_OFFSET) : Y);
+
+                mOcrWindowResizer.setX(X - resizerCenterOffset.x);
+                mOcrWindowResizer.setY(Y - resizerCenterOffset.y - STATUS_BAR_HEIGHT_OFFSET);
+
+                mOcrWindow.setLeft(containerCenter.x - (X - containerCenter.x));
+                mOcrWindow.setTop(containerCenter.y + STATUS_BAR_HEIGHT_OFFSET - (Y - containerCenter.y));
+                mOcrWindow.setRight(X);
+                mOcrWindow.setBottom(Y - STATUS_BAR_HEIGHT_OFFSET);
+
+                //Log.d(TAG, "ACTION_MOVE X=" + X + " Y=" + Y + "        mOcrWindow X=" + mOcrWindow.getX() + " Y=" + mOcrWindow.getY()
+                //        + " bottom=" + mOcrWindow.getBottom() + " right=" + mOcrWindow.getRight());
+                break;
+
+            case MotionEvent.ACTION_UP:
+                mDetectorProcessor.setOcrWindowBoundingBox(calculateViewBoundingBox(mOcrWindow));
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        int X = (int) e.getRawX();
+        int Y = (int) e.getRawY();
+        Log.w(TAG, "TOUCH X="+X+" Y="+Y);
+
+        return super.onTouchEvent(e);
+    }
+
+
     private void calculateStatusBarHeightOffset() {
         //Calculate statusbar height offset
         DisplayMetrics dm = new DisplayMetrics();
@@ -264,58 +309,26 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         mOcrWindowResizer.setY(mOcrWindow.getBottom() - resizerCenterOffset.y);
 
         //Calculate max and min positions for the resizer
-        Point containerLRCorner = new Point();
+        Point containerBRCorner = new Point();
         containerCenter = new Point();
-        containerLRCorner.x = mOcrWindowContainer.getRight();
-        containerLRCorner.y = mOcrWindowContainer.getBottom();
+        containerBRCorner.x = mOcrWindowContainer.getRight();
+        containerBRCorner.y = mOcrWindowContainer.getBottom();
         containerCenter.x = mOcrWindowContainer.getLeft() + (mOcrWindowContainer.getWidth() / 2);
         containerCenter.y = mOcrWindowContainer.getTop() + (mOcrWindowContainer.getHeight() / 2);
 
+        //Calculate min/max for the resizer
         resizerMinPosition = new Point(containerCenter.x + RESIZER_MARGIN, containerCenter.y + RESIZER_MARGIN);
-        resizerMaxPosition = new Point(containerLRCorner.x - RESIZER_MARGIN, containerLRCorner.y - RESIZER_MARGIN);
+        resizerMaxPosition = new Point(containerBRCorner.x - RESIZER_MARGIN, containerBRCorner.y - RESIZER_MARGIN);
     }
 
     private Rect calculateViewBoundingBox(View view){
 
         int[] loc = new int[2];
         view.getLocationInWindow(loc);
-        loc[1] += STATUS_BAR_HEIGHT_OFFSET/2;        //Apply statusbar offset!
-        return new Rect(loc[0], loc[1], loc[0] + view.getWidth(), loc[1] + view.getHeight());
+        loc[1] += STATUS_BAR_HEIGHT_OFFSET/4;        //Apply statusbar offset!
+        Rect boundingBox = new Rect(loc[0], loc[1], loc[0] + view.getWidth(), loc[1] + view.getHeight());
+        return boundingBox;
     }
-
-
-
-//    private void setCurrentFieldValue(String value) {
-//        fieldsToFill.get(currentField).setText(value);
-//    }
-//
-//    private void activateNextField() {
-//        if(currentField == -1) { //Starting
-//            currentField++;
-//            FadeAnimator.startAnimation(fieldsToAnimate.get(currentField));
-//        } else if(currentField < (fieldsToFill.size()-1)) {
-//            FadeAnimator.stopAnimation(fieldsToAnimate.get(currentField));
-//            currentField++;
-//            FadeAnimator.startAnimation(fieldsToAnimate.get(currentField));
-//        }
-//        else {
-//            Toast.makeText(this, "No more fields!", Toast.LENGTH_SHORT).show();
-//        }
-//    }
-//
-//    private void activatePreviousField() {
-//        if(currentField > 0) {
-//            FadeAnimator.stopAnimation(fieldsToAnimate.get(currentField));
-//            --currentField;
-//            FadeAnimator.startAnimation(fieldsToAnimate.get(currentField));
-//        }
-//        else {
-//            Toast.makeText(this, "No more fields!", Toast.LENGTH_SHORT).show();
-//        }
-//    }
-
-
-
 
 
     /**
@@ -350,14 +363,6 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
                 .show();
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent e) {
-        //boolean b = scaleGestureDetector.onTouchEvent(e);
-
-        //boolean c = gestureDetector.onTouchEvent(e);
-
-        return super.onTouchEvent(e);
-    }
 
     /**
      * Creates and starts the camera.  Note that this uses a higher resolution in comparison
@@ -512,39 +517,6 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         }
     }
 
-//    /**
-//     * onTap is called to speak the tapped TextBlock, if any, out loud.
-//     *
-//     * @param rawX - the raw position of the tap
-//     * @param rawY - the raw position of the tap.
-//     * @return true if the tap was on a TextBlock
-//     */
-//    private boolean onTap(float rawX, float rawY) {
-//        // Speak the text when the user taps on screen.
-//        OcrGraphic graphic = mOcrGraphicOverlay.getGraphicAtLocation(rawX, rawY);
-//        TextBlock text = null;
-//        if(graphic != null) {
-//            text = graphic.getTextBlock();
-//            if (text != null && text.getValue() != null) {
-//                Log.d(TAG, "text data is being spoken! " + text.getValue());
-//
-//                Toast.makeText(this, text.getValue(), Toast.LENGTH_SHORT).show();
-//
-//                //// Set the current field the tapped text.
-//                setCurrentFieldValue(text.getValue());
-//                activateNextField();
-//
-//            }
-//            else {
-//                Log.d(TAG, "text data is null");
-//            }
-//        }
-//        else {
-//            Log.d(TAG,"no text detected");
-//        }
-//        return text != null;
-//    }
-
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -670,38 +642,6 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
     }
 
 
-    @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        int X = (int) motionEvent.getRawX();
-        int Y = (int) motionEvent.getRawY();
-
-
-        switch (motionEvent.getAction()) {
-            case MotionEvent.ACTION_MOVE:
-                X = (X < resizerMinPosition.x ? resizerMinPosition.x : X);
-                X = (X > resizerMaxPosition.x ? resizerMaxPosition.x : X);
-                Y = (Y < resizerMinPosition.y ? resizerMinPosition.y : Y);
-                Y = (Y > resizerMaxPosition.y ? resizerMaxPosition.y : Y);
-
-                view.setX(X - resizerCenterOffset.x);
-                view.setY(Y - resizerCenterOffset.y - STATUS_BAR_HEIGHT_OFFSET);
-
-                mOcrWindow.setLeft(containerCenter.x - (X - containerCenter.x));
-                mOcrWindow.setTop(containerCenter.y - (Y - containerCenter.y));
-                mOcrWindow.setRight(X);
-                mOcrWindow.setBottom(Y - STATUS_BAR_HEIGHT_OFFSET);
-
-                //Log.d(TAG, "ACTION_MOVE X=" + X + " Y=" + Y + " mOcrWindow X=" + mOcrWindow.getX() + " mOcrWindow Y=" + mOcrWindow.getY()
-                //        + " mOcrWindow left=" + mOcrWindow.getBottom() + " mOcrWindow right=" + mOcrWindow.getRight());
-                break;
-
-            case MotionEvent.ACTION_UP:
-                mDetectorProcessor.setOcrWindowBoundingBox(calculateViewBoundingBox(mOcrWindow));
-                break;
-        }
-
-        return true;
-    }
 
     public void setNewDetectedText(final String newDetectedText) {
         runOnUiThread(new Runnable() {
