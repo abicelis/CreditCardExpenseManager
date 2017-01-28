@@ -20,11 +20,10 @@ This app features:
 - Add expenses using your camera!
 - Track multiple Credit Cards
 
+## License
 
-
-
-
-These instructions will help you build your own Electronic Load. Below you'll find instructions on how to build the circuit as well as the necesary prerequisites on building the arduino code on your machine.
+- [ ] Item1
+- [ ] a task list item
 
 ## Code dependencies
 
