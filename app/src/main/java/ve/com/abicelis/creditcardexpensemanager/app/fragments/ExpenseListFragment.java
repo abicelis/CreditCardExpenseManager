@@ -71,7 +71,7 @@ public class ExpenseListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         //if (savedInstanceState == null) {
-        //    getFragmentManager().beginTransaction().add(R.id.home_chart_container, new LineChartFragment()).commit();
+        //    getFragmentManager().beginTransaction().add(R.id.home_chart_container, new ChartExpenseFragment()).commit();
         //}
 
         loadDao();
@@ -118,7 +118,7 @@ public class ExpenseListFragment extends Fragment {
 //        view.post(new Runnable() {
 //            @Override
 //            public void run() {
-//                chartFragment = (LineChartFragment) getFragmentManager().findFragmentById(R.id.home_chart_container);
+//                chartFragment = (ChartExpenseFragment) getFragmentManager().findFragmentById(R.id.home_chart_container);
 //            }
 //        });
     }

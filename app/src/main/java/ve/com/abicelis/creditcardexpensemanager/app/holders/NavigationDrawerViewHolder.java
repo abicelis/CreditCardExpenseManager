@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.CreditCardListFragment;
-import ve.com.abicelis.creditcardexpensemanager.app.fragments.LineChartFragment;
+import ve.com.abicelis.creditcardexpensemanager.app.fragments.ChartsFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.NavigationDrawerFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.ExpenseListFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.OverviewFragment;
@@ -68,7 +68,7 @@ public class NavigationDrawerViewHolder extends RecyclerView.ViewHolder implemen
                         f = new ExpenseListFragment();
                         break;
                     case 2:
-                        f = new LineChartFragment();
+                        f = new ChartsFragment();
                         break;
                     case 3:
                         f = new CreditCardListFragment();

@@ -3,7 +3,6 @@ package ve.com.abicelis.creditcardexpensemanager.app.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,7 @@ import ve.com.abicelis.creditcardexpensemanager.model.DailyExpense;
 /**
  * Created by Alex on 17/8/2016.
  */
-public class LineChartFragment extends Fragment {
+public class ChartExpenseFragment extends Fragment {
 
     //UI
     private LineChartView chart;
@@ -47,18 +46,18 @@ public class LineChartFragment extends Fragment {
     CreditPeriod creditPeriod;
     CreditCard creditCard;
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getResources().getString(R.string.fragment_name_graphs));
-    }
+//    @Override
+//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getResources().getString(R.string.fragment_name_graphs));
+//    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View rootView = inflater.inflate(R.layout.fragment_line_chart, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_chart_expenses, container, false);
         chart = (LineChartView) rootView.findViewById(R.id.chart);
 
         try {
@@ -72,7 +71,11 @@ public class LineChartFragment extends Fragment {
         return rootView;
     }
 
-
+    @Override
+    public void onResume() {
+        refreshData();
+        super.onResume();
+    }
 
     public void refreshData() {
 
@@ -96,7 +99,7 @@ public class LineChartFragment extends Fragment {
         List<PointValue> dailyValues = new ArrayList<>();
         List<PointValue> maxValue = new ArrayList<>();
 
-        //Set max values
+        //Set maxValue (CreditLimit)
         maxValue.add(new PointValue(0, creditPeriod.getCreditLimit().floatValue()));
         maxValue.add(new PointValue(creditPeriod.getTotalDaysInPeriod(), creditPeriod.getCreditLimit().floatValue()));
 
@@ -153,28 +156,19 @@ public class LineChartFragment extends Fragment {
 
         //Setup chart
         chart.setLineChartData(data);
-        chart.setMaxZoom(0);
-        //chart.startDataAnimation(1000);
-        //chart.setViewportCalculationEnabled(false);
-        //resetViewport(creditPeriod.getCreditLimit().intValue(), creditPeriod.getTotalDaysInPeriod());
+        chart.setMaxZoom(5);
 
-
-
-
-
-    }
-
-    private void resetViewport(int top, int right) {
         // Reset viewport height range to (0,100)
+        chart.setViewportCalculationEnabled(false);
         final Viewport v = new Viewport(chart.getMaximumViewport());
-        v.bottom = 0;
-        v.top = top;
-        v.left = 0;
-        v.right = right - 1;
+        v.top *= 1.1;
         chart.setMaximumViewport(v);
         chart.setCurrentViewport(v);
-    }
 
+
+
+
+    }
 }
 
 /**

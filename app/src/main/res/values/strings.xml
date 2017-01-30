@@ -6,7 +6,7 @@
     <string name="drawer_closed">Drawer Closed!</string>
     <string name="fragment_name_overview">Overview</string>
     <string name="fragment_name_expense_list">Expenses</string>
-    <string name="fragment_name_graphs">Graphs</string>
+    <string name="fragment_name_graphs">Expense Graphs</string>
     <string name="fragment_name_credit_cards">Credit Cards</string>
 
     /*Welcome Activity*/
