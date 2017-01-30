@@ -1,6 +1,5 @@
 package ve.com.abicelis.creditcardexpensemanager.app.fragments;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,20 +11,10 @@ import android.widget.Toast;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Formatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import lecho.lib.hellocharts.model.Axis;
-import lecho.lib.hellocharts.model.AxisValue;
-import lecho.lib.hellocharts.model.Line;
-import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PieChartData;
-import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.SliceValue;
-import lecho.lib.hellocharts.model.Viewport;
-import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.PieChartView;
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
@@ -50,6 +39,7 @@ public class ChartCategoryFragment extends Fragment {
     private PieChartView chart;
 
     //DATA
+    private boolean chartIsVisible = false;
     private int activeCreditCardId;
     private ExpenseManagerDAO dao;
     private PieChartData data;
@@ -66,7 +56,7 @@ public class ChartCategoryFragment extends Fragment {
 
         try {
             activeCreditCardId = SharedPreferencesUtils.getInt(getContext(), Constants.ACTIVE_CC_ID);
-            refreshData();
+
         }catch(SharedPreferenceNotFoundException e) {
             //This shouldn't happen
             Toast.makeText(getActivity(), "Megapeo en oncreate, SharedPreferenceNotFoundException CreditCardNotFoundException", Toast.LENGTH_SHORT).show();
@@ -74,6 +64,19 @@ public class ChartCategoryFragment extends Fragment {
 
         return rootView;
     }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && !chartIsVisible) {
+            refreshData();
+            chart.startDataAnimation(10000);
+            chartIsVisible = true;
+        }
+        else {
+        }
+    }
+
 
 
     public void refreshData() {
@@ -107,7 +110,9 @@ public class ChartCategoryFragment extends Fragment {
 
 
         for (int i = 0; i < numCategories; ++i) {
-            SliceValue sliceValue = new SliceValue(expenseByCategory[i].floatValue(), ContextCompat.getColor(getContext(), ExpenseCategory.values()[i].getColor() ));
+            //SliceValue sliceValue = new SliceValue(expenseByCategory[i].floatValue(), ContextCompat.getColor(getContext(), ExpenseCategory.values()[i].getColor() ));
+            SliceValue sliceValue = new SliceValue(20, ContextCompat.getColor(getContext(), ExpenseCategory.values()[i].getColor() ));
+            sliceValue.setTarget(expenseByCategory[i].floatValue());
             sliceValue.setLabel(ExpenseCategory.values()[i].getFriendlyName());
             sliceValues.add(sliceValue);
         }
@@ -116,8 +121,7 @@ public class ChartCategoryFragment extends Fragment {
         //Setup chart
         data = new PieChartData(sliceValues);
         data.setHasLabels(true);
-        data.setHasLabelsOutside(true);
+        //data.setHasLabelsOutside(true);
         chart.setPieChartData(data);
-
     }
 }

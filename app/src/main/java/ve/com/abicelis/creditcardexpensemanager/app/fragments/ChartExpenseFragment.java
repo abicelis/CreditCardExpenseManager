@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lecho.lib.hellocharts.formatter.SimpleAxisValueFormatter;
+import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Line;
@@ -40,17 +41,13 @@ public class ChartExpenseFragment extends Fragment {
     private LineChartView chart;
 
     //DATA
+    private boolean chartIsVisible = false;
     private int activeCreditCardId;
     private ExpenseManagerDAO dao;
     private LineChartData data;
     CreditPeriod creditPeriod;
     CreditCard creditCard;
 
-//    @Override
-//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getResources().getString(R.string.fragment_name_graphs));
-//    }
 
     @Nullable
     @Override
@@ -59,22 +56,16 @@ public class ChartExpenseFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_chart_expenses, container, false);
         chart = (LineChartView) rootView.findViewById(R.id.chart);
-
+        refreshData();
+        chart.startDataAnimation(1000);
         try {
             activeCreditCardId = SharedPreferencesUtils.getInt(getContext(), Constants.ACTIVE_CC_ID);
-            refreshData();
         }catch(SharedPreferenceNotFoundException e) {
             //This shouldn't happen
             Toast.makeText(getActivity(), "Megapeo en oncreate, SharedPreferenceNotFoundException CreditCardNotFoundException", Toast.LENGTH_SHORT).show();
         }
 
         return rootView;
-    }
-
-    @Override
-    public void onResume() {
-        refreshData();
-        super.onResume();
     }
 
     public void refreshData() {
@@ -108,7 +99,12 @@ public class ChartExpenseFragment extends Fragment {
         List<DailyExpense> dailyExpenses = creditPeriod.getDailyExpenses();
         List<DailyExpense> accumulatedDailyExpenses = creditPeriod.getAccumulatedDailyExpenses();
         for (int i = 0; i < creditPeriod.getTotalDaysInPeriod(); ++i) {
-            accumulatedValues.add(new PointValue(i, accumulatedDailyExpenses.get(i).getAmount().floatValue()));
+
+            PointValue aux = new PointValue(i, 1);
+            //PointValue aux = new PointValue(i, accumulatedDailyExpenses.get(i).getAmount().floatValue());
+            aux.setTarget(i, accumulatedDailyExpenses.get(i).getAmount().floatValue());
+            accumulatedValues.add(aux);
+
             dailyValues.add(new PointValue(i, dailyExpenses.get(i).getAmount().floatValue()));
             axisValues.add(new AxisValue(i).setLabel(accumulatedDailyExpenses.get(i).getFormattedDate()));
         }
@@ -116,7 +112,7 @@ public class ChartExpenseFragment extends Fragment {
         //Add accumulatedValues line
         Line line = new Line(accumulatedValues);
         line.setColor(ChartUtils.COLOR_BLUE);
-        line.setCubic(true);
+        //line.setCubic(true);
         line.setFilled(true);
         line.setHasPoints(false);
         lines.add(line);
@@ -156,15 +152,14 @@ public class ChartExpenseFragment extends Fragment {
 
         //Setup chart
         chart.setLineChartData(data);
+        chart.setZoomType(ZoomType.VERTICAL);
         chart.setMaxZoom(5);
-
-        // Reset viewport height range to (0,100)
         chart.setViewportCalculationEnabled(false);
+
         final Viewport v = new Viewport(chart.getMaximumViewport());
-        v.top *= 1.1;
+        v.top *= 1.3;
         chart.setMaximumViewport(v);
         chart.setCurrentViewport(v);
-
 
 
 
