@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.math.BigDecimal;
@@ -40,6 +41,7 @@ public class ChartCategoryFragment extends Fragment {
 
     //UI
     private PieChartView chart;
+    private RelativeLayout mNoExpensesContainer;
 
     //DATA
     private boolean chartIsVisible = false;
@@ -55,7 +57,9 @@ public class ChartCategoryFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View rootView = inflater.inflate(R.layout.fragment_chart_categories, container, false);
-        chart = (PieChartView) rootView.findViewById(R.id.chart);
+        chart = (PieChartView) rootView.findViewById(R.id.chart_categories_piechart);
+        mNoExpensesContainer = (RelativeLayout) rootView.findViewById(R.id.chart_categories_no_expenses_container);
+
 
         try {
             activeCreditCardId = SharedPreferencesUtils.getInt(getContext(), Constants.ACTIVE_CC_ID);
@@ -73,7 +77,6 @@ public class ChartCategoryFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && !chartIsVisible) {
             refreshData();
-            chart.startDataAnimation(10000);
             chartIsVisible = true;
         }
         else {
@@ -83,15 +86,8 @@ public class ChartCategoryFragment extends Fragment {
 
 
     public void refreshData() {
-
-        int numCategories = ExpenseCategory.values().length;
-        BigDecimal[] expenseByCategory = new BigDecimal[numCategories];
-        List<SliceValue> sliceValues = new ArrayList<>();
-
-
         if(dao == null)
             dao = new ExpenseManagerDAO(getActivity());
-
 
         //Refresh list from DB
         try {
@@ -100,6 +96,17 @@ public class ChartCategoryFragment extends Fragment {
         }catch(CreditCardNotFoundException | CreditPeriodNotFoundException e) {
             Toast.makeText(getContext(), "ERROR getting data for chart", Toast.LENGTH_SHORT).show();
         }
+
+        //Check if there are no expenses in this period
+        if(creditPeriod.getExpensesTotal().equals(BigDecimal.ZERO)) {
+            chart.setVisibility(View.GONE);
+            mNoExpensesContainer.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        int numCategories = ExpenseCategory.values().length;
+        BigDecimal[] expenseByCategory = new BigDecimal[numCategories];
+        List<SliceValue> sliceValues = new ArrayList<>();
 
         //Initialize expenseByCategory
         for (int i = 0; i < numCategories; ++i) {
@@ -126,6 +133,9 @@ public class ChartCategoryFragment extends Fragment {
         data.setHasLabels(true);
         //data.setHasLabelsOutside(true);
         chart.setPieChartData(data);
+
+        chart.startDataAnimation(10000);
+
     }
 
     private String getExpenseLabel(BigDecimal expenseValue, String expenseName) {

@@ -6,8 +6,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +42,7 @@ public class ChartExpenseFragment extends Fragment {
 
     //UI
     private LineChartView chart;
+    private RelativeLayout mNoExpensesContainer;
 
     //DATA
     private boolean chartIsVisible = false;
@@ -55,9 +59,9 @@ public class ChartExpenseFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View rootView = inflater.inflate(R.layout.fragment_chart_expenses, container, false);
-        chart = (LineChartView) rootView.findViewById(R.id.chart);
-        refreshData();
-        chart.startDataAnimation(1000);
+        chart = (LineChartView) rootView.findViewById(R.id.chart_expenses_linechart);
+        mNoExpensesContainer = (RelativeLayout) rootView.findViewById(R.id.chart_expenses_no_expenses_container);
+
         try {
             activeCreditCardId = SharedPreferencesUtils.getInt(getContext(), Constants.ACTIVE_CC_ID);
         }catch(SharedPreferenceNotFoundException e) {
@@ -65,6 +69,7 @@ public class ChartExpenseFragment extends Fragment {
             Toast.makeText(getActivity(), "Megapeo en oncreate, SharedPreferenceNotFoundException CreditCardNotFoundException", Toast.LENGTH_SHORT).show();
         }
 
+        refreshData();
         return rootView;
     }
 
@@ -81,6 +86,15 @@ public class ChartExpenseFragment extends Fragment {
         }catch(CreditCardNotFoundException | CreditPeriodNotFoundException e) {
             Toast.makeText(getContext(), "ERROR getting data for chart", Toast.LENGTH_SHORT).show();
         }
+
+
+        //Check if there are no expenses in this period
+        if(creditPeriod.getExpensesTotal().equals(BigDecimal.ZERO)) {
+            chart.setVisibility(View.GONE);
+            mNoExpensesContainer.setVisibility(View.VISIBLE);
+            return;
+        }
+
 
 
         //Convert the data to PointValues, add those to lines
@@ -162,7 +176,7 @@ public class ChartExpenseFragment extends Fragment {
         chart.setCurrentViewport(v);
 
 
-
+        chart.startDataAnimation(1000);
     }
 }
 

@@ -95,6 +95,9 @@
     <string name="menu_overview_add_rate_app">Rate App!</string>
 
 
+    /* Charts */
+    <string name="fragment_charts_no_expenses_message">Not enough data, please add at least one expense</string>
+
     <string name="ok">OK</string>
     <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
     <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
