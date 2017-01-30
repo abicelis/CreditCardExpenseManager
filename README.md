@@ -23,7 +23,7 @@ This app features:
 ## TODO
 
 - [X] Fix 'Create Expense using Camera' Activity
-- [ ] Add a Viewpager in the Graphs section, add a piechart with expense categories
+- [X] Add a Viewpager in the Graphs section, add a piechart with expense categories
 - [ ] Update app icon
 - [ ] Allow multiple selection of expenses using longClick + toolbar menu delete action
 - [ ] Allow multiple selection of credit cards using longClick + toolbar menu delete action
