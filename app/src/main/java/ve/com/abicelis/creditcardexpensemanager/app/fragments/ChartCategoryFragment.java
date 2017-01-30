@@ -10,8 +10,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import lecho.lib.hellocharts.model.PieChartData;
 import lecho.lib.hellocharts.model.SliceValue;
@@ -113,7 +116,7 @@ public class ChartCategoryFragment extends Fragment {
             //SliceValue sliceValue = new SliceValue(expenseByCategory[i].floatValue(), ContextCompat.getColor(getContext(), ExpenseCategory.values()[i].getColor() ));
             SliceValue sliceValue = new SliceValue(20, ContextCompat.getColor(getContext(), ExpenseCategory.values()[i].getColor() ));
             sliceValue.setTarget(expenseByCategory[i].floatValue());
-            sliceValue.setLabel(ExpenseCategory.values()[i].getFriendlyName());
+            sliceValue.setLabel(getExpenseLabel(expenseByCategory[i], ExpenseCategory.values()[i].getFriendlyName()));
             sliceValues.add(sliceValue);
         }
 
@@ -124,4 +127,22 @@ public class ChartCategoryFragment extends Fragment {
         //data.setHasLabelsOutside(true);
         chart.setPieChartData(data);
     }
+
+    private String getExpenseLabel(BigDecimal expenseValue, String expenseName) {
+        BigDecimal aux;
+        BigDecimal expenseTotal = new BigDecimal(expenseValue.toPlainString());
+        BigDecimal total = creditPeriod.getExpensesTotal();
+
+        if(!total.equals(BigDecimal.ZERO)) {
+            if(!expenseValue.equals((BigDecimal.ZERO))) {
+                aux = expenseTotal.divide(total, 3, RoundingMode.CEILING);
+                aux = aux.multiply(new BigDecimal(100));
+                return String.format(Locale.getDefault(), "%1$s %2$s%%", expenseName, new DecimalFormat("#0.#").format(aux));
+            }
+        }
+
+        return "";
+    }
+
 }
+
