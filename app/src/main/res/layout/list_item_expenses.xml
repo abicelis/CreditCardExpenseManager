@@ -94,13 +94,14 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/list_item_expenses_img_delete"
             android:layout_toRightOf="@id/list_item_expenses_txt_amount"
+            android:layout_alignParentRight="true"
             android:gravity="right"
             android:layout_marginTop="5dp"
             android:layout_marginRight="8dp"
             android:layout_marginLeft="12dp"
             android:textColor="@color/gray_700"
             android:maxLines="1"
-            android:text="08/02 10pm" />
+            android:text="2 hours ago" />
 
 
 
@@ -112,7 +113,8 @@
             android:paddingLeft="-5dp"
             android:scaleType="center"
             android:src="@android:drawable/ic_delete"
-            android:tint="@color/expense_category_7"/>
+            android:tint="@color/expense_category_7"
+            android:visibility="gone"/>
 
         <!--<ImageView-->
         <!--android:id="@+id/list_item_expenses_img_edit"-->
