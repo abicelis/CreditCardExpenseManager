@@ -28,7 +28,7 @@ This app features:
 - [ ] Allow multiple selection of expenses using longClick + toolbar menu delete action
 - [ ] Allow multiple selection of credit cards using longClick + toolbar menu delete action
 - [ ] Update resizer icon in 'Create Expense using Camera' Activity
-- [ ] Add a small tutorial in 'Create Expense using Camera' Activity
+- [X] Add a showcase tutorial in 'Create Expense using Camera' Activity
 - [ ] Add charts to Overview screen
 - [ ] Add about screen
 - [ ] Add Settings, Backup/Restore data screen
