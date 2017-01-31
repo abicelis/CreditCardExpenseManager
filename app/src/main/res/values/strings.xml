@@ -88,6 +88,13 @@
     <string name="activity_ocr_create_expense_label_total">Total</string>
 
 
+    <string name="activity_ocr_create_showcase_resizer_title">Text detection window</string>
+    <string name="activity_ocr_create_showcase_resizer_content">Drag this icon to resize</string>
+    <string name="activity_ocr_create_showcase_capture_title">Capture button</string>
+    <string name="activity_ocr_create_showcase_capture_content">Aim camera to desired text and press this button to capture</string>
+
+
+
     /* Menu overview */
     <string name="menu_overview_add_credit_card">Add Credit Card</string>
     <string name="menu_overview_add_settings">Settings</string>

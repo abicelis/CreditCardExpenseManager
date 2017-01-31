@@ -28,16 +28,21 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.text.TextRecognizer;
@@ -176,6 +181,7 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
 
         setUpToolbar();
         setUpSpinners();
+        setUpShowcase();
 
 
         //Set receipt's date
@@ -239,6 +245,45 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
         ArrayAdapter expenseTypeAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, expenseTypes);
         expenseTypeAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         mExpenseType.setAdapter(expenseTypeAdapter);
+    }
+
+    private void setUpShowcase() {
+
+        final Activity ACTIVITY = this;
+
+        RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        // This aligns button to the bottom left side of screen
+        lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        // Set margins to the button, we add 16dp margins here
+        int margin = ((Number) (getResources().getDisplayMetrics().density * 16)).intValue();
+        lps.setMargins(margin, margin, margin, margin);
+
+        new ShowcaseView.Builder(ACTIVITY)
+                .setTarget(new ViewTarget(mOcrWindowResizer))
+                .setContentTitle(getResources().getText(R.string.activity_ocr_create_showcase_resizer_title))
+                .withMaterialShowcase()
+                .setStyle(R.style.CustomShowcaseTheme)
+                .setContentText(getResources().getText(R.string.activity_ocr_create_showcase_resizer_content))
+                .hideOnTouchOutside()
+                .singleShot(1)
+                .setShowcaseEventListener(new SimpleShowcaseEventListener() {
+
+                    @Override
+                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                        new ShowcaseView.Builder(ACTIVITY)
+                                .setTarget(new ViewTarget(mBtnCapture))
+                                .setContentTitle(getResources().getText(R.string.activity_ocr_create_showcase_capture_title))
+                                .withMaterialShowcase()
+                                .setStyle(R.style.CustomShowcaseTheme)
+                                .setContentText(getResources().getText(R.string.activity_ocr_create_showcase_capture_content))
+                                .hideOnTouchOutside()
+                                .singleShot(2)
+                                .build();
+                    }
+
+                })
+                .build();
     }
 
     @Override

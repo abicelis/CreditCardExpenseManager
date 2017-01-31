@@ -58,8 +58,7 @@
                     android:id="@+id/create_expense_ocr_window_resizer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="#99772299"
-                    android:src="@android:drawable/btn_star_big_on"
+                    android:src="@drawable/icon_resize"
                     />
 
 
