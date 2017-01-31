@@ -251,14 +251,6 @@ public final class OcrCreateExpenseActivity extends AppCompatActivity implements
 
         final Activity ACTIVITY = this;
 
-        RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        // This aligns button to the bottom left side of screen
-        lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        lps.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        // Set margins to the button, we add 16dp margins here
-        int margin = ((Number) (getResources().getDisplayMetrics().density * 16)).intValue();
-        lps.setMargins(margin, margin, margin, margin);
-
         new ShowcaseView.Builder(ACTIVITY)
                 .setTarget(new ViewTarget(mOcrWindowResizer))
                 .setContentTitle(getResources().getText(R.string.activity_ocr_create_showcase_resizer_title))
