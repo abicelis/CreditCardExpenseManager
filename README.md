@@ -30,6 +30,8 @@ This app features:
 - [ ] Update resizer icon in 'Create Expense using Camera' Activity
 - [ ] Add a small tutorial in 'Create Expense using Camera' Activity
 - [ ] Add charts to Overview screen
+- [ ] Add about screen
+- [ ] Add Settings, Backup/Restore data screen
 
 ## Code dependencies
 
