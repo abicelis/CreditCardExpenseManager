@@ -24,7 +24,7 @@ This app features:
 
 - [X] Fix 'Create Expense using Camera' Activity
 - [X] Add a Viewpager in the Graphs section, add a piechart with expense categories
-- [ ] Update app icon
+- [X] Update app icon
 - [ ] Allow multiple selection of expenses using longClick + toolbar menu delete action
 - [ ] Allow multiple selection of credit cards using longClick + toolbar menu delete action
 - [ ] Update resizer icon in 'Create Expense using Camera' Activity
@@ -37,9 +37,12 @@ This app features:
 
 This Project uses external SDK's
 
-* [FloatingActionButton](https://github.com/Clans/FloatingActionButton) - Custom Fab Button
+* [FloatingActionButton](https://github.com/Clans/FloatingActionButton) - Custom Fab Button by Clans
 * [hellocharts-android](https://github.com/lecho/hellocharts-android) - Charts by Hellocharts
 * [Google GMS Vision SDK](https://developers.google.com/android/reference/com/google/android/gms/vision/package-summary) - For detecting text (ocr) from the camera
+* [BetterPickers](https://github.com/code-troopers/android-betterpickers) - Datepicker library by code-troopers
+* [Cropper tool](https://github.com/edmodo/cropper) - Cropper tool by edmodo
+* [ShowcaseView](https://github.com/amlcurran/ShowcaseView) - Highlight library by amlcurran
 
 ## Software used
 
