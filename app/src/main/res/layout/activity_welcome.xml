@@ -57,12 +57,13 @@
 
         <Button
             android:id="@+id/activity_welcome_go_home"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_width="60dp"
+            android:layout_height="20dp"
             android:layout_marginTop="20dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:layout_centerHorizontal="true"
+            android:textSize="8sp"
             android:layout_below="@+id/activity_welcome_add_credit_card"
             android:text="Home!"
             android:background="@android:color/white"
