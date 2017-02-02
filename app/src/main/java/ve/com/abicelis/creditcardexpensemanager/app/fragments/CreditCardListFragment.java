@@ -1,11 +1,9 @@
 package ve.com.abicelis.creditcardexpensemanager.app.fragments;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -17,29 +15,18 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.activities.AddCreditCardActivity;
-import ve.com.abicelis.creditcardexpensemanager.app.activities.OcrCreateExpenseActivity;
-import ve.com.abicelis.creditcardexpensemanager.app.activities.WelcomeActivity;
 import ve.com.abicelis.creditcardexpensemanager.app.adapters.CreditCardAdapter;
-import ve.com.abicelis.creditcardexpensemanager.app.adapters.ExpensesAdapter;
-import ve.com.abicelis.creditcardexpensemanager.app.dialogs.CreateOrEditExpenseDialogFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.holders.ExpensesViewHolder;
-import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
-import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
-import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardLayoutRes;
-import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotDeleteDataException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditCardNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditPeriodNotFoundException;
-import ve.com.abicelis.creditcardexpensemanager.exceptions.SharedPreferenceNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
-import ve.com.abicelis.creditcardexpensemanager.model.Expense;
 
 /**
  * Created by Alex on 3/9/2016.
@@ -128,7 +115,7 @@ public class CreditCardListFragment extends Fragment {
         recycler.addItemDecoration(new DividerItemDecoration(recycler.getContext(), layoutManager.getOrientation()));
         recycler.setLayoutManager(layoutManager);
 
-        adapter = new CreditCardAdapter(getActivity(), creditCards, CreditCardLayoutRes.LAYOUT_DETAILED);
+        adapter = new CreditCardAdapter(getActivity(), creditCards);
         recycler.setAdapter(adapter);
 
     }

@@ -9,7 +9,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +21,10 @@ import java.util.List;
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.adapters.NavigationDrawerAdapter;
 import ve.com.abicelis.creditcardexpensemanager.app.dialogs.SelectCreditCardDialogFragment;
-import ve.com.abicelis.creditcardexpensemanager.app.holders.CreditCardViewHolder;
+import ve.com.abicelis.creditcardexpensemanager.app.holders.SelectableCreditCardViewHolder;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
-import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardLayoutRes;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditCardNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.SharedPreferenceNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
@@ -46,7 +44,7 @@ public class NavigationDrawerFragment extends Fragment {
     private ExpenseManagerDAO mDao;
 
     //UI
-    CreditCardViewHolder holder;
+    SelectableCreditCardViewHolder holder;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private RelativeLayout mHeaderContainer;
@@ -91,7 +89,7 @@ public class NavigationDrawerFragment extends Fragment {
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
                         reloadData();
-                        holder.setData(getContext(), CreditCardLayoutRes.LAYOUT_BIG, mActiveCreditCard, 0);
+                        holder.setData(getContext(), mActiveCreditCard, 0);
                         closeDrawer();
                     }
                 });
@@ -101,8 +99,8 @@ public class NavigationDrawerFragment extends Fragment {
 
         //Setup cc holder data
         View headerCreditCardContainer = rootView.findViewById(R.id.list_item_credit_card_container);
-        holder = new CreditCardViewHolder(headerCreditCardContainer);
-        holder.setData(getContext(), CreditCardLayoutRes.LAYOUT_BIG, mActiveCreditCard, 0);
+        holder = new SelectableCreditCardViewHolder(headerCreditCardContainer);
+        holder.setData(getContext(), mActiveCreditCard, 0);
     }
 
     private void setUpRecyclerView(View view) {

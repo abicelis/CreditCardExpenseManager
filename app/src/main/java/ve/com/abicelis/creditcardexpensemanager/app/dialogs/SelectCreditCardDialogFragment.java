@@ -14,13 +14,11 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
-import ve.com.abicelis.creditcardexpensemanager.app.adapters.CreditCardAdapter;
-import ve.com.abicelis.creditcardexpensemanager.app.fragments.ExpenseListFragment;
+import ve.com.abicelis.creditcardexpensemanager.app.adapters.SelectableCreditCardAdapter;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.OverviewFragment;
-import ve.com.abicelis.creditcardexpensemanager.app.holders.CreditCardViewHolder;
+import ve.com.abicelis.creditcardexpensemanager.app.holders.SelectableCreditCardViewHolder;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
-import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardLayoutRes;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
 
 /**
@@ -34,7 +32,7 @@ public class SelectCreditCardDialogFragment extends AppCompatDialogFragment {
     //UI
     private DialogInterface.OnDismissListener mOnDismissListener = null;
     private RecyclerView mRecyclerView;
-    private CreditCardAdapter mAdapter;
+    private SelectableCreditCardAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
 
     //DATA
@@ -83,7 +81,7 @@ public class SelectCreditCardDialogFragment extends AppCompatDialogFragment {
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.dialog_select_cc_recycler);
 
-        CreditCardViewHolder.CreditCardSelectedListener ccSelectedListener = new CreditCardViewHolder.CreditCardSelectedListener() {
+        SelectableCreditCardViewHolder.CreditCardSelectedListener ccSelectedListener = new SelectableCreditCardViewHolder.CreditCardSelectedListener() {
             @Override
             public void OnCreditCardSelected(CreditCard creditCard) {
 
@@ -93,7 +91,7 @@ public class SelectCreditCardDialogFragment extends AppCompatDialogFragment {
             }
         };
 
-        mAdapter = new CreditCardAdapter(getContext().getApplicationContext(), mCreditCardList, CreditCardLayoutRes.LAYOUT_BIG);
+        mAdapter = new SelectableCreditCardAdapter(getContext().getApplicationContext(), mCreditCardList);
         mAdapter.setCreditCardSelectedListener(ccSelectedListener);
 
         mRecyclerView.setAdapter(mAdapter);

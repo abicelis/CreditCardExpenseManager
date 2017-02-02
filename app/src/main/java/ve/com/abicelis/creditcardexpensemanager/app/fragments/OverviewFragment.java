@@ -16,13 +16,11 @@ import java.math.BigDecimal;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.dialogs.CheckCreditPeriodLimitDialogFragment;
-import ve.com.abicelis.creditcardexpensemanager.app.holders.CreditCardViewHolder;
+import ve.com.abicelis.creditcardexpensemanager.app.holders.SelectableCreditCardViewHolder;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.DateUtils;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
-import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardLayoutRes;
-import ve.com.abicelis.creditcardexpensemanager.enums.Currency;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditCardNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditPeriodNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.SharedPreferenceNotFoundException;
@@ -40,7 +38,7 @@ public class OverviewFragment extends Fragment {
     ExpenseManagerDAO dao;
 
     //UI
-    CreditCardViewHolder holder;
+    SelectableCreditCardViewHolder holder;
     TextView creditLimit;
     TextView creditSpent;
     TextView startEndDates;
@@ -109,8 +107,8 @@ public class OverviewFragment extends Fragment {
             }
 
             //Setup cc data
-            holder = new CreditCardViewHolder(headerCreditCardContainer);
-            holder.setData(getContext(), CreditCardLayoutRes.LAYOUT_BIG, activeCreditCard, 0);
+            holder = new SelectableCreditCardViewHolder(headerCreditCardContainer);
+            holder.setData(getContext(), activeCreditCard, 0);
         }
     }
 

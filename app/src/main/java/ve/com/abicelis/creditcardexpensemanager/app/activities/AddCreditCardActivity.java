@@ -30,13 +30,12 @@ import java.util.Calendar;
 import java.util.List;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
-import ve.com.abicelis.creditcardexpensemanager.app.adapters.CreditCardAdapter;
-import ve.com.abicelis.creditcardexpensemanager.app.holders.CreditCardViewHolder;
+import ve.com.abicelis.creditcardexpensemanager.app.adapters.SelectableCreditCardAdapter;
+import ve.com.abicelis.creditcardexpensemanager.app.holders.SelectableCreditCardViewHolder;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
 import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardBackground;
-import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardLayoutRes;
 import ve.com.abicelis.creditcardexpensemanager.enums.CreditCardType;
 import ve.com.abicelis.creditcardexpensemanager.enums.Currency;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CouldNotInsertDataException;
@@ -75,7 +74,7 @@ public class AddCreditCardActivity extends AppCompatActivity {
     Spinner cardDueDay;
     Button buttonAddCreditCard;
     RecyclerView mRecyclerView;
-    CreditCardAdapter mAdapter;
+    SelectableCreditCardAdapter mAdapter;
     LinearLayoutManager mLayoutManager;
 
 
@@ -216,7 +215,7 @@ public class AddCreditCardActivity extends AppCompatActivity {
     private void setUpCCRecyclerView() {
 
         mCreditCardList = CreditCard.getCreditCardBackgroundTypesList(this);
-        CreditCardViewHolder.CreditCardSelectedListener ccSelectedListener = new CreditCardViewHolder.CreditCardSelectedListener() {
+        SelectableCreditCardViewHolder.CreditCardSelectedListener ccSelectedListener = new SelectableCreditCardViewHolder.CreditCardSelectedListener() {
             @Override
             public void OnCreditCardSelected(CreditCard creditCard) {
                 Toast.makeText(AddCreditCardActivity.this, "Background selected", Toast.LENGTH_SHORT).show();
@@ -224,7 +223,7 @@ public class AddCreditCardActivity extends AppCompatActivity {
             }
         };
 
-        mAdapter = new CreditCardAdapter(getApplicationContext(), mCreditCardList, CreditCardLayoutRes.LAYOUT_BIG);
+        mAdapter = new SelectableCreditCardAdapter(getApplicationContext(), mCreditCardList);
         mAdapter.setCreditCardSelectedListener(ccSelectedListener);
         mRecyclerView.setAdapter(mAdapter);
 
