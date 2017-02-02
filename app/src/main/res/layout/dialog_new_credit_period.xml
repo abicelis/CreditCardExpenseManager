@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:id="@+id/dialog_new_credit_period_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        >
+        <TextView
+            android:id="@+id/dialog_new_credit_period_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/dialog_new_credit_period_title"/>
+
+
+        <TextView
+            android:text="@string/dialog_new_credit_period_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <TextView
+            android:id="@+id/dialog_new_credit_period_limit_title"
+            android:text="@string/dialog_new_credit_period_limit_title"
+            android:layout_marginTop="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/dialog_new_credit_period_limit_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:text=""
+            android:imeOptions="actionDone"
+            android:backgroundTint="@color/gray_700"
+            />
+
+
+
+
+    </LinearLayout>
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:paddingLeft="24dp"
+    >
+
+    <Button
+        android:id="@+id/dialog_new_credit_period_button_create"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="@string/dialog_new_credit_period_button_create"
+        android:layout_alignParentRight="true"
+        style="?attr/borderlessButtonStyle"/>
+
+
+</RelativeLayout>
+
+</LinearLayout>

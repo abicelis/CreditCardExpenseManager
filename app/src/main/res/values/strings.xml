@@ -74,6 +74,14 @@
     <string name="dialog_create_expense_button_cancel">Cancel</string>
     <string name="dialog_create_expense_error_bad_amount">Please enter a valid amount</string>
 
+    /*Dialog new credit period*/
+    <string name="dialog_new_credit_period_title">Credit Period expired</string>
+    <string name="dialog_new_credit_period_text">A new Credit Period will be created, please verify your Credit Card spending limit for this period.</string>
+    <string name="dialog_new_credit_period_limit_title">Spending Limit (in %1$s)</string>
+    <string name="dialog_new_credit_period_button_create">Create</string>
+    <string name="dialog_new_credit_period_button_cancel">Cancel</string>
+    <string name="dialog_new_credit_period_error_bad_amount">Please enter a valid amount</string>
+
 
     /*Dialog select CC*/
     <string name="dialog_select_cc_title">Select a Credit Card</string>

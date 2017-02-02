@@ -42,12 +42,12 @@ public class LauncherActivity extends Activity {
             }
         }
 
-        //TODO: maybe here's the place to check if new CreditPeriods need to be created?
 
 
-        //If all is good, go home!
-        startActivity(new Intent(this, WelcomeActivity.class));
-        ///startActivity(new Intent(this, HomeActivity.class));
+
+
+        //All is good, go home!
+        startActivity(new Intent(this, HomeActivity.class));
         finish();
     }
 
