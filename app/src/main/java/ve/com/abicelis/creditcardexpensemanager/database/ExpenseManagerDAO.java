@@ -371,37 +371,74 @@ public class ExpenseManagerDAO {
             throw new CouldNotInsertDataException("There was a problem inserting the Credit Card: " + creditcard.toString());
         else {
             //Insert first creditPeriod
-
-            // Set dates to be at midnight (start of day) today.
-            Calendar startDate = Calendar.getInstance();
-            startDate.set(Calendar.HOUR_OF_DAY, 0);
-            startDate.set(Calendar.MINUTE, 0);
-            startDate.set(Calendar.SECOND, 0);
-            startDate.set(Calendar.MILLISECOND, 0);
-
-            Calendar endDate = Calendar.getInstance();
-            endDate.setTimeInMillis(startDate.getTimeInMillis());
-
-            //Set start date's DAY_OF_MONTH to closingDay and endDate's DAY_OF_MONTH to closingDay-1ms
-            startDate.set(Calendar.DAY_OF_MONTH, creditcard.getClosingDay());
-            endDate.set(Calendar.DAY_OF_MONTH, creditcard.getClosingDay());
-            endDate.add(Calendar.MILLISECOND, -1);
-
-
-            if(creditcard.getClosingDay() <= Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
-                endDate.add(Calendar.MONTH, 1);
-            else
-                startDate.add(Calendar.MONTH, -1);
-
-            CreditPeriod creditPeriod = new CreditPeriod(CreditPeriod.PERIOD_NAME_COMPLETE, startDate, endDate, firstCreditPeriodLimit);
-            insertCreditPeriod((int)newRowId, creditPeriod);
+            insertCurrentCreditPeriod(newRowId, creditcard.getClosingDay(), creditcard.getDueDay(), firstCreditPeriodLimit);
+//
+//
+//            // Set dates to be at midnight (start of day) today.
+//            Calendar startDate = Calendar.getInstance();
+//            startDate.set(Calendar.HOUR_OF_DAY, 0);
+//            startDate.set(Calendar.MINUTE, 0);
+//            startDate.set(Calendar.SECOND, 0);
+//            startDate.set(Calendar.MILLISECOND, 0);
+//
+//            Calendar endDate = Calendar.getInstance();
+//            endDate.setTimeInMillis(startDate.getTimeInMillis());
+//
+//            //Set start date's DAY_OF_MONTH to closingDay and endDate's DAY_OF_MONTH to closingDay-1ms
+//            startDate.set(Calendar.DAY_OF_MONTH, creditcard.getClosingDay());
+//            endDate.set(Calendar.DAY_OF_MONTH, creditcard.getClosingDay());
+//            endDate.add(Calendar.MILLISECOND, -1);
+//
+//
+//            if(creditcard.getClosingDay() <= Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+//                endDate.add(Calendar.MONTH, 1);
+//            else
+//                startDate.add(Calendar.MONTH, -1);
+//
+//            CreditPeriod creditPeriod = new CreditPeriod(CreditPeriod.PERIOD_NAME_COMPLETE, startDate, endDate, firstCreditPeriodLimit);
+//            insertCreditPeriod((int)newRowId, creditPeriod);
         }
 
         return newRowId;
 
     }
 
-    public long insertCreditPeriod(int creditCardId, CreditPeriod creditPeriod) throws CouldNotInsertDataException {
+    /**
+     * Inserts a creditPeriod associated to a creditCard, which engulfs the current date (today), given a closing and a due date
+     * @param creditCardId the Id of the CreditCard to associate the CreditPeriod
+     * @param  closingDay the credit card's closing day
+     * @param dueDay the credit card's due day
+     * @param creditPeriodLimit BigDecimal value of the currency limit of the period
+     */
+    public long insertCurrentCreditPeriod(long creditCardId, int closingDay, int dueDay, BigDecimal creditPeriodLimit) throws CouldNotInsertDataException {
+        //Insert first creditPeriod
+
+        // Set dates to be at midnight (start of day) today.
+        Calendar startDate = Calendar.getInstance();
+        startDate.set(Calendar.HOUR_OF_DAY, 0);
+        startDate.set(Calendar.MINUTE, 0);
+        startDate.set(Calendar.SECOND, 0);
+        startDate.set(Calendar.MILLISECOND, 0);
+
+        Calendar endDate = Calendar.getInstance();
+        endDate.setTimeInMillis(startDate.getTimeInMillis());
+
+        //Set start date's DAY_OF_MONTH to closingDay and endDate's DAY_OF_MONTH to closingDay-1ms
+        startDate.set(Calendar.DAY_OF_MONTH, closingDay);
+        endDate.set(Calendar.DAY_OF_MONTH, dueDay);
+        endDate.add(Calendar.MILLISECOND, -1);
+
+
+        if(closingDay <= Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+            endDate.add(Calendar.MONTH, 1);
+        else
+            startDate.add(Calendar.MONTH, -1);
+
+        CreditPeriod creditPeriod = new CreditPeriod(CreditPeriod.PERIOD_NAME_COMPLETE, startDate, endDate, creditPeriodLimit);
+        return insertCreditPeriod(creditCardId, creditPeriod);
+    }
+
+    public long insertCreditPeriod(long creditCardId, CreditPeriod creditPeriod) throws CouldNotInsertDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
