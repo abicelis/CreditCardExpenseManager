@@ -27,9 +27,9 @@ This app features:
 - [X] Update app icon
 - [X] Update resizer icon in 'Create Expense using Camera' Activity
 - [X] Add a showcase tutorial in 'Create Expense using Camera' Activity
-- [X] Add credit card detail activity, which allows edition and deletion
+- [X] Add credit card dialog, which allows edition and deletion
 - [ ] Add charts to Overview screen
-- [ ] Add about screen
+- [X] Add about screen
 - [ ] Add Settings, Backup/Restore screen
 
 ## Code dependencies
