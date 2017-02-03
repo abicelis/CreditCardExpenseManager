@@ -24,10 +24,12 @@ import android.widget.Toast;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.adapters.SelectableCreditCardAdapter;
@@ -174,7 +176,8 @@ public class AddCreditCardActivity extends AppCompatActivity {
                                 }
 
                                 cardExpirationCal.set(year, monthOfYear, dayOfMonth);
-                                cardExpiration.setText(year + "/" + (monthOfYear+1) + "/" + dayOfMonth);
+                                SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+                                cardExpiration.setText(formatter.format(cardExpirationCal.getTime()));
                             }
                         })
                         .setFirstDayOfWeek(Calendar.SUNDAY)
@@ -215,7 +218,7 @@ public class AddCreditCardActivity extends AppCompatActivity {
     private void setUpCCRecyclerView() {
 
         mCreditCardList = CreditCard.getCreditCardBackgroundTypesList(this);
-        SelectableCreditCardViewHolder.CreditCardSelectedListener ccSelectedListener = new SelectableCreditCardViewHolder.CreditCardSelectedListener() {
+        SelectableCreditCardViewHolder.SelectableCreditCardSelectedListener ccSelectedListener = new SelectableCreditCardViewHolder.SelectableCreditCardSelectedListener() {
             @Override
             public void OnCreditCardSelected(CreditCard creditCard) {
                 Toast.makeText(AddCreditCardActivity.this, "Background selected", Toast.LENGTH_SHORT).show();
