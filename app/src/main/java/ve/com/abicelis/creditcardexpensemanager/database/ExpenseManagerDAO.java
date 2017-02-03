@@ -311,6 +311,45 @@ public class ExpenseManagerDAO {
 
     /* Delete data from database */
 
+    /**
+     * Deletes a credit card, with its associated credit periods, expenses and payments
+     */
+    public boolean deleteCreditCard(int creditCardId) throws CouldNotDeleteDataException {
+
+        //Fetch all credit periods and delete associated expenses and payments
+        for( CreditPeriod cp : getCreditPeriodListFromCard(creditCardId)) {
+            deleteExpensesFromCreditPeriod(cp.getId());
+            deletePaymentsFromCreditPeriod(cp.getId());
+            deleteCreditPeriod(cp.getId());
+        }
+
+        //Finally, delete the credit card
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+        String[] whereArgs = new String[]{String.valueOf(creditCardId)};
+
+        return db.delete(ExpenseManagerContract.CreditCardTable.TABLE_NAME,
+                ExpenseManagerContract.CreditCardTable._ID + " =?",
+                whereArgs) > 0;
+    }
+
+    public boolean deleteCreditPeriod(int creditPeriodId) throws CouldNotDeleteDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+        String[] whereArgs = new String[]{String.valueOf(creditPeriodId)};
+
+        return db.delete(ExpenseManagerContract.CreditPeriodTable.TABLE_NAME,
+                ExpenseManagerContract.CreditPeriodTable._ID + " =?",
+                whereArgs) > 0;
+    }
+
+
+    public boolean deleteExpensesFromCreditPeriod(int creditPeriodId) throws CouldNotDeleteDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+        String[] whereArgs = new String[]{String.valueOf(creditPeriodId)};
+
+        return db.delete(ExpenseManagerContract.ExpenseTable.TABLE_NAME,
+                ExpenseManagerContract.ExpenseTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName() + " =?",
+                whereArgs) > 0;
+    }
 
     public boolean deleteExpense(int expenseId) throws CouldNotDeleteDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
@@ -322,7 +361,48 @@ public class ExpenseManagerDAO {
     }
 
 
+
+    public boolean deletePaymentsFromCreditPeriod(int creditPeriodId) throws CouldNotDeleteDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+        String[] whereArgs = new String[]{String.valueOf(creditPeriodId)};
+
+        return db.delete(ExpenseManagerContract.PaymentTable.TABLE_NAME,
+                ExpenseManagerContract.PaymentTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName() + " =?",
+                whereArgs) > 0;
+    }
+
+    public boolean deletePayment(int paymentId) throws CouldNotDeleteDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+        String[] whereArgs = new String[]{String.valueOf(paymentId)};
+
+        return db.delete(ExpenseManagerContract.PaymentTable.TABLE_NAME,
+                ExpenseManagerContract.PaymentTable._ID + " =?",
+                whereArgs) > 0;
+    }
+
+
+
+
     /* Update data on database */
+    public long updateCreditCard(CreditCard creditCard) throws CouldNotUpdateDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        //Set values
+        ContentValues values = getValuesFromCreditCard(creditCard);
+
+        //Which row to update
+        String selection = ExpenseManagerContract.CreditCardTable._ID + " =? ";
+        String[] selectionArgs = { String.valueOf(creditCard.getId()) };
+
+        int count = db.update(
+                ExpenseManagerContract.CreditCardTable.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
+        return count;
+    }
+
     public long updateExpense(Expense expense) throws CouldNotUpdateDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
@@ -335,6 +415,25 @@ public class ExpenseManagerDAO {
 
         int count = db.update(
                 ExpenseManagerContract.ExpenseTable.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
+        return count;
+    }
+
+    public long updateCreditPeriod(int creditCardId, CreditPeriod creditPeriod) throws CouldNotUpdateDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        //Set values
+        ContentValues values = getValuesFromCreditPeriod(creditCardId, creditPeriod);
+
+        //Which row to update
+        String selection = ExpenseManagerContract.CreditPeriodTable._ID + " =? ";
+        String[] selectionArgs = { String.valueOf(creditPeriod.getId()) };
+
+        int count = db.update(
+                ExpenseManagerContract.CreditPeriodTable.TABLE_NAME,
                 values,
                 selection,
                 selectionArgs);
@@ -482,6 +581,30 @@ public class ExpenseManagerDAO {
         values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_DATE.getName(), expense.getDate().getTimeInMillis());
         values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getName(), expense.getExpenseCategory().getCode());
         values.put(ExpenseManagerContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getName(), expense.getExpenseType().getCode());
+        return values;
+    }
+
+    private ContentValues getValuesFromCreditCard(CreditCard creditCard) {
+        ContentValues values = new ContentValues();
+        values.put(ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_ALIAS.getName(), creditCard.getCardAlias());
+        values.put(ExpenseManagerContract.CreditCardTable.COLUMN_NAME_BANK_NAME.getName(), creditCard.getBankName());
+        values.put(ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_NUMBER.getName(), creditCard.getCardNumber());
+        values.put(ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CURRENCY.getName(), creditCard.getCurrency().getCode());
+        values.put(ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_TYPE.getName(), creditCard.getCardType().getCode());
+        values.put(ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CARD_EXPIRATION.getName(), creditCard.getCardExpiration().getTimeInMillis());
+        values.put(ExpenseManagerContract.CreditCardTable.COLUMN_NAME_CLOSING_DAY.getName(), creditCard.getClosingDay());
+        values.put(ExpenseManagerContract.CreditCardTable.COLUMN_NAME_DUE_DAY.getName(), creditCard.getDueDay());
+        values.put(ExpenseManagerContract.CreditCardTable.COLUMN_NAME_BACKGROUND.getName(), creditCard.getCreditCardBackground().getCode());
+        return values;
+    }
+
+    private ContentValues getValuesFromCreditPeriod(int creditCardId, CreditPeriod creditPeriod) {
+        ContentValues values = new ContentValues();
+        values.put(ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_CARD.getName(), creditCardId);
+        values.put(ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_PERIOD_NAME_STYLE.getName(), creditPeriod.getPeriodNameStyle());
+        values.put(ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_START_DATE.getName(), creditPeriod.getStartDate().getTimeInMillis());
+        values.put(ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_END_DATE.getName(), creditPeriod.getEndDate().getTimeInMillis());
+        values.put(ExpenseManagerContract.CreditPeriodTable.COLUMN_NAME_CREDIT_LIMIT.getName(), creditPeriod.getCreditLimit().toPlainString());
         return values;
     }
 
