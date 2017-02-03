@@ -30,7 +30,7 @@ This app features:
 - [X] Add credit card dialog, which allows edition and deletion
 - [ ] Add charts to Overview screen
 - [X] Add about screen
-- [ ] Add Settings, Backup/Restore screen
+- [X] Add Settings, Backup/Restore screen
 
 ## Code dependencies
 
