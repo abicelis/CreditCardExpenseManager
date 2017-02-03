@@ -122,9 +122,16 @@ public class CreditCard implements Serializable {
         if(cardExpiration == null)
             return "-/-";
 
-        SimpleDateFormat yearFormatter = new SimpleDateFormat("yy", Locale.getDefault());
-        SimpleDateFormat monthFormatter = new SimpleDateFormat("MM", Locale.getDefault());
-        return monthFormatter.format(cardExpiration.getTime()) + "/" + yearFormatter.format(cardExpiration.getTime());
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/yy", Locale.getDefault());
+        return formatter.format(cardExpiration.getTime());
+    }
+
+    public String getLongCardExpirationString() {
+        if(cardExpiration == null)
+            return "-";
+
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        return formatter.format(cardExpiration.getTime());
     }
 
     public int getClosingDay() {
