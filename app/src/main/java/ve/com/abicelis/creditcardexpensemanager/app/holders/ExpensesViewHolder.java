@@ -40,7 +40,6 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
     private TextView mCategory;
     private TextView mType;
     private ImageView mDeleteIcon;
-    //private ImageView mEditIcon;
 
     //DATA
     private Expense mCurrent;
@@ -58,7 +57,6 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
         mCategory = (TextView) itemView.findViewById(R.id.list_item_expenses_txt_category);
         mType = (TextView) itemView.findViewById(R.id.list_item_expenses_txt_type);
         mDeleteIcon = (ImageView) itemView.findViewById(R.id.list_item_expenses_img_delete);
-        //mEditIcon = (ImageView) itemView.findViewById(R.id.list_item_expenses_img_edit);
     }
 
     public void setData(ExpensesAdapter adapter, Fragment fragment, Expense current, int creditPeriodId, int position) {
@@ -131,9 +129,6 @@ public class ExpensesViewHolder extends RecyclerView.ViewHolder implements View.
                         .setNegativeButton((R.string.dialog_delete_expense_button_no), null)
                         .show();
                 break;
-
-            //case R.id.list_item_expenses_img_edit:
-            //    break;
         }
     }
 

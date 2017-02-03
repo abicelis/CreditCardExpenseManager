@@ -1,9 +1,11 @@
 package ve.com.abicelis.creditcardexpensemanager.app.fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -16,12 +18,15 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.activities.AddCreditCardActivity;
 import ve.com.abicelis.creditcardexpensemanager.app.adapters.CreditCardAdapter;
+import ve.com.abicelis.creditcardexpensemanager.app.dialogs.EditOrDeleteCreditCardDialogFragment;
+import ve.com.abicelis.creditcardexpensemanager.app.holders.CreditCardViewHolder;
 import ve.com.abicelis.creditcardexpensemanager.app.holders.ExpensesViewHolder;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditCardNotFoundException;
@@ -72,19 +77,6 @@ public class CreditCardListFragment extends Fragment {
     }
 
 
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        //If coming back from expenseDetailActivity and data was edited/deleted, refresh.
-//        if (requestCode == Constants.EXPENSE_DETAIL_ACTIVITY_REQUEST_CODE && resultCode == Constants.RESULT_REFRESH_DATA) {
-//            Toast.makeText(getActivity(), "Refreshing Expenses!", Toast.LENGTH_SHORT).show();
-//            refreshRecyclerView();
-//        }
-//
-//    }
-
-
     private void loadDao() {
         if(dao == null)
             dao = new ExpenseManagerDAO(getActivity().getApplicationContext());
@@ -95,27 +87,17 @@ public class CreditCardListFragment extends Fragment {
 
         recycler = (RecyclerView) rootView.findViewById(R.id.ccl_recycler);
 
-        ExpensesViewHolder.ExpenseDeletedListener listener = new ExpensesViewHolder.ExpenseDeletedListener() {
-            @Override
-            public void OnExpenseDeleted(int position) {
-//                try {
-//                    dao.deleteExpense(creditCardExpenses.get(position).getId());
-//                    creditCardExpenses.remove(position);
-//                    adapter.notifyItemRemoved(position);
-//                    adapter.notifyItemRangeChanged(position, adapter.getItemCount());
-//                    //refreshChart();
-//                }catch (CouldNotDeleteDataException e) {
-//                    Toast.makeText(getActivity(), "There was an error deleting the expense!", Toast.LENGTH_SHORT).show();
-//               }
-
-            }
-        };
-
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recycler.addItemDecoration(new DividerItemDecoration(recycler.getContext(), layoutManager.getOrientation()));
         recycler.setLayoutManager(layoutManager);
 
-        adapter = new CreditCardAdapter(getActivity(), creditCards);
+        adapter = new CreditCardAdapter(getActivity(), this, creditCards);
+        adapter.setCreditCardSelectedListener(new CreditCardViewHolder.CreditCardSelectedListener() {
+            @Override
+            public void OnCreditCardSelected(CreditCard creditCard) {
+                showEditOrDeleteCCDialog(creditCard);
+            }
+        });
         recycler.setAdapter(adapter);
 
     }
@@ -133,31 +115,6 @@ public class CreditCardListFragment extends Fragment {
         );
     }
 
-//    private void setUpToolbar(View rootView) {
-//
-//        final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) rootView.findViewById(R.id.home_collapsing);
-//        AppBarLayout appBarLayout = (AppBarLayout) rootView.findViewById(R.id.home_appbar);
-//        toolbar = (Toolbar) rootView.findViewById(R.id.home_toolbar);
-//        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-//            boolean isShow = false;
-//            int scrollRange = -1;
-//
-//            @Override
-//            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//                if (scrollRange == -1) {
-//                    scrollRange = appBarLayout.getTotalScrollRange();
-//                }
-//                if (scrollRange + verticalOffset == 0) {
-//                    collapsingToolbarLayout.setTitle(getResources().getString(R.string.app_name));
-//                    isShow = true;
-//                } else if(isShow) {
-//                    collapsingToolbarLayout.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
-//
-//                    isShow = false;
-//                }
-//            }
-//        });
-//    }
 
     private void setUpFab(View rootView) {
         fabNewCreditCard = (FloatingActionButton) rootView.findViewById(R.id.ccl_fab_add_cc);
@@ -197,7 +154,7 @@ public class CreditCardListFragment extends Fragment {
         int newCount = creditCards.size();
 
 
-        //If a new expense was added
+        //If a new credit card was added
         if(newCount == oldCount+1) {
             adapter.notifyItemInserted(0);
             adapter.notifyItemRangeChanged(1, creditCards.size()-1);
@@ -209,23 +166,20 @@ public class CreditCardListFragment extends Fragment {
     }
 
 
-//    private void showCreateExpenseDialog() {
-//        FragmentManager fm = getFragmentManager();
-//        CreateOrEditExpenseDialogFragment dialog = CreateOrEditExpenseDialogFragment.newInstance(
-//                dao,
-//                activeCreditCard.getCreditPeriods().get(0).getId(),
-//                activeCreditCard.getCurrency(),
-//                null);
-//
-//        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//            @Override
-//            public void onDismiss(DialogInterface dialogInterface) {
-//                refreshRecyclerView();
-//                //refreshChart();
-//            }
-//        });
-//        dialog.show(fm, "fragment_dialog_create_expense");
-//    }
+    private void showEditOrDeleteCCDialog(CreditCard selectedCreditCard) {
+        FragmentManager fm = getFragmentManager();
+        EditOrDeleteCreditCardDialogFragment dialog = EditOrDeleteCreditCardDialogFragment.newInstance(
+                dao,
+                selectedCreditCard);
+
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                refreshRecyclerView();
+            }
+        });
+        dialog.show(fm, "fragment_dialog_edit_delete_cc");
+    }
 
 
 }

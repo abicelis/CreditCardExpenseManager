@@ -8,11 +8,19 @@
     <string name="fragment_name_expense_list">Expenses</string>
     <string name="fragment_name_graphs">Expense Graphs</string>
     <string name="fragment_name_credit_cards">Credit Cards</string>
+    <string name="fragment_name_about">About</string>
 
     /*Welcome Activity*/
     <string name="activity_welcome_txt_title">Welcome to CC Manager</string>
     <string name="activity_welcome_txt_subtitle">To get started, add a new Credit Card</string>
     <string name="activity_welcome_button_add_cc">Add a Credit Card</string>
+
+    /* About Fragment */
+    <string name="title_activity_about">AboutActivity</string>
+    <string name="fragment_about_version">"App version </string>
+    <string name="fragment_about_author">Alejandro Bicelis %1$d</string>
+    <string name="fragment_about_github_link">Check project at GitHub</string>
+    <string name="fragment_about_website_link">Visit my site</string>
 
     /*Add new Credit Card Activity *
     <string name="activity_add_new_cc_title">Add a Credit Card</string>
@@ -73,6 +81,24 @@
     <string name="dialog_create_expense_button_edit">Edit</string>
     <string name="dialog_create_expense_button_cancel">Cancel</string>
     <string name="dialog_create_expense_error_bad_amount">Please enter a valid amount</string>
+
+    /*Dialog edit delete cc */
+    <string name="dialog_edit_delete_cc_title">Edit Credit Card</string>
+    <string name="dialog_edit_delete_cc_label_bank_name">Bank Name</string>
+    <string name="dialog_edit_delete_cc_label_alias">Alias</string>
+    <string name="dialog_edit_delete_cc_label_card_number">Card Number</string>
+    <string name="dialog_edit_delete_cc_label_credit_limit">Credit Limit</string>
+    <string name="dialog_edit_delete_cc_label_card_expiration">Card Expiration</string>
+    <string name="dialog_edit_delete_cc_label_currency">Currency</string>
+    <string name="dialog_edit_delete_cc_label_card_type">Card Type</string>
+    <string name="dialog_edit_delete_cc_label_background">Preview and Background Color</string>
+    <string name="dialog_edit_delete_cc_button_delete">Delete</string>
+    <string name="dialog_edit_delete_cc_button_edit">Edit</string>
+    <string name="dialog_edit_delete_cc_button_cancel">Cancel</string>
+    <string name="dialog_edit_delete_cc_error_bad_amount">Please enter a valid amount</string>
+    <string name="dialog_edit_delete_cc_delete_title">Delete Credit Card</string>
+    <string name="dialog_edit_delete_cc_delete_message">ARE YOU SURE? This action cannot be undone!</string>
+
 
     /*Dialog new credit period*/
     <string name="dialog_new_credit_period_title">Credit Period expired</string>
