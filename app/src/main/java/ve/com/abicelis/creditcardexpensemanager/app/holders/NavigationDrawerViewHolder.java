@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
+import ve.com.abicelis.creditcardexpensemanager.app.fragments.AboutFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.CreditCardListFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.ChartsFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.NavigationDrawerFragment;
@@ -72,6 +73,9 @@ public class NavigationDrawerViewHolder extends RecyclerView.ViewHolder implemen
                         break;
                     case 3:
                         f = new CreditCardListFragment();
+                        break;
+                    case 4:
+                        f = new AboutFragment();
                         break;
                     default:
                         Toast.makeText(fragment.getActivity(), title.getText().toString() + " is under construction :)", Toast.LENGTH_SHORT).show();
