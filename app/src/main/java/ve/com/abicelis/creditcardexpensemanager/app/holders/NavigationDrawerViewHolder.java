@@ -1,5 +1,7 @@
 package ve.com.abicelis.creditcardexpensemanager.app.holders;
 
+import android.content.Intent;
+import android.preference.PreferenceFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
+import ve.com.abicelis.creditcardexpensemanager.app.activities.AppPreferenceActivity;
+import ve.com.abicelis.creditcardexpensemanager.app.activities.OcrCreateExpenseActivity;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.AboutFragment;
+import ve.com.abicelis.creditcardexpensemanager.app.fragments.AppPreferenceFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.CreditCardListFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.ChartsFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.fragments.NavigationDrawerFragment;
@@ -75,6 +80,10 @@ public class NavigationDrawerViewHolder extends RecyclerView.ViewHolder implemen
                         f = new CreditCardListFragment();
                         break;
                     case 4:
+                        Intent intent = new Intent(fragment.getActivity(), AppPreferenceActivity.class);
+                        fragment.getActivity().startActivity(intent);
+                        break;
+                    case 5:
                         f = new AboutFragment();
                         break;
                     default:

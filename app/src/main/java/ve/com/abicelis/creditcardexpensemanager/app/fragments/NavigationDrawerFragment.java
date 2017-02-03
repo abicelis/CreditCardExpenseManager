@@ -110,7 +110,7 @@ public class NavigationDrawerFragment extends Fragment {
         data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_expense_list), android.R.drawable.ic_dialog_dialer));
         data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_graphs), android.R.drawable.ic_dialog_map));
         data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_credit_cards), android.R.drawable.ic_dialog_info));
-        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_about), android.R.drawable.ic_dialog_email));
+        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_preferences), android.R.drawable.ic_menu_preferences));
         data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_about), android.R.drawable.ic_dialog_email));
 
 
