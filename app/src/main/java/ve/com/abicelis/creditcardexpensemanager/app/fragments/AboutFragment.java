@@ -52,7 +52,7 @@ public class AboutFragment extends Fragment {
         TextView websiteLink = (TextView) rootView.findViewById(R.id.fragment_about_website_link);
 
 
-        version.setText(getAppVersionAndBuild(getActivity()).first);
+        version.setText(String.format(Locale.getDefault(), getResources().getString(R.string.fragment_about_version), getAppVersionAndBuild(getActivity()).first));
         author.setText(String.format(Locale.getDefault(), getResources().getString(R.string.fragment_about_author), Calendar.getInstance().get(Calendar.YEAR)));
 
         githubLink.setOnClickListener(new View.OnClickListener() {
