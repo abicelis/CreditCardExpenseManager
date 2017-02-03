@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference android:title="Export data"
+        android:key="preferences_export"
+        android:summary="Export application data to the SD card."/>
+    <Preference android:title="Import data"
+        android:key="preferences_import"
+        android:summary="Import application data from an SD card backup."/>
+</PreferenceScreen>
