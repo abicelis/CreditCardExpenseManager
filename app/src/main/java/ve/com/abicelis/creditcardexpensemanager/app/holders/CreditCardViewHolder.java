@@ -1,7 +1,7 @@
 package ve.com.abicelis.creditcardexpensemanager.app.holders;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,7 +17,9 @@ import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
 public class CreditCardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private Context mContext;
-    //CreditCardSelectedListener mListener = null;
+    private Fragment mFragment;
+    CreditCardSelectedListener mListener = null;
+
 
     //DATA
     private CreditCard mCurrent;
@@ -59,8 +61,9 @@ public class CreditCardViewHolder extends RecyclerView.ViewHolder implements Vie
     }
 
 
-    public void setData(Context context, CreditCard current, int position) {
+    public void setData(Context context, Fragment fragment, CreditCard current, int position) {
         mContext = context;
+        mFragment = fragment;
         mCurrent = current;
         mPosition = position;
 
@@ -95,13 +98,13 @@ public class CreditCardViewHolder extends RecyclerView.ViewHolder implements Vie
 
     }
 
-//    public void setListeners() {
-//        container.setOnClickListener(this);
-//    }
-//
-//    public void setOnCreditCardSelectedListener(CreditCardSelectedListener listener) {
-//        mListener = listener;
-//    }
+    public void setListeners() {
+        container.setOnClickListener(this);
+    }
+
+    public void setOnCreditCardSelectedListener(CreditCardSelectedListener listener) {
+        mListener = listener;
+    }
 
     @Override
     public void onClick(View view) {
@@ -109,15 +112,16 @@ public class CreditCardViewHolder extends RecyclerView.ViewHolder implements Vie
 
         switch(id) {
             case R.id.list_item_credit_card_container:
-//                if(mListener != null)
-//                    mListener.OnCreditCardSelected(mCurrent);
+                if(mListener != null)
+                    mListener.OnCreditCardSelected(mCurrent);
                 break;
         }
     }
 
 
-//    public interface CreditCardSelectedListener {
-//        void OnCreditCardSelected(CreditCard creditCard);
-//    }
+    public interface CreditCardSelectedListener {
+        void OnCreditCardSelected(CreditCard creditCard);
+    }
 
 }
+

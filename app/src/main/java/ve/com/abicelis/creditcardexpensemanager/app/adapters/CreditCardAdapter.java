@@ -1,6 +1,8 @@
 package ve.com.abicelis.creditcardexpensemanager.app.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,17 +24,19 @@ public class CreditCardAdapter extends RecyclerView.Adapter<CreditCardViewHolder
     private List<CreditCard> mCreditCards;
     private LayoutInflater mInflater;
     private Context mContext;
-    //private SelectableCreditCardViewHolder.CreditCardSelectedListener mCCSelectedListener;
+    private Fragment mFragment;
+    private CreditCardViewHolder.CreditCardSelectedListener mCCSelectedListener;
 
-    public CreditCardAdapter(Context context, List<CreditCard> creditCards) {
+    public CreditCardAdapter(Context context, Fragment fragment, List<CreditCard> creditCards) {
         mContext = context;
+        mFragment = fragment;
         mCreditCards = creditCards;
         mInflater = LayoutInflater.from(context);
     }
 
-//    public void setCreditCardSelectedListener(SelectableCreditCardViewHolder.CreditCardSelectedListener ccSelectedListener) {
-//        mCCSelectedListener = ccSelectedListener;
-//    }
+    public void setCreditCardSelectedListener(CreditCardViewHolder.CreditCardSelectedListener ccSelectedListener) {
+        mCCSelectedListener = ccSelectedListener;
+    }
 
 
     @Override
@@ -44,15 +48,14 @@ public class CreditCardAdapter extends RecyclerView.Adapter<CreditCardViewHolder
     @Override
     public void onBindViewHolder(CreditCardViewHolder holder, int position) {
         CreditCard current = mCreditCards.get(position);
-        holder.setData(mContext, current, position);
+        holder.setData(mContext, mFragment, current, position);
 
-//        if(mCCSelectedListener != null) {
-//            holder.setListeners();
-//            holder.setOnCreditCardSelectedListener(mCCSelectedListener);
-//
-//        }
-//        else
-//            Toast.makeText(mContext, "Warning: mCCSelectedListener == null!", Toast.LENGTH_SHORT).show();
+        if(mCCSelectedListener != null) {
+            holder.setListeners();
+            holder.setOnCreditCardSelectedListener(mCCSelectedListener);
+        }
+        else
+            Toast.makeText(mContext, "Warning: mCCSelectedListener == null!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
