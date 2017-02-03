@@ -125,6 +125,10 @@ public class CreditPeriod {
         return creditLimit;
     }
 
+    public void setCreditLimit(BigDecimal creditLimit) {
+        this.creditLimit = new BigDecimal(creditLimit.toPlainString());
+    }
+
     public List<Expense> getExpenses() {
         return expenses;
     }
