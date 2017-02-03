@@ -21,7 +21,7 @@ public class SelectableCreditCardAdapter extends RecyclerView.Adapter<Selectable
     private List<CreditCard> mCreditCards;
     private LayoutInflater mInflater;
     private Context mContext;
-    private SelectableCreditCardViewHolder.CreditCardSelectedListener mCCSelectedListener;
+    private SelectableCreditCardViewHolder.SelectableCreditCardSelectedListener mCCSelectedListener;
 
     public SelectableCreditCardAdapter(Context context, List<CreditCard> creditCards) {
         mContext = context;
@@ -29,7 +29,7 @@ public class SelectableCreditCardAdapter extends RecyclerView.Adapter<Selectable
         mInflater = LayoutInflater.from(context);
     }
 
-    public void setCreditCardSelectedListener(SelectableCreditCardViewHolder.CreditCardSelectedListener ccSelectedListener) {
+    public void setCreditCardSelectedListener(SelectableCreditCardViewHolder.SelectableCreditCardSelectedListener ccSelectedListener) {
         mCCSelectedListener = ccSelectedListener;
     }
 

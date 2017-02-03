@@ -81,7 +81,7 @@ public class SelectCreditCardDialogFragment extends AppCompatDialogFragment {
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.dialog_select_cc_recycler);
 
-        SelectableCreditCardViewHolder.CreditCardSelectedListener ccSelectedListener = new SelectableCreditCardViewHolder.CreditCardSelectedListener() {
+        SelectableCreditCardViewHolder.SelectableCreditCardSelectedListener ccSelectedListener = new SelectableCreditCardViewHolder.SelectableCreditCardSelectedListener() {
             @Override
             public void OnCreditCardSelected(CreditCard creditCard) {
 

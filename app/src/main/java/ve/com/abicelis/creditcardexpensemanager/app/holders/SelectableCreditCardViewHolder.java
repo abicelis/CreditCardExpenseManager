@@ -16,7 +16,7 @@ import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
 public class SelectableCreditCardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private Context mContext;
-    CreditCardSelectedListener mListener = null;
+    SelectableCreditCardSelectedListener mListener = null;
 
     //DATA
     private CreditCard mCurrent;
@@ -97,7 +97,7 @@ public class SelectableCreditCardViewHolder extends RecyclerView.ViewHolder impl
         container.setOnClickListener(this);
     }
 
-    public void setOnCreditCardSelectedListener(CreditCardSelectedListener listener) {
+    public void setOnCreditCardSelectedListener(SelectableCreditCardSelectedListener listener) {
         mListener = listener;
     }
 
@@ -114,7 +114,7 @@ public class SelectableCreditCardViewHolder extends RecyclerView.ViewHolder impl
     }
 
 
-    public interface CreditCardSelectedListener {
+    public interface SelectableCreditCardSelectedListener {
         void OnCreditCardSelected(CreditCard creditCard);
     }
 
