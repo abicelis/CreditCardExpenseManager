@@ -38,7 +38,7 @@ public class ExpenseManagerDAO {
     private ExpenseManagerDbHelper mDatabaseHelper;
 
     public ExpenseManagerDAO(Context context) {
-        mDatabaseHelper = new ExpenseManagerDbHelper(context, null, null, 0);
+        mDatabaseHelper = new ExpenseManagerDbHelper(context);
 
     }
 

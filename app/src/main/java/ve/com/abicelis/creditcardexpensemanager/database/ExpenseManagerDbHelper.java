@@ -3,8 +3,15 @@ package ve.com.abicelis.creditcardexpensemanager.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Calendar;
+
+import ve.com.abicelis.creditcardexpensemanager.app.utils.FileUtils;
 
 
 /**
@@ -12,13 +19,22 @@ import java.util.Calendar;
  */
 public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
 
-    // If you change the database schema, you must increment the database version.
     public static final String DATABASE_NAME = "CreditCardExpenseManager.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 1;                               // If you change the database schema, you must increment the database version.
     private static final String COMMA_SEP = ", ";
 
-    public ExpenseManagerDbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, DATABASE_NAME, factory, DATABASE_VERSION);
+    private String mAppDbFilepath;
+    private String mDbExternalBackupFilepath;
+    private Context mContext;
+
+
+    public ExpenseManagerDbHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
+        mAppDbFilepath =  context.getDatabasePath(DATABASE_NAME).getPath();
+        mDbExternalBackupFilepath = Environment.getExternalStorageDirectory().getPath() + "/" + DATABASE_NAME;
+        mContext = context;
+
     }
 
     @Override
@@ -37,6 +53,47 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
+
+    /**
+     * Copies the database file at the specified location over the current
+     * internal application database.
+     * */
+    public boolean exportDatabase() throws IOException {
+
+        // Close the SQLiteOpenHelper so it will commit the created empty
+        // database to internal storage.
+        close();
+        File appDatabase = new File(mAppDbFilepath);
+        File backupDatabase = new File(mDbExternalBackupFilepath);
+
+        if (appDatabase.exists()) {
+            FileUtils.copyFile(new FileInputStream(appDatabase), new FileOutputStream(backupDatabase));
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Copies the database file at the specified location over the current
+     * internal application database.
+     * */
+    public boolean importDatabase() throws IOException {
+
+        // Close the SQLiteOpenHelper so it will commit the created empty
+        // database to internal storage.
+        close();
+        File appDatabase = new File(mAppDbFilepath);
+        File backupDatabase = new File(mDbExternalBackupFilepath);
+
+        if (backupDatabase.exists()) {
+            FileUtils.copyFile(new FileInputStream(backupDatabase), new FileOutputStream(appDatabase));
+            // Access the copied database so SQLiteHelper will cache it and mark
+            // it as created.
+            getWritableDatabase().close();
+            return true;
+        }
+        return false;
+    }
 
     private void insertMockData(SQLiteDatabase sqLiteDatabase) {
         String statement;
