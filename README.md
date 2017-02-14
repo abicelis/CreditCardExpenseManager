@@ -1,17 +1,15 @@
 # Credit Card Expense Manager #
 
-
-
-
 THIS SOFTWARE IS CURRENTLY IN DEVELOPMENT AT AN ALPHA STAGE
-
-FEEL FREE TO INSTALL AND TEST THIS APP BUT PLEASE, NO RATINGS YET
-AS IT IS NOT YET FINISHED, THANK YOU!
 
 
 ## About the app
 
 Keep track of your credit card balance quickly and easily on your phone! This app is designed to record your credit card expenses using your camera!
+
+
+<a target="_blank" href='https://play.google.com/store/apps/details?id=ve.com.abicelis.creditcardexpensemanager&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width="240px"/></a>
+
 
 This app features:
 

@@ -51,7 +51,5 @@
     <style name="AppPreferenceTheme" parent="@style/PreferenceFixTheme.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <!--<item name="drawerArrowStyle">@style/DrawerArrowStyle</item>-->
-
     </style>
 </resources>
