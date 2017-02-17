@@ -22,7 +22,7 @@
             android:id="@+id/list_item_credit_card_cc_cardview_container"
             android:layout_width="86dp"
             android:layout_height="56dp"
-            card_view:cardCornerRadius="15dp"
+            card_view:cardCornerRadius="5dp"
             android:layout_margin="8dp"
             >
 
