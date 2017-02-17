@@ -1,6 +1,7 @@
 package ve.com.abicelis.creditcardexpensemanager.app.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -29,9 +30,6 @@ import ve.com.abicelis.creditcardexpensemanager.R;
 
 public class AboutFragment extends Fragment {
 
-    public static final String GITHUB_URL = "github.com/abicelis/";
-    public static final String WEBSITE_URL = "www.alejandrobicelis.com.ve";
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -48,23 +46,32 @@ public class AboutFragment extends Fragment {
 
         TextView version = (TextView) rootView.findViewById(R.id.fragment_about_version);
         TextView author = (TextView) rootView.findViewById(R.id.fragment_about_author);
-        TextView githubLink = (TextView) rootView.findViewById(R.id.fragment_about_github_link);
         TextView websiteLink = (TextView) rootView.findViewById(R.id.fragment_about_website_link);
+        TextView marketLink = (TextView) rootView.findViewById(R.id.fragment_about_market_link);
+        TextView githubLink = (TextView) rootView.findViewById(R.id.fragment_about_github_link);
 
 
         version.setText(String.format(Locale.getDefault(), getResources().getString(R.string.fragment_about_version), getAppVersionAndBuild(getActivity()).first));
         author.setText(String.format(Locale.getDefault(), getResources().getString(R.string.fragment_about_author), Calendar.getInstance().get(Calendar.YEAR)));
 
+        marketLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent playStoreIntent = new Intent(Intent.ACTION_VIEW);
+                playStoreIntent.setData(Uri.parse(getResources().getString(R.string.url_market)));
+                startActivity(playStoreIntent);
+            }
+        });
         githubLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchWebBrowser(getActivity(), GITHUB_URL);
+                launchWebBrowser(getActivity(), getResources().getString(R.string.url_github));
             }
         });
         websiteLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchWebBrowser(getActivity(), WEBSITE_URL);
+                launchWebBrowser(getActivity(), getResources().getString(R.string.url_website));
             }
         });
 

@@ -13,4 +13,9 @@
     <dimen name="receipt_text_size_date">12sp</dimen>
     <dimen name="receipt_text_size_description">14sp</dimen>
     <dimen name="receipt_text_size_total">16sp</dimen>
+
+
+    <dimen name="fragment_about_app_logo">192dp</dimen>
+    <dimen name="fragment_about_app_title">22sp</dimen>
+    <dimen name="fragment_about_app_text_links">14sp</dimen>
 </resources>

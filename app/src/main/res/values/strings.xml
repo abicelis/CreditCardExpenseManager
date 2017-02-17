@@ -17,11 +17,12 @@
     <string name="activity_welcome_button_add_cc">Add a Credit Card</string>
 
     /* About Fragment */
-    <string name="title_activity_about">AboutActivity</string>
-    <string name="fragment_about_version">"App version %1$s</string>
+    <string name="fragment_about_app_name">Credit Card Expense Manager</string>
+    <string name="fragment_about_version">Version %1$s</string>
     <string name="fragment_about_author">Alejandro Bicelis %1$d</string>
-    <string name="fragment_about_github_link">Check project at GitHub</string>
-    <string name="fragment_about_website_link">Visit my site</string>
+    <string name="fragment_about_market_link">Rate app</string>
+    <string name="fragment_about_github_link">View GitHub Project</string>
+    <string name="fragment_about_website_link">www.alejandrobicelis.com.ve</string>
 
     /*Add new Credit Card Activity *
     <string name="activity_add_new_cc_title">Add a Credit Card</string>
@@ -142,6 +143,17 @@
 
     /* Charts */
     <string name="fragment_charts_no_expenses_message">Not enough data, please add at least one expense</string>
+
+
+    /* Links */
+
+    <string name="url_market" translatable="false">market://details?id=ve.com.abicelis.creditcardexpensemanager</string>
+    <string name="url_github" translatable="false">github.com/abicelis/</string>
+    <string name="url_website" translatable="false">www.alejandrobicelis.com.ve</string>
+    <string name="address_email" translatable="false">alejandro@alejandrobicelis.com.ve</string>
+
+
+
 
     <string name="ok">OK</string>
     <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
