@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import ve.com.abicelis.creditcardexpensemanager.enums.ExpenseCategory;
+
 /**
  * Created by Alex on 7/8/2016.
  */
@@ -162,6 +164,32 @@ public class CreditPeriod {
         }
 
         return balance;
+    }
+
+    /**
+     * Returns the sum of all the expenses, minus all the payments for this CreditPeriod
+     * Positive value means there are unpaid expenses
+     * @return
+     */
+    public List<BigDecimal> getExpensesByCategory() {
+
+        int categoryIndex;
+        int numCategories = ExpenseCategory.values().length;
+        List<BigDecimal> expenseByCategory = new ArrayList<>();
+
+        //Initialize expenseByCategory
+        for (int i = 0; i < numCategories; ++i) {
+            expenseByCategory.add(new BigDecimal(0));
+        }
+
+        //Iterate through expenses, accumulate expenses by category inside expenseByCategory list
+        for (Expense e : expenses) {
+            categoryIndex = e.getExpenseCategory().getIndex();
+            BigDecimal currentVal = expenseByCategory.get(categoryIndex);
+            expenseByCategory.set(categoryIndex, currentVal.add(e.amount));
+        }
+
+        return expenseByCategory;
     }
 
 

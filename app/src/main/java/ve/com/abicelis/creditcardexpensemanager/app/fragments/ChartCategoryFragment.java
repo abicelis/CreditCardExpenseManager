@@ -105,25 +105,15 @@ public class ChartCategoryFragment extends Fragment {
         }
 
         int numCategories = ExpenseCategory.values().length;
-        BigDecimal[] expenseByCategory = new BigDecimal[numCategories];
+        List<BigDecimal> expenseByCategory = creditPeriod.getExpensesByCategory();
         List<SliceValue> sliceValues = new ArrayList<>();
-
-        //Initialize expenseByCategory
-        for (int i = 0; i < numCategories; ++i) {
-            expenseByCategory[i] = new BigDecimal(0);
-        }
-
-        //Iterate through expenses, accumulate expenses by category inside expenseByCategory array
-        for (Expense expense : creditPeriod.getExpenses())
-             expenseByCategory[expense.getExpenseCategory().getIndex()] = expenseByCategory[expense.getExpenseCategory().getIndex()].add(expense.getAmount());
-
 
 
         for (int i = 0; i < numCategories; ++i) {
             //SliceValue sliceValue = new SliceValue(expenseByCategory[i].floatValue(), ContextCompat.getColor(getContext(), ExpenseCategory.values()[i].getColor() ));
             SliceValue sliceValue = new SliceValue(20, ContextCompat.getColor(getContext(), ExpenseCategory.values()[i].getColor() ));
-            sliceValue.setTarget(expenseByCategory[i].floatValue());
-            sliceValue.setLabel(getExpenseLabel(expenseByCategory[i], ExpenseCategory.values()[i].getFriendlyName()));
+            sliceValue.setTarget(expenseByCategory.get(i).floatValue());
+            sliceValue.setLabel(getExpenseLabel(expenseByCategory.get(i), ExpenseCategory.values()[i].getFriendlyName()));
             sliceValues.add(sliceValue);
         }
 
