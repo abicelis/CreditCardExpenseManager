@@ -8,8 +8,8 @@ android {
         applicationId "ve.com.abicelis.creditcardexpensemanager"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 21
-        versionName "2.1.0"
+        versionCode 22
+        versionName "2.1.1"
     }
     buildTypes {
         release {
@@ -29,7 +29,7 @@ dependencies {
 
     //compile 'com.android.support:preference-v7:25.1.1'
     compile 'com.android.support:design:25.1.1'
-    compile 'com.google.android.gms:play-services-vision:10.0.1'
+    compile 'com.google.android.gms:play-services-vision:10.2.0'
 
     compile 'com.github.clans:fab:1.6.4'
     compile 'com.github.amlcurran.showcaseview:library:5.4.3'
