@@ -106,12 +106,12 @@ public class NavigationDrawerFragment extends Fragment {
     private void setUpRecyclerView(View view) {
 
         List<NavigationDrawerItem> data = new ArrayList<>();
-        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_overview), android.R.drawable.ic_dialog_alert));
-        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_expense_list), android.R.drawable.ic_dialog_dialer));
-        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_graphs), android.R.drawable.ic_dialog_map));
-        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_credit_cards), android.R.drawable.ic_dialog_info));
-        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_preferences), android.R.drawable.ic_menu_preferences));
-        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_about), android.R.drawable.ic_dialog_email));
+        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_overview), R.drawable.icon_overview));
+        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_expense_list), R.drawable.icon_expenses));
+        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_graphs), R.drawable.icon_chart));
+        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_credit_cards), R.drawable.icon_credit_card));
+        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_preferences), R.drawable.icon_settings));
+        data.add(new NavigationDrawerItem(getResources().getString(R.string.fragment_name_about), R.drawable.icon_about));
 
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.nad_drawer_recyclerview_list);
