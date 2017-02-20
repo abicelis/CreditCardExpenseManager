@@ -66,7 +66,7 @@ public class ChartExpenseFragment extends Fragment {
             activeCreditCardId = SharedPreferencesUtils.getInt(getContext(), Constants.ACTIVE_CC_ID);
         }catch(SharedPreferenceNotFoundException e) {
             //This shouldn't happen
-            Toast.makeText(getActivity(), "Megapeo en oncreate, SharedPreferenceNotFoundException CreditCardNotFoundException", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "Megapeo en oncreate, SharedPreferenceNotFoundException CreditCardNotFoundException", Toast.LENGTH_SHORT).show();
         }
 
         refreshData();

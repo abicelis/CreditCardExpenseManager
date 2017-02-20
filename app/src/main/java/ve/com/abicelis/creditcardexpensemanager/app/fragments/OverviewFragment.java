@@ -82,7 +82,6 @@ public class OverviewFragment extends Fragment {
             }
         }catch(SharedPreferenceNotFoundException e) {
             //This shouldn't happen
-            Toast.makeText(getActivity(), "Megapeo en oncreate, SharedPreferenceNotFoundException CreditCardNotFoundException", Toast.LENGTH_SHORT).show();
         }
 
     }
