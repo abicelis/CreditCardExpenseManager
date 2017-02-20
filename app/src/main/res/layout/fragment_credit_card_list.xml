@@ -26,7 +26,6 @@
         android:layout_height="wrap_content"
         android:src="@drawable/fab_add"
         fab:fab_colorNormal="@color/colorPrimary"
-        app:fab_showShadow="false"
         fab:fab_colorPressed="@color/colorPrimary"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
