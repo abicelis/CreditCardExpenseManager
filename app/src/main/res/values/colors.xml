@@ -11,7 +11,7 @@
     <color name="colorPrimary">#2196F3</color>
     <color name="colorPrimaryDark">#1565C0</color>
     <color name="tabTextColor">#94c3f9</color>
-    <color name="colorAccent">#FFCC80</color>
+    <color name="colorAccent">#64b5f6</color>
     <color name="navigationBarColor">#FFCC80</color>
     <color name="textColorPrimary">#FFFFFF</color>
 
@@ -30,8 +30,18 @@
     <color name="gray_800">#424242</color>
     <color name="gray_900">#212121</color>
 
-    <color name="receipt_text_title">#e4665c</color>
-    <color name="create_expense_ocr_background">#99339955</color>
+    /*Horizontal Bar DEFAULT colors*/
+    <color name="horizontal_bar_default_background">#E0E0E0</color>
+    <color name="horizontal_bar_default_text">#757575</color>
+    <color name="horizontal_bar_default_text_in">#FAFAFA</color>
+    <color name="horizontal_bar_default_text_out">#424242</color>
+    <color name="horizontal_bar_default_bar">#00c853</color>
+
+    <color name="horizontal_bar_credit_period">#0061EF</color>
+    <color name="horizontal_bar_credit_period_text_in">#E0E0E0</color>
+    <color name="horizontal_bar_balance_gradient_start">#00c853</color>
+    <color name="horizontal_bar_balance_gradient_end">#FF5722</color>
+    <color name="horizontal_bar_balance_text_in">#424242</color>
 
 
     /*ExpenseCategories*/

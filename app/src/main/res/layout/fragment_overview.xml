@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hbar="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,14 +10,15 @@
     <RelativeLayout
         android:id="@+id/nav_drawer_header_container"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/colorPrimary">
+        android:background="@color/colorAccent">
 
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="0dp"
             android:layout_centerInParent="true"
             >
 
@@ -28,40 +30,51 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Credit Limit:"
-        />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_overview_credit_date_period_title"
+                />
+            <ve.com.abicelis.creditcardexpensemanager.app.views.HorizontalBar
+                android:id="@+id/frag_overview_credit_date_period_bar"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                hbar:barColor="@color/horizontal_bar_credit_period"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_overview_credit_balance_title"
+                />
+            <ve.com.abicelis.creditcardexpensemanager.app.views.HorizontalBar
+                android:id="@+id/frag_overview_credit_balance_bar"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                hbar:barGradientColorStart="@color/horizontal_bar_balance_gradient_start"
+                hbar:barGradientColorEnd="@color/horizontal_bar_balance_gradient_end"
+                />
 
-    <TextView
-        android:id="@+id/frag_overview_credit_limit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_overview_credit_extra_info_title"
+                />
+            <TextView
+                android:id="@+id/frag_overview_extra_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Credit Spent:"
-        />
-
-    <TextView
-        android:id="@+id/frag_overview_credit_spent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start / End Dates:"
-        />
-
-    <TextView
-        android:id="@+id/frag_overview_start_end_dates"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
+        </LinearLayout>
+    </ScrollView>
 
 
 </LinearLayout>

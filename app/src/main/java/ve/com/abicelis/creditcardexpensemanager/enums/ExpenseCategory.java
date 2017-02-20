@@ -48,4 +48,13 @@ public enum ExpenseCategory {
        return mIndex;
     }
 
+    public static ExpenseCategory getByExpenseCategoryId(int expenseCategoryId) {
+
+        for(ExpenseCategory expenseCategory : ExpenseCategory.values()) {
+            if(expenseCategory.getIndex() == expenseCategoryId)
+                return expenseCategory;
+        }
+        throw new IllegalArgumentException(String.valueOf(expenseCategoryId));
+    }
+
 }

@@ -8,6 +8,8 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import java.io.ByteArrayOutputStream;
 
@@ -149,6 +151,32 @@ public class ImageUtils {
     public static Bitmap compressBitmap(Bitmap bitmap, int quality) {
         byte[] arr = toCompressedByteArray(bitmap, quality, Bitmap.CompressFormat.JPEG);
         return BitmapFactory.decodeByteArray(arr, 0, arr.length);
+    }
+
+
+
+
+    /**
+     * Size in pixels to size in dp
+     *
+     * @param pixels double
+     * @return double
+     */
+    public static double getDPFromPixels(WindowManager wm, double pixels) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(metrics);
+        switch(metrics.densityDpi){
+            case DisplayMetrics.DENSITY_LOW:
+                pixels = pixels * 0.75;
+                break;
+            case DisplayMetrics.DENSITY_MEDIUM:
+                //pixels = pixels * 1;
+                break;
+            case DisplayMetrics.DENSITY_HIGH:
+                pixels = pixels * 1.5;
+                break;
+        }
+        return pixels;
     }
 
 }

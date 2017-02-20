@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
 import ve.com.abicelis.creditcardexpensemanager.app.dialogs.CheckCreditPeriodLimitDialogFragment;
@@ -20,11 +27,15 @@ import ve.com.abicelis.creditcardexpensemanager.app.holders.SelectableCreditCard
 import ve.com.abicelis.creditcardexpensemanager.app.utils.Constants;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.DateUtils;
 import ve.com.abicelis.creditcardexpensemanager.app.utils.SharedPreferencesUtils;
+import ve.com.abicelis.creditcardexpensemanager.app.utils.TextUtils;
+import ve.com.abicelis.creditcardexpensemanager.app.views.HorizontalBar;
 import ve.com.abicelis.creditcardexpensemanager.database.ExpenseManagerDAO;
+import ve.com.abicelis.creditcardexpensemanager.enums.ExpenseCategory;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditCardNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.CreditPeriodNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.exceptions.SharedPreferenceNotFoundException;
 import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
+import ve.com.abicelis.creditcardexpensemanager.model.DailyExpense;
 
 /**
  * Created by abice on 4/10/2016.
@@ -32,6 +43,7 @@ import ve.com.abicelis.creditcardexpensemanager.model.CreditCard;
 
 public class OverviewFragment extends Fragment {
 
+    private static final String TAG = OverviewFragment.class.getSimpleName();
     //Data
     int activeCreditCardId = -1;
     CreditCard activeCreditCard = null;
@@ -39,10 +51,13 @@ public class OverviewFragment extends Fragment {
 
     //UI
     SelectableCreditCardViewHolder holder;
-    TextView creditLimit;
-    TextView creditSpent;
-    TextView startEndDates;
+    //TextView creditLimit;
+    //TextView creditSpent;
+    //TextView startEndDates;
     View headerCreditCardContainer;
+    HorizontalBar creditDatePeriodBar;
+    HorizontalBar creditBalanceBar;
+    TextView extraInfo;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -76,11 +91,13 @@ public class OverviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
 
-        creditLimit = (TextView) view.findViewById(R.id.frag_overview_credit_limit);
-        creditSpent = (TextView) view.findViewById(R.id.frag_overview_credit_spent);
-        startEndDates = (TextView) view.findViewById(R.id.frag_overview_start_end_dates);
+        //creditLimit = (TextView) view.findViewById(R.id.frag_overview_credit_limit);
+        //creditSpent = (TextView) view.findViewById(R.id.frag_overview_credit_spent);
+        //startEndDates = (TextView) view.findViewById(R.id.frag_overview_start_end_dates);
         headerCreditCardContainer = view.findViewById(R.id.list_item_credit_card_container);
-
+        creditDatePeriodBar = (HorizontalBar) view.findViewById(R.id.frag_overview_credit_date_period_bar);
+        creditBalanceBar = (HorizontalBar) view.findViewById(R.id.frag_overview_credit_balance_bar);
+        extraInfo = (TextView) view.findViewById(R.id.frag_overview_extra_info);
         refreshUIWithCardData();
 
         return view;
@@ -97,23 +114,145 @@ public class OverviewFragment extends Fragment {
 
         if (activeCreditCard != null) {
             try {
-                creditLimit.setText(activeCreditCard.getCreditPeriods().get(0).getCreditLimit().toPlainString());
-                creditSpent.setText(activeCreditCard.getCreditPeriods().get(0).getExpensesTotal().toPlainString());
-                String startEndStr = DateUtils.getShortDateString(activeCreditCard.getCreditPeriods().get(0).getStartDate()) + "\n\r " +
-                        DateUtils.getShortDateString(activeCreditCard.getCreditPeriods().get(0).getEndDate());
-                startEndDates.setText(startEndStr);
+
+                /* DatePeriod bar */
+                Calendar today = Calendar.getInstance();
+                Calendar startDate = activeCreditCard.getCreditPeriods().get(0).getStartDate();
+                Calendar endDate = activeCreditCard.getCreditPeriods().get(0).getEndDate();
+                int daysBetweenStartAndToday = DateUtils.getDaysBetween(startDate, today);
+                int daysInPeriod = activeCreditCard.getCreditPeriods().get(0).getTotalDaysInPeriod();
+                int datePeriodPercentage;
+                if(daysInPeriod > 0)
+                    datePeriodPercentage = (int)(100*((float)daysBetweenStartAndToday/daysInPeriod));
+                else
+                    datePeriodPercentage = 0;
+
+                creditDatePeriodBar.setProgressPercentage(datePeriodPercentage);
+                creditDatePeriodBar.setTextLo(DateUtils.getDayShortMonthString(startDate));
+                creditDatePeriodBar.setTextHi(DateUtils.getDayShortMonthString(endDate));
+                if(today.getTimeInMillis() <= endDate.getTimeInMillis()) {   //If today falls in viewed creditperiod, show the date.
+                    creditDatePeriodBar.setTextBar(DateUtils.getDayShortMonthString(today));
+                }
+
+                /* Balance bar */
+                int creditLimit = activeCreditCard.getCreditPeriods().get(0).getCreditLimit().toBigInteger().intValue();
+                int expensesTotal = activeCreditCard.getCreditPeriods().get(0).getExpensesTotal().toBigInteger().intValue();
+                String currencyCode = activeCreditCard.getCurrency().getCode();
+                int balancePercentage;
+                if(creditLimit > 0)
+                    balancePercentage = (int)(100*((float)expensesTotal/creditLimit));
+                else
+                    balancePercentage = 0;
+
+                creditBalanceBar.setProgressPercentage(balancePercentage);
+                creditBalanceBar.setTextHi(creditLimit + " " + currencyCode);
+                creditBalanceBar.setTextBar(Integer.toString(expensesTotal) + " " + currencyCode);
+                creditBalanceBar.setTextLo("0 " + currencyCode);
+
+
+                extraInfo.setText(TextUtils.fromHtml(generateExtraInfo()));
+
+                //Setup cc data
+                holder = new SelectableCreditCardViewHolder(headerCreditCardContainer);
+                holder.setData(getContext(), activeCreditCard, 0);
             }catch (Exception e) {
                 Toast.makeText(getActivity(), "Problem refreshing card data", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, e.getMessage());
+                e.printStackTrace();
             }
 
-            //Setup cc data
-            holder = new SelectableCreditCardViewHolder(headerCreditCardContainer);
-            holder.setData(getContext(), activeCreditCard, 0);
         }
     }
 
+    private String generateExtraInfo() {
+
+//        <string name="fragment_overview_credit_extra_info_spendiest_day">The spendiest day in this period is %1$s, you spent %2$s on $3$s.</string>
+//        <string name="fragment_overview_credit_extra_info_spendiest_category">The %1$s category represents %2$d%% if this month\'s expenses.</string>
+//                <string name="fragment_overview_credit_extra_info_average_per_day">You spend an average of %1$s a day.</string>
+//        <string name="fragment_overview_credit_extra_info_to_spend_average">You have %1$s left to spend, that is an average of %2$s a day.</string>
+
+        List<String> extraInfos = new ArrayList<>();
+        String result = "";
+        String info1 = getResources().getString(R.string.fragment_overview_credit_extra_info_spendiest_day);
+        String info2 = getResources().getString(R.string.fragment_overview_credit_extra_info_spendiest_category);
+        String info3 = getResources().getString(R.string.fragment_overview_credit_extra_info_average_per_day);
+        String info4 = getResources().getString(R.string.fragment_overview_credit_extra_info_to_spend_average);
+
+        BigDecimal maxDailyExpense = new BigDecimal(0);
+        String maxDailyExpenseDate = null;
+        List<DailyExpense> dailyExpenses = activeCreditCard.getCreditPeriods().get(0).getDailyExpenses();
+        for(DailyExpense de : dailyExpenses) {
+            if(de.getAmount().compareTo(maxDailyExpense) == 1) {  //If current larger than max
+                maxDailyExpense = de.getAmount();
+                maxDailyExpenseDate = de.getFormattedDate();
+            }
+        }
+
+        if(maxDailyExpenseDate != null)
+            extraInfos.add(String.format(Locale.getDefault(), info1, maxDailyExpenseDate, maxDailyExpense.toBigInteger().toString(), activeCreditCard.getCurrency().getCode()));
 
 
+
+
+
+        List<BigDecimal> expensesByCategory = activeCreditCard.getCreditPeriods().get(0).getExpensesByCategory();
+        BigDecimal expenseTotal = activeCreditCard.getCreditPeriods().get(0).getExpensesTotal();
+        BigDecimal maxCategory = new BigDecimal(0);
+        String maxCategoryName = "";
+
+
+
+        if(expenseTotal.compareTo(BigDecimal.ZERO) == 1) {
+
+            for(int i = 0; i < ExpenseCategory.values().length; i++) {
+                if(expensesByCategory.get(i).compareTo(maxCategory) == 1) {  //If current larger than max
+                    maxCategory = expensesByCategory.get(i);
+                    maxCategoryName = ExpenseCategory.getByExpenseCategoryId(i).getFriendlyName();
+                }
+            }
+
+            BigDecimal percentOfTotalMaxCategory = maxCategory.divide(expenseTotal, 2, RoundingMode.HALF_UP);
+            percentOfTotalMaxCategory = percentOfTotalMaxCategory.multiply(new BigDecimal(100));
+            extraInfos.add(String.format(Locale.getDefault(), info2, maxCategoryName,  percentOfTotalMaxCategory.toBigInteger().toString()));
+        }
+
+
+
+        Calendar today = Calendar.getInstance();
+        Calendar startDate = activeCreditCard.getCreditPeriods().get(0).getStartDate();
+        Calendar endDate = activeCreditCard.getCreditPeriods().get(0).getEndDate();
+        int daysBetweenStartAndToday = DateUtils.getDaysBetween(startDate, today);
+        int daysBetweenTodayAndEnd = DateUtils.getDaysBetween(today, endDate);
+        BigDecimal expensesTotal = activeCreditCard.getCreditPeriods().get(0).getExpensesTotal();
+        BigDecimal creditLimit = activeCreditCard.getCreditPeriods().get(0).getCreditLimit();
+        BigDecimal creditToSpend = creditLimit.subtract(expensesTotal);
+        String currencyCode = activeCreditCard.getCurrency().getCode();
+
+        if(expensesTotal.compareTo(BigDecimal.ZERO) == 1 && daysBetweenStartAndToday > 0) {
+            BigDecimal average = expensesTotal.divide(new BigDecimal(daysBetweenStartAndToday), 1, RoundingMode.HALF_UP);
+            average.setScale(2);
+            extraInfos.add(String.format(Locale.getDefault(), info3, average.toPlainString(), currencyCode));
+        }
+
+        if(creditToSpend.compareTo(BigDecimal.ZERO) == 1 && daysBetweenTodayAndEnd > 0) {
+            BigDecimal averageToSpend = creditToSpend.divide(new BigDecimal(daysBetweenTodayAndEnd), 1, RoundingMode.HALF_UP);
+            averageToSpend.setScale(2);
+            extraInfos.add(String.format(Locale.getDefault(), info4, creditToSpend.toPlainString(), averageToSpend.toPlainString(), currencyCode));
+        }
+
+
+
+
+
+        if(extraInfos.size() > 0) {
+            result += "&#8226; " + extraInfos.get(0);
+            for (int i = 1; i < extraInfos.size(); i++) {
+                result += "<br/>&#8226; " + extraInfos.get(i);
+            }
+        }
+
+        return result;
+    }
 
 
     private void createACurrentCreditPeriod() {

@@ -24,6 +24,17 @@
     <string name="fragment_about_github_link">View GitHub Project</string>
     <string name="fragment_about_website_link">www.alejandrobicelis.com.ve</string>
 
+
+    /* Overview Fragment */
+    <string name="fragment_overview_credit_date_period_title">Period:</string>
+    <string name="fragment_overview_credit_balance_title">Balance:</string>
+    <string name="fragment_overview_credit_extra_info_title">More info:</string>
+    <string name="fragment_overview_credit_extra_info_spendiest_day">The spendiest day in this period is %1$s, where you spent %2$s %3$s.</string>
+    <string name="fragment_overview_credit_extra_info_spendiest_category">The %1$s category represents %2$s%% of this month\'s expenses.</string>
+    <string name="fragment_overview_credit_extra_info_average_per_day">You spend an average of %1$s %2$s a day.</string>
+    <string name="fragment_overview_credit_extra_info_to_spend_average">You have %1$s %3$s left to spend, an average of %2$s %3$s a day.</string>
+
+
     /*Add new Credit Card Activity *
     <string name="activity_add_new_cc_title">Add a Credit Card</string>
     <string name="activity_add_new_cc_alias">Alias</string>

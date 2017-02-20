@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:layout_margin="8dp"
     android:orientation="vertical"
     >
 
@@ -12,16 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:layout_margin="12dp">
 
         <TextView
             android:id="@+id/dialog_create_expense_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
             android:textColor="@android:color/black"
             android:textSize="18sp"
-            android:layout_marginBottom="20dp"
             android:text="@string/dialog_select_cc_title"/>
 
         </LinearLayout>
