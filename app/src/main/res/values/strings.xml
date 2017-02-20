@@ -2,7 +2,9 @@
     <string name="app_name">CC Manager</string>
 
     /*Generic errors*/
-    <string name="err_no_credit_card_selected">No credit card selected.</string>
+    <string name="err_no_credit_card_selected">No credit card selected</string>
+    <string name="err_problem_loading_card_or_no_card_exists">Sorry, problem loading the Credit Card or no Credit Cards exist</string>
+    <string name="err_problem_loading_credit_period">Sorry, there was a problem loading the Credit Period</string>
 
 
     /*Nav Drawer*/

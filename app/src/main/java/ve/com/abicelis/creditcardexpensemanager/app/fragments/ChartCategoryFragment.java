@@ -93,7 +93,7 @@ public class ChartCategoryFragment extends Fragment {
             creditCard = dao.getCreditCardWithCreditPeriod(activeCreditCardId, 0);
             creditPeriod = creditCard.getCreditPeriods().get(0);
         }catch(CreditCardNotFoundException | CreditPeriodNotFoundException e) {
-            Toast.makeText(getActivity(), "Sorry, there was a problem loading the Credit Card", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getResources().getString(R.string.err_problem_loading_card_or_no_card_exists), Toast.LENGTH_SHORT).show();
         }
 
         //Check if there are no expenses in this period or there is no active credit card

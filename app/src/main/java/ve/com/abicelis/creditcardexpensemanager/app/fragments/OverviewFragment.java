@@ -76,7 +76,7 @@ public class OverviewFragment extends Fragment {
             try {
                 activeCreditCard = dao.getCreditCardWithCreditPeriod(activeCreditCardId, 0);
             }catch (CreditCardNotFoundException e ) {
-                Toast.makeText(getActivity(), "Sorry, there was a problem loading the Credit Card", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getResources().getString(R.string.err_problem_loading_card_or_no_card_exists), Toast.LENGTH_SHORT).show();
             }catch (CreditPeriodNotFoundException e) {
                 createACurrentCreditPeriod();
             }
