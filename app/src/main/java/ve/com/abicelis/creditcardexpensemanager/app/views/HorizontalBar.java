@@ -89,6 +89,8 @@ public class HorizontalBar extends View {
             a.recycle();
         }
 
+        mProgressPercentage = (mProgressPercentage > 100 ? 100 : mProgressPercentage);   //Cap progress at 100%
+
         mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mTextPaint.setColor(mTextColor);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
