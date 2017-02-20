@@ -40,7 +40,7 @@ public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         createDatabase(sqLiteDatabase);
-        insertMockData(sqLiteDatabase);
+        //insertMockData(sqLiteDatabase);
     }
 
 
