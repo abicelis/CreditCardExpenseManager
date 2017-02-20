@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -58,6 +59,7 @@ public class ExpenseListFragment extends Fragment {
     FloatingActionButton fabNewExpense;
     FloatingActionButton fabNewExpenseCamera;
     SwipeRefreshLayout swipeRefreshLayout;
+    RelativeLayout noCCContainer;
 
 
     @Override
@@ -69,10 +71,6 @@ public class ExpenseListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //if (savedInstanceState == null) {
-        //    getFragmentManager().beginTransaction().add(R.id.home_chart_container, new ChartExpenseFragment()).commit();
-        //}
 
         loadDao();
 
@@ -87,9 +85,7 @@ public class ExpenseListFragment extends Fragment {
             }
         }catch(SharedPreferenceNotFoundException e) {
             //This shouldn't happen
-            Toast.makeText(getActivity(), "Megapeo en oncreate, SharedPreferenceNotFoundException CreditCardNotFoundException", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override
@@ -103,11 +99,27 @@ public class ExpenseListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_expense_list, container, false);
 
-        setUpRecyclerView(rootView);
-        setUpSwipeRefresh(rootView);
-        //setUpToolbar(rootView);
-        setUpFab(rootView);
+        recyclerViewExpenses = (RecyclerView) rootView.findViewById(R.id.home_recycler_expenses);
+        noCCContainer = (RelativeLayout) rootView.findViewById(R.id.home_err_no_cc_container);
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.home_swipe_refresh);
+        fabMenu = (FloatingActionMenu) rootView.findViewById(R.id.home_fab_menu);
+        fabNewExpense = (FloatingActionButton) rootView.findViewById(R.id.home_fab_new_expense);
+        fabNewExpenseCamera = (FloatingActionButton) rootView.findViewById(R.id.home_fab_new_expense_camera);
+//        final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) rootView.findViewById(R.id.home_collapsing);
+//        AppBarLayout appBarLayout = (AppBarLayout) rootView.findViewById(R.id.home_appbar);
+//        toolbar = (Toolbar) rootView.findViewById(R.id.home_toolbar);
 
+        if(activeCreditCard != null) {
+            setUpRecyclerView(rootView);
+            setUpSwipeRefresh(rootView);
+            //setUpToolbar(rootView);
+            setUpFab(rootView);
+        }
+        else {
+            noCCContainer.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setVisibility(View.GONE);
+            fabMenu.setVisibility(View.GONE);
+        }
         return rootView;
     }
 
@@ -164,7 +176,6 @@ public class ExpenseListFragment extends Fragment {
 
     private void setUpRecyclerView(View rootView) {
 
-        recyclerViewExpenses = (RecyclerView) rootView.findViewById(R.id.home_recycler_expenses);
 
         ExpensesViewHolder.ExpenseDeletedListener listener = new ExpensesViewHolder.ExpenseDeletedListener() {
             @Override
@@ -196,7 +207,6 @@ public class ExpenseListFragment extends Fragment {
     }
 
     private void setUpSwipeRefresh(View rootView) {
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.home_swipe_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.swipe_refresh_green, R.color.swipe_refresh_red, R.color.swipe_refresh_yellow);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                                                     @Override
@@ -211,9 +221,7 @@ public class ExpenseListFragment extends Fragment {
 
 //    private void setUpToolbar(View rootView) {
 //
-//        final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) rootView.findViewById(R.id.home_collapsing);
-//        AppBarLayout appBarLayout = (AppBarLayout) rootView.findViewById(R.id.home_appbar);
-//        toolbar = (Toolbar) rootView.findViewById(R.id.home_toolbar);
+
 //        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
 //            boolean isShow = false;
 //            int scrollRange = -1;
@@ -236,11 +244,8 @@ public class ExpenseListFragment extends Fragment {
 //    }
 
     private void setUpFab(View rootView) {
-        fabMenu = (FloatingActionMenu) rootView.findViewById(R.id.home_fab_menu);
         fabMenu.setClosedOnTouchOutside(true);
 
-        fabNewExpense = (FloatingActionButton) rootView.findViewById(R.id.home_fab_new_expense);
-        fabNewExpenseCamera = (FloatingActionButton) rootView.findViewById(R.id.home_fab_new_expense_camera);
 
         fabNewExpense.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -277,30 +282,33 @@ public class ExpenseListFragment extends Fragment {
 
 
     public void refreshRecyclerView() {
-        loadDao();
 
-        int oldExpensesCount = creditCardExpenses.size();
-        try {
-            refreshData();
-        }catch (CreditCardNotFoundException e ) {
-            Toast.makeText(getActivity(), "Sorry, there was a problem loading the Credit Card", Toast.LENGTH_SHORT).show();
-            return;
-        }catch (CreditPeriodNotFoundException e) {
-            Toast.makeText(getActivity(), "Sorry, there was a problem loading the Credit Period", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        if(activeCreditCard != null) {
+            loadDao();
 
-        int newExpensesCount = creditCardExpenses.size();
+            int oldExpensesCount = creditCardExpenses.size();
+            try {
+                refreshData();
+            }catch (CreditCardNotFoundException e ) {
+                Toast.makeText(getActivity(), "Sorry, there was a problem loading the Credit Card", Toast.LENGTH_SHORT).show();
+                return;
+            }catch (CreditPeriodNotFoundException e) {
+                Toast.makeText(getActivity(), "Sorry, there was a problem loading the Credit Period", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-        //TODO: in the future, expenses wont necessarily be added with date=now,
-        //TODO: meaning they wont always be added on recyclerview position = 0
-        //If a new expense was added
-        if(newExpensesCount == oldExpensesCount+1) {
-            mAdapter.notifyItemInserted(0);
-            mAdapter.notifyItemRangeChanged(1, activeCreditCard.getCreditPeriods().get(0).getExpenses().size()-1);
-            mLayoutManager.scrollToPosition(0);
-        } else {
-            mAdapter.notifyDataSetChanged();
+            int newExpensesCount = creditCardExpenses.size();
+
+            //TODO: in the future, expenses wont necessarily be added with date=now,
+            //TODO: meaning they wont always be added on recyclerview position = 0
+            //If a new expense was added
+            if(newExpensesCount == oldExpensesCount+1) {
+                mAdapter.notifyItemInserted(0);
+                mAdapter.notifyItemRangeChanged(1, activeCreditCard.getCreditPeriods().get(0).getExpenses().size()-1);
+                mLayoutManager.scrollToPosition(0);
+            } else {
+                mAdapter.notifyDataSetChanged();
+            }
         }
 
     }

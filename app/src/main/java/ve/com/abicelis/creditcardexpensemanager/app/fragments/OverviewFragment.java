@@ -10,11 +10,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,21 +43,22 @@ import ve.com.abicelis.creditcardexpensemanager.model.DailyExpense;
 
 public class OverviewFragment extends Fragment {
 
+    //CONST
     private static final String TAG = OverviewFragment.class.getSimpleName();
-    //Data
+
+    //DATA
     int activeCreditCardId = -1;
     CreditCard activeCreditCard = null;
     ExpenseManagerDAO dao;
 
     //UI
     SelectableCreditCardViewHolder holder;
-    //TextView creditLimit;
-    //TextView creditSpent;
-    //TextView startEndDates;
     View headerCreditCardContainer;
     HorizontalBar creditDatePeriodBar;
     HorizontalBar creditBalanceBar;
     TextView extraInfo;
+    ScrollView scrollViewContainer;
+    View errNoCC;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -91,14 +92,14 @@ public class OverviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
 
-        //creditLimit = (TextView) view.findViewById(R.id.frag_overview_credit_limit);
-        //creditSpent = (TextView) view.findViewById(R.id.frag_overview_credit_spent);
-        //startEndDates = (TextView) view.findViewById(R.id.frag_overview_start_end_dates);
         headerCreditCardContainer = view.findViewById(R.id.list_item_credit_card_container);
         creditDatePeriodBar = (HorizontalBar) view.findViewById(R.id.frag_overview_credit_date_period_bar);
         creditBalanceBar = (HorizontalBar) view.findViewById(R.id.frag_overview_credit_balance_bar);
         extraInfo = (TextView) view.findViewById(R.id.frag_overview_extra_info);
-        refreshUIWithCardData();
+        scrollViewContainer = (ScrollView) view.findViewById(R.id.frag_overview_body_scroll_view_container);
+        errNoCC = view.findViewById(R.id.frag_overview_err_no_cc);
+
+        refreshUI();
 
         return view;
     }
@@ -109,11 +110,19 @@ public class OverviewFragment extends Fragment {
     }
 
 
-    private void refreshUIWithCardData() {
+    private void refreshUI() {
         loadDao();
+
+        //Hide all
+        scrollViewContainer.setVisibility(View.GONE);
+        headerCreditCardContainer.setVisibility(View.GONE);
+        errNoCC.setVisibility(View.GONE);
 
         if (activeCreditCard != null) {
             try {
+
+                scrollViewContainer.setVisibility(View.VISIBLE);
+                headerCreditCardContainer.setVisibility(View.VISIBLE);
 
                 /* DatePeriod bar */
                 Calendar today = Calendar.getInstance();
@@ -146,7 +155,8 @@ public class OverviewFragment extends Fragment {
 
                 creditBalanceBar.setProgressPercentage(balancePercentage);
                 creditBalanceBar.setTextHi(creditLimit + " " + currencyCode);
-                creditBalanceBar.setTextBar(Integer.toString(expensesTotal) + " " + currencyCode);
+                if(expensesTotal > 0)
+                    creditBalanceBar.setTextBar(Integer.toString(expensesTotal) + " " + currencyCode);
                 creditBalanceBar.setTextLo("0 " + currencyCode);
 
 
@@ -161,6 +171,8 @@ public class OverviewFragment extends Fragment {
                 e.printStackTrace();
             }
 
+        } else {
+            errNoCC.setVisibility(View.VISIBLE);
         }
     }
 
@@ -230,13 +242,14 @@ public class OverviewFragment extends Fragment {
 
         if(expensesTotal.compareTo(BigDecimal.ZERO) == 1 && daysBetweenStartAndToday > 0) {
             BigDecimal average = expensesTotal.divide(new BigDecimal(daysBetweenStartAndToday), 1, RoundingMode.HALF_UP);
-            average.setScale(2);
+            average = average.setScale(1, RoundingMode.HALF_UP);
             extraInfos.add(String.format(Locale.getDefault(), info3, average.toPlainString(), currencyCode));
         }
 
         if(creditToSpend.compareTo(BigDecimal.ZERO) == 1 && daysBetweenTodayAndEnd > 0) {
             BigDecimal averageToSpend = creditToSpend.divide(new BigDecimal(daysBetweenTodayAndEnd), 1, RoundingMode.HALF_UP);
-            averageToSpend.setScale(2);
+            averageToSpend = averageToSpend.setScale(1, RoundingMode.HALF_UP);
+            creditToSpend = creditToSpend.setScale(1, RoundingMode.HALF_UP);
             extraInfos.add(String.format(Locale.getDefault(), info4, creditToSpend.toPlainString(), averageToSpend.toPlainString(), currencyCode));
         }
 
@@ -274,7 +287,7 @@ public class OverviewFragment extends Fragment {
                 public void onDismiss(DialogInterface dialogInterface) {
                     try {
                         activeCreditCard = dao.getCreditCardWithCreditPeriod(activeCreditCardId, 0);
-                        refreshUIWithCardData();
+                        refreshUI();
                     }catch (Exception e) {
                         Toast.makeText(getActivity(), "Error refreshing credit card data", Toast.LENGTH_SHORT).show();
                     }

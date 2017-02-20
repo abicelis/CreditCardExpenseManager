@@ -12,9 +12,6 @@
         android:layout_height="200dp"
         android:orientation="vertical"
         android:background="@color/colorPrimary">
-        <!--android:layout_marginTop="24dp"-->
-        <!--&gt;-->
-
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -27,6 +24,28 @@
                 layout="@layout/list_item_credit_card_selectable"/>
 
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/nav_drawer_err_no_cc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/gray_800"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:text="@string/drawer_error_no_credit_cards"/>
+
+        <TextView
+            android:id="@+id/nav_drawer_err_select_a_cc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/gray_800"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:text="@string/drawer_error_select_a_credit_card"/>
 
     </RelativeLayout>
 

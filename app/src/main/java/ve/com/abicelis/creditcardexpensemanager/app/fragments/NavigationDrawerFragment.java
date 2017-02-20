@@ -1,6 +1,7 @@
 package ve.com.abicelis.creditcardexpensemanager.app.fragments;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.creditcardexpensemanager.R;
+import ve.com.abicelis.creditcardexpensemanager.app.activities.AddCreditCardActivity;
+import ve.com.abicelis.creditcardexpensemanager.app.activities.HomeActivity;
+import ve.com.abicelis.creditcardexpensemanager.app.activities.WelcomeActivity;
 import ve.com.abicelis.creditcardexpensemanager.app.adapters.NavigationDrawerAdapter;
 import ve.com.abicelis.creditcardexpensemanager.app.dialogs.SelectCreditCardDialogFragment;
 import ve.com.abicelis.creditcardexpensemanager.app.holders.SelectableCreditCardViewHolder;
@@ -35,8 +39,6 @@ import ve.com.abicelis.creditcardexpensemanager.model.NavigationDrawerItem;
  * Created by Alex on 5/8/2016.
  */
 public class NavigationDrawerFragment extends Fragment {
-
-    public static final String ACTIVE_CREDIT_CARD = "active_cc";
 
     //DATA
     int mActiveCreditCardID = -1;
@@ -55,14 +57,14 @@ public class NavigationDrawerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_navigation_drawer, container);
 
-        reloadData();
+        refreshData();
         setUpRecyclerView(rootView);
-        setUpDrawerHeader(rootView);
+        refreshDrawerHeader(rootView);
 
         return rootView;
     }
 
-    private void reloadData() {
+    private void refreshData() {
         //Load mDao and data
         if(mDao == null)
             mDao = new ExpenseManagerDAO(getActivity().getApplicationContext());
@@ -70,37 +72,70 @@ public class NavigationDrawerFragment extends Fragment {
         try {
             mActiveCreditCardID = SharedPreferencesUtils.getInt(getContext(), Constants.ACTIVE_CC_ID);
             mActiveCreditCard = mDao.getCreditCard(mActiveCreditCardID);
-        }catch (SharedPreferenceNotFoundException | CreditCardNotFoundException e) {
-            //This should never happen!
-            Toast.makeText(getActivity(), "Error on navigation drawer header", Toast.LENGTH_SHORT).show();
-        }
+        }catch (SharedPreferenceNotFoundException | CreditCardNotFoundException e) {}
     }
 
 
-    private void setUpDrawerHeader(View rootView) {
+    private void refreshDrawerHeader(View rootView) {
 
-        //Set header onClick
         mHeaderContainer = (RelativeLayout) rootView.findViewById(R.id.nav_drawer_header_container);
-        mHeaderContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SelectCreditCardDialogFragment dialog = SelectCreditCardDialogFragment.newInstance(mDao.getCreditCardList());
-                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialogInterface) {
-                        reloadData();
-                        holder.setData(getContext(), mActiveCreditCard, 0);
-                        closeDrawer();
-                    }
-                });
-                dialog.show(getFragmentManager(), "fragment_dialog_select_credit_card");
-            }
-        });
-
-        //Setup cc holder data
         View headerCreditCardContainer = rootView.findViewById(R.id.list_item_credit_card_container);
-        holder = new SelectableCreditCardViewHolder(headerCreditCardContainer);
-        holder.setData(getContext(), mActiveCreditCard, 0);
+        View errNoCC = rootView.findViewById(R.id.nav_drawer_err_no_cc);
+        View errSelectACC = rootView.findViewById(R.id.nav_drawer_err_select_a_cc);
+
+        //Hide all
+        headerCreditCardContainer.setVisibility(View.GONE);
+        errNoCC.setVisibility(View.GONE);
+        errSelectACC.setVisibility(View.GONE);
+
+
+        if(mActiveCreditCard != null) {                                                                             //There is an active credit card
+            //Setup cc holder data
+            headerCreditCardContainer.setVisibility(View.VISIBLE);
+            holder = new SelectableCreditCardViewHolder(headerCreditCardContainer);
+            holder.setData(getContext(), mActiveCreditCard, 0);
+        } else if (mDao.getCreditCardList().size() > 0) {                                                           //There's no active cc but there are cc's in the db
+            errSelectACC.setVisibility(View.VISIBLE);
+            //Toast.makeText(getContext(), "Click to select a credit card", Toast.LENGTH_SHORT).show();
+        } else {                                                                                                    //No active and no cc's in db
+            errNoCC.setVisibility(View.VISIBLE);
+
+
+            //Set header onClick
+            mHeaderContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent addCCIntent = new Intent(getActivity(), AddCreditCardActivity.class);
+                    //addCCIntent.putExtra(AddCreditCardActivity.CAME_FROM_WELCOME_ACTIVITY_INTENT, true);
+                    startActivity(addCCIntent);
+                }
+            });
+
+            //Toast.makeText(getContext(), "No credit cards, add a credit card", Toast.LENGTH_SHORT).show();
+        }
+
+        if(mDao.getCreditCardList().size() > 0) {                                                   //If there's more than one cc, allow selection
+
+            //Set header onClick
+            mHeaderContainer = (RelativeLayout) rootView.findViewById(R.id.nav_drawer_header_container);
+            mHeaderContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SelectCreditCardDialogFragment dialog = SelectCreditCardDialogFragment.newInstance(mDao.getCreditCardList());
+                    dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                            refreshData();
+                            holder.setData(getContext(), mActiveCreditCard, 0);
+                            closeDrawer();
+                        }
+                    });
+                    dialog.show(getFragmentManager(), "fragment_dialog_select_credit_card");
+                }
+            });
+
+        }
+
     }
 
     private void setUpRecyclerView(View view) {

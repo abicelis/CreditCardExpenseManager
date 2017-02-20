@@ -84,12 +84,12 @@ public class ChartExpenseFragment extends Fragment {
             creditCard = dao.getCreditCardWithCreditPeriod(activeCreditCardId, 0);
             creditPeriod = creditCard.getCreditPeriods().get(0);
         }catch(CreditCardNotFoundException | CreditPeriodNotFoundException e) {
-            Toast.makeText(getContext(), "ERROR getting data for chart", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Sorry, there was a problem loading the Credit Card", Toast.LENGTH_SHORT).show();
         }
 
 
-        //Check if there are no expenses in this period
-        if(creditPeriod.getExpensesTotal().equals(BigDecimal.ZERO)) {
+        //Check if there are no expenses in this period or there is no active credit card
+        if(creditCard == null || creditPeriod.getExpensesTotal().equals(BigDecimal.ZERO)) {
             chart.setVisibility(View.GONE);
             mNoExpensesContainer.setVisibility(View.VISIBLE);
             return;
