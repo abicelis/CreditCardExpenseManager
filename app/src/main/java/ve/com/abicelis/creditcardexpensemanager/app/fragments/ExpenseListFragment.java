@@ -141,7 +141,7 @@ public class ExpenseListFragment extends Fragment {
 
         //If coming back from expenseDetailActivity and data was edited/deleted, refresh.
         if (requestCode == Constants.EXPENSE_DETAIL_ACTIVITY_REQUEST_CODE && resultCode == Constants.RESULT_REFRESH_DATA) {
-            Toast.makeText(getActivity(), "Refreshing Expenses!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "Refreshing Expenses!", Toast.LENGTH_SHORT).show();
             //refreshChart();
             refreshRecyclerView();
         }
