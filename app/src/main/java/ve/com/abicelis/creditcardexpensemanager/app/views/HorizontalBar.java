@@ -89,8 +89,6 @@ public class HorizontalBar extends View {
             a.recycle();
         }
 
-        mProgressPercentage = (mProgressPercentage > 100 ? 100 : mProgressPercentage);   //Cap progress at 100%
-
         mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mTextPaint.setColor(mTextColor);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
@@ -132,6 +130,8 @@ public class HorizontalBar extends View {
         mBarLeftX = getPaddingLeft() + BAR_PADDING_X;
         mBarRightX = getPaddingLeft() + mCanvasWidth - BAR_PADDING_X;
         mBarProgressX = mBarLeftX + (int)((mBarRightX - mBarLeftX)*((float)mProgressPercentage/100));
+        if(mBarProgressX > mBarRightX)
+            mBarProgressX = mBarRightX;
         mBarCenterY = getPaddingTop() + BAR_PADDING_TOP + (int)(mBarHeightPx*0.5);
 
         if(mBarGradientColorStart != -1 && mBarGradientColorEnd != -1) {    //If gradient was setup
