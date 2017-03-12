@@ -30,7 +30,6 @@ public final class ExpenseManagerContract {
         public static final String TABLE_NAME = "creditperiod";
 
         public static final TableColumn COLUMN_NAME_FOREIGN_KEY_CREDIT_CARD = new TableColumn(DataType.INTEGER, "fk_creditcard");
-
         public static final TableColumn COLUMN_NAME_PERIOD_NAME_STYLE = new TableColumn(DataType.TEXT, "periodnamestyle");
         public static final TableColumn COLUMN_NAME_START_DATE = new TableColumn(DataType.INTEGER, "startdate");
         public static final TableColumn COLUMN_NAME_END_DATE = new TableColumn(DataType.INTEGER, "enddate");
