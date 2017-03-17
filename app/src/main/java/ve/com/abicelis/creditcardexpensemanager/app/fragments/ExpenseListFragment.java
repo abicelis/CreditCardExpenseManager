@@ -277,7 +277,6 @@ public class ExpenseListFragment extends Fragment {
         creditCardExpenses.clear();
         creditCardExpenses.addAll(activeCreditCard.getCreditPeriods().get(0).getExpenses());
 
-
     }
 
 
