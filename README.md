@@ -26,7 +26,6 @@ This app features:
 - [X] Update resizer icon in 'Create Expense using Camera' Activity
 - [X] Add a showcase tutorial in 'Create Expense using Camera' Activity
 - [X] Add credit card dialog, which allows edition and deletion
-- [ ] Add charts to Overview screen
 - [X] Add about screen
 - [X] Add Settings, Backup/Restore screen
 
@@ -43,7 +42,7 @@ This Project uses external SDK's
 
 ## Software used
 
-* [Android Studio 2.2.3 IDE](https://developer.android.com/studio/index.html) - IDE
+* [Android Studio 2.3 IDE](https://developer.android.com/studio/index.html) - IDE
 
 
 ## Authors
