@@ -1,6 +1,6 @@
 # Credit Card Expense Manager #
 
-THIS SOFTWARE IS CURRENTLY IN DEVELOPMENT AT AN ALPHA STAGE
+THIS SOFTWARE IS CURRENTLY IN DEVELOPMENT
 
 
 ## About the app
@@ -31,7 +31,7 @@ This app features:
 
 ## Code dependencies
 
-This Project uses external SDK's
+This Project uses external dependencies and SDK's
 
 * [FloatingActionButton](https://github.com/Clans/FloatingActionButton) - Custom Fab Button by Clans
 * [hellocharts-android](https://github.com/lecho/hellocharts-android) - Charts by Hellocharts
