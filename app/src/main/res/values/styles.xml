@@ -15,9 +15,10 @@
     </style>
 
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
-        <item name="android:textColorPrimary">@android:color/white</item>   <!-- Text color of toolbar title text -->
-        <item name="android:textColorSecondary">@android:color/white</item> <!-- Text color of navigation drawer icon-->
-        <item name="color">@android:color/white</item> <!-- Text color of navigation drawer icon-->
+        <item name="android:textColorPrimary">@android:color/white</item>                   <!-- Text color of toolbar title text -->
+        <item name="android:textColorSecondary">@android:color/white</item>                 <!-- Text color of navigation drawer icon-->
+        <item name="color">@android:color/white</item>                                      <!-- Text color of navigation drawer icon-->
+        <item name="actionMenuTextColor">@android:color/white</item>                        <!-- Menu item color-->
     </style>
 
     <style name="SpinnerStyle" parent="AppTheme">
