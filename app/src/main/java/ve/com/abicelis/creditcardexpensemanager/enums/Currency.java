@@ -8,8 +8,18 @@ import java.io.Serializable;
 public enum Currency implements Serializable {
 
     USD("US Dollar"),
+    CAD("Canadian Dollar"),
     VEF("Venezuelan Bolivar"),
-    EUR("Euro");
+    EUR("Euro"),
+    MEX("Mexican Peso"),
+    ARS("Argentine Peso"),
+    BRL("Brazilian Real"),
+    CLP("Chilean Peso"),
+    COL("Colombian Peso"),
+    UYU("Uruguayan Peso"),
+    PEN("Peruvian Sol"),
+    PYG("Paraguayan guarani"),
+    ;
 
     private String mFriendlyName;
 
