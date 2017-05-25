@@ -160,7 +160,7 @@ public class CreateOrEditExpenseDialogFragment extends AppCompatDialogFragment i
 
 
         //Limit mAmount
-        mAmountText.setFilters(new InputFilter[]{new NumberInputFilter(7, 2)});
+        mAmountText.setFilters(new InputFilter[]{new NumberInputFilter(9, 2)});
 
 
         // Set onClick listeners

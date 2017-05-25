@@ -145,7 +145,7 @@ public class EditOrDeleteCreditCardDialogFragment extends AppCompatDialogFragmen
         mEditButton = (Button) view.findViewById(R.id.dialog_edit_delete_cc_button_edit);
 
         //Limit mCreditLimit
-        mCreditLimit.setFilters(new InputFilter[]{new NumberInputFilter(7, 2)});
+        mCreditLimit.setFilters(new InputFilter[]{new NumberInputFilter(9, 2)});
 
         setupListeners();
         setupSpinners();
