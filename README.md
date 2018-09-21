@@ -18,16 +18,6 @@ This app features:
 - Add expenses using your camera!
 - Track multiple Credit Cards
 
-## TODO
-
-- [X] Fix 'Create Expense using Camera' Activity
-- [X] Add a Viewpager in the Graphs section, add a piechart with expense categories
-- [X] Update app icon
-- [X] Update resizer icon in 'Create Expense using Camera' Activity
-- [X] Add a showcase tutorial in 'Create Expense using Camera' Activity
-- [X] Add credit card dialog, which allows edition and deletion
-- [X] Add about screen
-- [X] Add Settings, Backup/Restore screen
 
 ## Code dependencies
 
