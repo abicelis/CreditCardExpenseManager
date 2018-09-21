@@ -1,7 +1,5 @@
 # Credit Card Expense Manager #
 
-THIS SOFTWARE IS CURRENTLY IN DEVELOPMENT
-
 
 ## About the app
 
