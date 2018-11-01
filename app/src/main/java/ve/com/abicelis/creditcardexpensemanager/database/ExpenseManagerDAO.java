@@ -492,20 +492,18 @@ public class ExpenseManagerDAO {
         startDate.set(Calendar.MINUTE, 0);
         startDate.set(Calendar.SECOND, 0);
         startDate.set(Calendar.MILLISECOND, 0);
+        startDate.set(Calendar.DAY_OF_MONTH, closingDay);
 
         Calendar endDate = Calendar.getInstance();
         endDate.setTimeInMillis(startDate.getTimeInMillis());
 
-        //Set start date's DAY_OF_MONTH to closingDay and endDate's DAY_OF_MONTH to closingDay-1ms
-        startDate.set(Calendar.DAY_OF_MONTH, closingDay);
-        endDate.set(Calendar.DAY_OF_MONTH, closingDay);
-        endDate.add(Calendar.MILLISECOND, -1);
-
-
+        //Check if closingDay if before or after today
         if(closingDay <= Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
             endDate.add(Calendar.MONTH, 1);
         else
             startDate.add(Calendar.MONTH, -1);
+
+        endDate.add(Calendar.MILLISECOND, -1);
 
         CreditPeriod creditPeriod = new CreditPeriod(CreditPeriod.PERIOD_NAME_COMPLETE, startDate, endDate, creditPeriodLimit);
         return insertCreditPeriod(creditCardId, creditPeriod);

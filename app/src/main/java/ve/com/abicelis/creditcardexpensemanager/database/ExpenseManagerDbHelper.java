@@ -20,7 +20,7 @@ import ve.com.abicelis.creditcardexpensemanager.app.utils.FileUtils;
 public class ExpenseManagerDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "CreditCardExpenseManager.db";
-    public static final int DATABASE_VERSION = 1;                               // If you change the database schema, you must increment the database version.
+    public static final int DATABASE_VERSION = 2;                               // If you change the database schema, you must increment the database version.
     private static final String COMMA_SEP = ", ";
 
     private String mAppDbFilepath;
